@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "QuestCondition.h"
 #include "Engine/DataAsset.h"
-#include "QuestProviderData.generated.h"
+#include "QuestProviderPreferences.generated.h"
 
 class UQuestAction;
 /**
  * 
  */
 UCLASS(Blueprintable, BlueprintType)
-class AESIRPROCEDURALQUEST_API UQuestProviderData : public UDataAsset
+class AESIRPROCEDURALQUEST_API UQuestProviderPreferences : public UDataAsset
 {
 	GENERATED_BODY()
 	
@@ -20,8 +21,8 @@ public:
 	FName ProviderName = "GenericQuestProvider";
 
 	UPROPERTY(EditAnywhere)
-	int QuestDepth = 5;
+	TArray<FName> AssociatedLabels;
 
 	UPROPERTY(EditAnywhere)
-	TMap<UQuestAction*, int> ActionPreferences;
+	TArray<UQuestCondition*> DesiredConditions;
 };

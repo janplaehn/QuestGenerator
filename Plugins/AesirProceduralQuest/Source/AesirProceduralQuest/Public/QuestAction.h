@@ -3,25 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
+#include "QuestCondition.h"
 #include "QuestAction.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AESIRPROCEDURALQUEST_API UQuestAction : public UObject
+class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
-	FName Name = "GenericQuestAction";
+	virtual bool IsAvailable() const;
 
-	//Todo: Add Parameters used for this quest(?)
+	virtual bool IsResolved() const;
 
-	//Todo: Add Preconditions that must be true
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UQuestCondition*> PreConditions;
 
-	//Todo: Add Action Effect
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UQuestCondition*> PostConditions;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FName> Labels;	
 };
  
