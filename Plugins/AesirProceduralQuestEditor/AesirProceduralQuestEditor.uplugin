@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AesirProceduralQuestEditor",
+	"Description": "Editor for AesirProceduralQuest Plugin",
+	"Category": "Other",
+	"CreatedBy": "Aesir Interactive GmbH",
+	"CreatedByURL": "aesir-interactive.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AesirProceduralQuestEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "AesirProceduralQuest",
+			"Enabled": true
+		}
+	]
+}

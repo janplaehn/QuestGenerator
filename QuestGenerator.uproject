@@ -1,0 +1,29 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "4.26_Stable Engine-32",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "QuestGenerator",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "OpenAIAPI",
+			"Enabled": true
+		}
+	],
+	"TargetPlatforms": [
+		"Android",
+		"IOS",
+		"Linux",
+		"Mac",
+		"PS4",
+		"Switch",
+		"Windows",
+		"XboxOne"
+	]
+}
