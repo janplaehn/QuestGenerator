@@ -18,4 +18,16 @@ public:
 	UQuestCreationComponent();
 
 	UQuest* CreateQuest(UQuestProviderPreferences* Preferences);
+
+protected:
+	/**
+	* DataTable that holds all possible quest actions
+	* */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
+	UDataTable* QuestActionDataTable;
+
+	UPROPERTY(EditAnywhere)
+	int QuestActionCount = 5;
+
+	TSoftObjectPtr<UQuestAction> GetRandomQuestAction() const;
 };

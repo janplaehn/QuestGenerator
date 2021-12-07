@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 {
 	GENERATED_BODY()

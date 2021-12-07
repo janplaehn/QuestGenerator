@@ -20,7 +20,7 @@ public:
 	UQuestProviderComponent();
 
 	UFUNCTION(BlueprintCallable)
-	FQuestData GetQuestData() const;
+	bool TryGetQuestData(FQuestData& OutQuestData) const;
 
 protected:
 	UPROPERTY(EditAnywhere)

@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "QuestAction.h"
-#include "UObject/Object.h"
 #include "Quest.generated.h"
 
 /**
@@ -21,7 +19,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsResolved() const override;
+
+    virtual void AddQuestAction(const TSoftObjectPtr<UQuestAction> NewAction);
 	
 protected:
-	TArray<UQuestAction*> Actions;
+	UPROPERTY(Transient)
+	TArray<TSoftObjectPtr<UQuestAction>> Actions;
 };

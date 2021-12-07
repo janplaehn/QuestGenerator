@@ -10,11 +10,13 @@ bool UQuest::IsAvailable() const
 		return true;
 	}
 	return Actions[0]->IsAvailable();
+
+	//Todo: Instantiate and Initialize QuestActions when applicable or use the COD
 }
 
 bool UQuest::IsResolved() const
 {
-	for (const UQuestAction* Action : Actions)
+	for (const TSoftObjectPtr<UQuestAction> Action : Actions)
 	{
 		if (!Action->IsResolved())
 		{
@@ -22,4 +24,11 @@ bool UQuest::IsResolved() const
 		}
 	}
 	return true;
+
+	//Todo: Instantiate and Initialize Conditions when applicable or use the COD
+}
+
+void UQuest::AddQuestAction(const TSoftObjectPtr<UQuestAction> NewAction)
+{
+	Actions.Add(NewAction);
 }
