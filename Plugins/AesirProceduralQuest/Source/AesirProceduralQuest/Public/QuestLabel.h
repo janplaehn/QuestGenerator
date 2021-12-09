@@ -21,7 +21,7 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct FQuestLabel
+struct AESIRPROCEDURALQUEST_API FQuestLabel
 {
 	GENERATED_BODY()
 

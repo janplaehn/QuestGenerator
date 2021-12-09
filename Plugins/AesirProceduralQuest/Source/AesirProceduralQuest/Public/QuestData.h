@@ -8,7 +8,7 @@
 class UQuest;
 
 USTRUCT(BlueprintType)
-struct FQuestData
+struct AESIRPROCEDURALQUEST_API FQuestData
 {
 	GENERATED_BODY()
 public:
