@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestCreationComponent.h"
 
@@ -23,13 +23,13 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 	UQuest* RandomQuest = NewObject<UQuest>(this);
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
-		const TSoftObjectPtr<UQuestAction> Action = GetRandomQuestAction();
+		const UQuestAction* Action = GetRandomQuestAction();
 		RandomQuest->AddQuestAction(Action);
 	}
 	return RandomQuest;
 }
 
-TSoftObjectPtr<UQuestAction> UQuestCreationComponent::GetRandomQuestAction() const
+UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
 {
 	const TArray<FName> RowNames = QuestActionDataTable->GetRowNames();
 	const int TotalActionCount = RowNames.Num();

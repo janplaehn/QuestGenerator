@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
@@ -6,7 +6,6 @@
 
 #include "QuestCreationComponent.h"
 #include "QuestData.h"
-#include "QuestProviderComponent.h"
 #include "Components/ActorComponent.h"
 #include "QuestDataCreationComponent.generated.h"
 

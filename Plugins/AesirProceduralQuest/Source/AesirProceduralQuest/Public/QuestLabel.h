@@ -4,7 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "QuestLabelRow.generated.h"
+#include "QuestLabel.generated.h"
+
+class UQuestAction;
+
+/**
+* Table row definition for a quest label data table.
+*/
+USTRUCT(BlueprintType)
+struct AESIRPROCEDURALQUEST_API FQuestLabelRow : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Label;
+};
 
 USTRUCT(BlueprintType)
 struct FQuestLabel
@@ -15,18 +29,4 @@ public:
 	/** Row handle of the label id */
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "QuestLabelRow"))
 	FDataTableRowHandle Label;
-};
-
-class UQuestAction;
-
-/**
- * Table row definition for a quest label data table.
- */
-USTRUCT(BlueprintType)
-struct AESIRPROCEDURALQUEST_API FQuestLabelRow : public FTableRowBase
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Label;
 };

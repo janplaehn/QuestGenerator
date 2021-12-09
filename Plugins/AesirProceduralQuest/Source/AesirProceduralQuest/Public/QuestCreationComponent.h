@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
@@ -29,5 +29,5 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int QuestActionCount = 5;
 
-	TSoftObjectPtr<UQuestAction> GetRandomQuestAction() const;
+	UQuestAction* GetRandomQuestAction() const;
 };

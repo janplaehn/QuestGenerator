@@ -1,13 +1,15 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "QuestCondition.h"
+#include "QuestLabel.h"
 #include "Engine/DataAsset.h"
 #include "QuestProviderPreferences.generated.h"
 
 class UQuestAction;
+
 /**
  * 
  */
@@ -21,8 +23,8 @@ public:
 	FName ProviderName = "GenericQuestProvider";
 
 	UPROPERTY(EditAnywhere)
-	TArray<FName> AssociatedLabels;
+	TArray<FQuestLabel> AssociatedLabels;
 
 	UPROPERTY(EditAnywhere)
-	TArray<UQuestCondition*> DesiredConditions;
+	TArray<TSoftClassPtr<UQuestCondition>> DesiredConditions;
 };

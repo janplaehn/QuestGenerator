@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
+
+#pragma once
 
 #include "CoreMinimal.h"
 #include "QuestData.generated.h"

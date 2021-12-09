@@ -1,4 +1,4 @@
-// Copyright 2021 Aesir Interactive, GmbH. All Rights Reserved.
+// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
@@ -17,5 +17,5 @@ struct AESIRPROCEDURALQUEST_API FQuestActionRow : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UQuestAction> QuestAction;
+	UQuestAction* QuestAction;
 };

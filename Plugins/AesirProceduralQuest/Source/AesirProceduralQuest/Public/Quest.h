@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
@@ -20,9 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsResolved() const override;
 
-    virtual void AddQuestAction(const TSoftObjectPtr<UQuestAction> NewAction);
+    virtual void AddQuestAction(const UQuestAction* NewAction);
 	
 protected:
 	UPROPERTY(Transient)
-	TArray<TSoftObjectPtr<UQuestAction>> Actions;
+	TArray<const UQuestAction*> Actions;
 };

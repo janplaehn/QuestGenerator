@@ -1,5 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "Quest.h"
 
@@ -28,7 +27,7 @@ bool UQuest::IsResolved() const
 	//Todo: Instantiate and Initialize Conditions when applicable or use the COD
 }
 
-void UQuest::AddQuestAction(const TSoftObjectPtr<UQuestAction> NewAction)
+void UQuest::AddQuestAction(const UQuestAction* NewAction)
 {
 	Actions.Add(NewAction);
 }

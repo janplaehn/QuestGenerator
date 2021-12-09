@@ -1,9 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "QuestCondition.h"
+#include "QuestLabel.h"
 #include "QuestAction.generated.h"
 
 /**
@@ -20,13 +21,13 @@ public:
 	virtual bool IsResolved() const;
 
 protected:
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PreConditions;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PostConditions;
 
 	UPROPERTY(EditDefaultsOnly)
-	TArray<FName> Labels;	
+	TArray<FQuestLabel> Labels;	
 };
  
