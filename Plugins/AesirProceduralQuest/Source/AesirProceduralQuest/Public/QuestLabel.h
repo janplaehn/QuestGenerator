@@ -21,12 +21,15 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct AESIRPROCEDURALQUEST_API FQuestLabel
+struct AESIRPROCEDURALQUEST_API FQuestLabelCollection
 {
 	GENERATED_BODY()
-
 public:
+	/** Data table that contains all labels */
+	UPROPERTY(EditDefaultsOnly, meta = (RowType = "QuestLabelRow", DisplayThumbnail = "false"))
+	UDataTable* DataTable;
+	
 	/** Row handle of the label id */
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "QuestLabelRow"))
-	FDataTableRowHandle Label;
+	TArray<FDataTableRowHandle> Label;
 };

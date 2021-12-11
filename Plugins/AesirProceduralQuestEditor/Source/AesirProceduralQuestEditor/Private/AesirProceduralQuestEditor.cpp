@@ -7,6 +7,8 @@
 #include "EditorUtilitySubsystem.h"
 #include "EditorUtilityWidgetBlueprint.h"
 #include "LevelEditor.h"
+#include "QuestLabel.h"
+#include "QuestLabelCollectionDetails.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
@@ -38,6 +40,9 @@ void FAesirProceduralQuestEditorModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(AesirProceduralQuestEditorTabName, FOnSpawnTab::CreateRaw(this, &FAesirProceduralQuestEditorModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FAesirProceduralQuestEditorTabTitle", "Quest Editor"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
+
+	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+	PropertyModule.RegisterCustomPropertyTypeLayout(FName(FQuestLabelCollection::StaticStruct()->GetName()), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FQuestLabelCollectionDetails::MakeInstance));
 }
 
 void FAesirProceduralQuestEditorModule::ShutdownModule()
