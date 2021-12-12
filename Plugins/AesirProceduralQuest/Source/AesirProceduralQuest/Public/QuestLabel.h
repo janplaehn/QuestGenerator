@@ -31,5 +31,5 @@ public:
 	
 	/** Row handle of the label id */
 	UPROPERTY(EditDefaultsOnly, meta = (RowType = "QuestLabelRow"))
-	TArray<FDataTableRowHandle> Label;
+	TArray<FDataTableRowHandle> Labels;
 };
