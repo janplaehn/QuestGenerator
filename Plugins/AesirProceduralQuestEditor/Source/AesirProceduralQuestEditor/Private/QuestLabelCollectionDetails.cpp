@@ -16,6 +16,24 @@
 #include "PropertyCustomizationHelpers.h"
 #include "Widgets/Layout/SWrapBox.h"
 
+FQuestLabelCollectionDetails::FQuestLabelCollectionDetails()
+{
+	//Setup Button Style
+	DefaultStyle = FButtonStyle::GetDefault();
+	DefaultStyle.Normal.ImageType = ESlateBrushImageType::NoImage;
+	DefaultStyle.Normal.TintColor = FLinearColor::Transparent;
+
+	//Setup Button Style
+	HighlightedStyle = FButtonStyle::GetDefault();
+	HighlightedStyle.Normal.ImageType = ESlateBrushImageType::NoImage;
+	HighlightedStyle.Normal.TintColor = FLinearColor::White;
+
+	DefaultTextStyle = FCoreStyle::Get().GetWidgetStyle< FTextBlockStyle >("NormalText");
+	DefaultTextStyle.SetFontSize(9);
+	HighlightedTextStyle =  FCoreStyle::Get().GetWidgetStyle< FTextBlockStyle >("NormalText");
+	
+}
+
 TSharedRef<IPropertyTypeCustomization> FQuestLabelCollectionDetails::MakeInstance()
 {
 	return MakeShareable(new FQuestLabelCollectionDetails);
@@ -107,14 +125,20 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 					bIsLabelActive = true;
 				}
 			}
-			const FSlateColor Color = bIsLabelActive ? FLinearColor::White : FLinearColor::Transparent;
+
+			const FSlateColor ForegroundColor =  bIsLabelActive ? FLinearColor::Black : FLinearColor::Gray;
+			const FButtonStyle* Style = bIsLabelActive ? &HighlightedStyle : &DefaultStyle;
+			const FTextBlockStyle* FontStyle = bIsLabelActive ? &HighlightedTextStyle : &DefaultTextStyle;
+			const FName LabelName = bIsLabelActive ? FName(FString("x ").Append(DataRow.Label.ToString())) : FName(FString("+ ").Append(DataRow.Label.ToString()));
 			
 			LabelBox->AddSlot()
 			.Padding(3,2)
 			[
 				SNew(SButton)
-				.Text(FText::FromName(DataRow.Label))
-				.ButtonColorAndOpacity(Color)
+				.Text(FText::FromName(LabelName))
+				.TextStyle(FontStyle)
+				.ForegroundColor(ForegroundColor)
+				.ButtonStyle(Style)
 				.OnClicked(this, &FQuestLabelCollectionDetails::OnLabelClicked, RowName, PropertyHandle)
 			];
 		

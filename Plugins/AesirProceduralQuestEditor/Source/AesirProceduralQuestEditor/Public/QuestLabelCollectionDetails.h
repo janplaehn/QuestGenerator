@@ -9,7 +9,9 @@
 */
 class FQuestLabelCollectionDetails : public IPropertyTypeCustomization
 {
-public:	
+public:
+	FQuestLabelCollectionDetails();
+	
 	/** Makes a new instance of this detail layout class for a specific detail view requesting it */
 	static TSharedRef<IPropertyTypeCustomization> MakeInstance();
 
@@ -18,5 +20,13 @@ public:
 	virtual void CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
 
 	FReply OnLabelClicked(const FName RowName, TSharedRef<IPropertyHandle> PropertyHandle);
+
 protected:
+	FButtonStyle HighlightedStyle;
+
+	FButtonStyle DefaultStyle;
+
+	FTextBlockStyle HighlightedTextStyle;
+
+	FTextBlockStyle DefaultTextStyle;
 };
