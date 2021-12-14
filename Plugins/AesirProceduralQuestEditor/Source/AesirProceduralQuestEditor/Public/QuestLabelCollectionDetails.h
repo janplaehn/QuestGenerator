@@ -19,7 +19,7 @@ public:
 	virtual void CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
 	virtual void CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
 
-	FReply OnLabelClicked(const FName RowName, TSharedRef<IPropertyHandle> PropertyHandle);
+	FReply OnLabelClicked(const FName RowName, const TSharedRef<IPropertyHandle> PropertyHandle) const;
 
 protected:
 	FButtonStyle HighlightedStyle;

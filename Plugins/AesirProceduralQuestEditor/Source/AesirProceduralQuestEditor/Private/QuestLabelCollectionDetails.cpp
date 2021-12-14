@@ -16,21 +16,22 @@
 #include "PropertyCustomizationHelpers.h"
 #include "Widgets/Layout/SWrapBox.h"
 
+static const FName LabelsHandleId("Labels");
+static const FName DataTableHandleId("DataTable");
+static const FName RowNameHandleId("RowName"); 
+
 FQuestLabelCollectionDetails::FQuestLabelCollectionDetails()
 {
-	//Setup Button Style
 	DefaultStyle = FButtonStyle::GetDefault();
 	DefaultStyle.Normal.ImageType = ESlateBrushImageType::NoImage;
 	DefaultStyle.Normal.TintColor = FLinearColor::Transparent;
 
-	//Setup Button Style
-	HighlightedStyle = FButtonStyle::GetDefault();
-	HighlightedStyle.Normal.ImageType = ESlateBrushImageType::NoImage;
+	HighlightedStyle = DefaultStyle;
 	HighlightedStyle.Normal.TintColor = FLinearColor::White;
 
-	DefaultTextStyle = FCoreStyle::Get().GetWidgetStyle< FTextBlockStyle >("NormalText");
+	HighlightedTextStyle = FCoreStyle::Get().GetWidgetStyle< FTextBlockStyle >("NormalText");
+	DefaultTextStyle = HighlightedTextStyle;
 	DefaultTextStyle.SetFontSize(9);
-	HighlightedTextStyle =  FCoreStyle::Get().GetWidgetStyle< FTextBlockStyle >("NormalText");
 	
 }
 
@@ -47,7 +48,7 @@ void FQuestLabelCollectionDetails::CustomizeHeader(TSharedRef<IPropertyHandle> P
 void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHandle,
                                                      IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils)
 {
-	ChildBuilder.AddCustomRow(FText::FromString("DataTable"))
+	ChildBuilder.AddCustomRow(FText::FromName(DataTableHandleId))
 	.NameContent()
 		[
 			SNew(SHorizontalBox)
@@ -56,8 +57,7 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 			.FillWidth(1.0f)
 			[
 				SNew(STextBlock)
-				.Text(FText::FromString("Labels"))
-				//.Font(IPropertyTypeCustomizationUtils::GetRegularFont())
+				.Text(FText::FromName(LabelsHandleId))
 			]
 		]
 	.ValueContent()
@@ -68,25 +68,18 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 		.Padding(FMargin(0, 1, 0, 1))
 		.FillWidth(1.0f)
 		[
-			PropertyHandle->GetChildHandle("DataTable")->CreatePropertyValueWidget(false)
+			PropertyHandle->GetChildHandle(DataTableHandleId)->CreatePropertyValueWidget(false)
 		]
     ];
 
-	PropertyHandle->GetChildHandle("DataTable")->SetOnPropertyValueChanged(FSimpleDelegate::CreateLambda(
+	PropertyHandle->GetChildHandle(DataTableHandleId)->SetOnPropertyValueChanged(FSimpleDelegate::CreateLambda(
 			[this, &ChildBuilder]()
 			{
 				ChildBuilder.GetParentCategory().GetParentLayout().ForceRefreshDetails();
 			}
 		));
-
-	// PropertyHandle->GetChildHandle("Labels")->SetOnPropertyValueChanged(FSimpleDelegate::CreateLambda(
-	// 		[this, &ChildBuilder]()
-	// 		{
-	// 			ChildBuilder.GetParentCategory().GetParentLayout().ForceRefreshDetails();
-	// 		}
-	// 	));
 	
-	const TSharedPtr<IPropertyHandle> DataTablePropertyHandle =  PropertyHandle->GetChildHandle("DataTable");
+	const TSharedPtr<IPropertyHandle> DataTablePropertyHandle =  PropertyHandle->GetChildHandle(DataTableHandleId);
 	UObject* DataTableObject;
 	DataTablePropertyHandle->GetValue(DataTableObject);
 	UDataTable* DataTable = Cast<UDataTable>(DataTableObject);
@@ -95,7 +88,7 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 		return;
 	}
 
-	FDetailWidgetDecl& LabelContentDecl = ChildBuilder.AddCustomRow(FText::FromName("Labels")).ValueContent();
+	FDetailWidgetDecl& LabelContentDecl = ChildBuilder.AddCustomRow(FText::FromName(LabelsHandleId)).ValueContent();
 
 	LabelContentDecl.MinDesiredWidth(600);
     LabelContentDecl.MaxDesiredWidth(TOptional<float>());
@@ -107,10 +100,10 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 		LabelBox
 	];
 
-	TSharedPtr<IPropertyHandleArray> LabelPropertyHandleArray  = PropertyHandle->GetChildHandle("Labels")->AsArray();
+	TSharedPtr<IPropertyHandleArray> LabelPropertyHandleArray  = PropertyHandle->GetChildHandle(LabelsHandleId)->AsArray();
 	
 	DataTable->ForeachRow<FQuestLabelRow>("FQuestLabelCollectionDetails::CustomizeDetails",
-		[this, &LabelBox, LabelPropertyHandleArray, DataTable, PropertyHandle](const FName& RowName, const FQuestLabelRow& DataRow)
+		[this, &LabelBox, LabelPropertyHandleArray, PropertyHandle](const FName& RowName, const FQuestLabelRow& DataRow)
 		{
 			bool bIsLabelActive = false;
 			uint32 LabelCount;
@@ -119,14 +112,14 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 			{
 				const TSharedRef<IPropertyHandle> Handle = LabelPropertyHandleArray->GetElement(Index);
 				FName CurrentRowName;
-				Handle->GetChildHandle("RowName")->GetValue(CurrentRowName);
+				Handle->GetChildHandle(RowNameHandleId)->GetValue(CurrentRowName);
 				if (RowName == CurrentRowName)
 				{
 					bIsLabelActive = true;
 				}
 			}
 
-			const FSlateColor ForegroundColor =  bIsLabelActive ? FLinearColor::Black : FLinearColor::Gray;
+			const FSlateColor ForegroundColor =  bIsLabelActive ? FLinearColor::Black : FLinearColor(0.25f, 0.25f, 0.25f);
 			const FButtonStyle* Style = bIsLabelActive ? &HighlightedStyle : &DefaultStyle;
 			const FTextBlockStyle* FontStyle = bIsLabelActive ? &HighlightedTextStyle : &DefaultTextStyle;
 			const FName LabelName = bIsLabelActive ? FName(FString("x ").Append(DataRow.Label.ToString())) : FName(FString("+ ").Append(DataRow.Label.ToString()));
@@ -146,12 +139,12 @@ void FQuestLabelCollectionDetails::CustomizeChildren(TSharedRef<IPropertyHandle>
 	);
 }
 
-FReply FQuestLabelCollectionDetails::OnLabelClicked(const FName RowName, TSharedRef<IPropertyHandle> PropertyHandle)
+FReply FQuestLabelCollectionDetails::OnLabelClicked(const FName RowName, const TSharedRef<IPropertyHandle> PropertyHandle) const
 {
 	uint32 LabelCount;
-	TSharedPtr<class IPropertyHandleArray> LabelArray = PropertyHandle->GetChildHandle("Labels")->AsArray();
+	TSharedPtr<class IPropertyHandleArray> LabelArray = PropertyHandle->GetChildHandle(LabelsHandleId)->AsArray();
 
-	const TSharedPtr<IPropertyHandle> DataTablePropertyHandle =  PropertyHandle->GetChildHandle("DataTable");
+	const TSharedPtr<IPropertyHandle> DataTablePropertyHandle =  PropertyHandle->GetChildHandle(DataTableHandleId);
 	UObject* DataTableObject;
 	DataTablePropertyHandle->GetValue(DataTableObject);
 	UDataTable* DataTable = Cast<UDataTable>(DataTableObject);
@@ -165,7 +158,7 @@ FReply FQuestLabelCollectionDetails::OnLabelClicked(const FName RowName, TShared
 	{
 		const TSharedRef<IPropertyHandle> Handle = LabelArray->GetElement(Index);
 		FName CurrentName;
-		Handle->GetChildHandle("RowName")->GetValue(CurrentName);
+		Handle->GetChildHandle(RowNameHandleId)->GetValue(CurrentName);
 		if (RowName == CurrentName)
 		{
 			LabelArray->DeleteItem(Index);
@@ -189,9 +182,9 @@ FReply FQuestLabelCollectionDetails::OnLabelClicked(const FName RowName, TShared
 		return FReply::Unhandled();
 	}
 	
-	TSharedRef<IPropertyHandle> NewLabelPropertyHandle = LabelArray->GetElement(NewLabelCount-1);
-	NewLabelPropertyHandle->GetChildHandle("DataTable")->SetValue(DataTable);
-	NewLabelPropertyHandle->GetChildHandle("RowName")->SetValue(RowName);
+	const TSharedRef<IPropertyHandle> NewLabelPropertyHandle = LabelArray->GetElement(NewLabelCount-1);
+	NewLabelPropertyHandle->GetChildHandle(DataTableHandleId)->SetValue(DataTable);
+	NewLabelPropertyHandle->GetChildHandle(RowNameHandleId)->SetValue(RowName);
 
 	//Hack to refresh the properties
 	DataTablePropertyHandle->SetValue(DataTable);
