@@ -10,6 +10,6 @@ public class QuestGeneratorTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 
-		ExtraModuleNames.AddRange( new string[] { "QuestGenerator" } );
+		ExtraModuleNames.AddRange( new string[] { "QuestGenerator", "AesirProceduralQuest" } );
 	}
 }

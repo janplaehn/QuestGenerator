@@ -58,11 +58,11 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 
 	for (const UQuestCondition* QuestCondition : Action->GetPreConditions())
 	{
-		DebugLogPreCondition(QuestCondition, Indentation + 1);
+		DebugLogCondition("Pre", QuestCondition, Indentation + 1);
 	}
 	for (const UQuestCondition* QuestCondition : Action->GetPostConditions())
 	{
-		DebugLogPreCondition(QuestCondition, Indentation + 1);
+		DebugLogCondition("Post", QuestCondition, Indentation + 1);
 	}
 	
 	const UQuest* Quest = Cast<UQuest>(Action);
@@ -75,23 +75,13 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 	}
 }
 
-void UAesirProceduralQuestBPLibrary::DebugLogPreCondition(const UQuestCondition* Condition, const int Indentation)
+void UAesirProceduralQuestBPLibrary::DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation)
 {
 	FString IndentationString;
 	for (int Index = 0; Index < Indentation; Index++)
 	{
 		IndentationString.Append("    ");	
 	}
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("%sPreCondition '%s'"), *IndentationString, *Condition->GetName());
-}
-
-void UAesirProceduralQuestBPLibrary::DebugLogPostCondition(const UQuestCondition* Condition, const int Indentation)
-{
-	FString IndentationString;
-	for (int Index = 0; Index < Indentation; Index++)
-	{
-		IndentationString.Append("    ");	
-	}
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("%sPostCondition '%s'"), *IndentationString, *Condition->GetName());
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("%s%sCondition '%s' (%s)"), *IndentationString, *Prefix, *Condition->GetName(), *Condition->GetPropertyInfo());
 }
 

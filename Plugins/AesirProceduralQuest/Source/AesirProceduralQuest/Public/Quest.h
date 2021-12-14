@@ -15,10 +15,10 @@ class AESIRPROCEDURALQUEST_API UQuest : public UQuestAction
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	virtual bool IsAvailable() const override;
+	virtual bool IsAvailable(const UObject* WorldContextObject) const override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual bool IsResolved() const override;
+	virtual bool IsResolved(const UObject* WorldContextObject) const override;
 
     virtual void AddQuestAction(const UQuestAction* NewAction);
 

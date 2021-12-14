@@ -2,11 +2,11 @@
 
 #include "QuestAction.h"
 
-bool UQuestAction::IsAvailable() const
+bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
 {
 	for (UQuestCondition* Condition : PreConditions)
 	{
-		if (!Condition->IsResolved())
+		if (!Condition->IsResolved(WorldContextObject))
 		{
 			return false;
 		}
@@ -14,11 +14,11 @@ bool UQuestAction::IsAvailable() const
 	return true;
 }
 
-bool UQuestAction::IsResolved() const
+bool UQuestAction::IsResolved(const UObject* WorldContextObject) const
 {
 	for (UQuestCondition* Condition : PostConditions)
 	{
-		if (!Condition->IsResolved())
+		if (!Condition->IsResolved(WorldContextObject))
 		{
 			return false;
 		}

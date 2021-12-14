@@ -16,9 +16,9 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	virtual bool IsAvailable() const;
+	virtual bool IsAvailable(const UObject* WorldContextObject) const;
 
-	virtual bool IsResolved() const;
+	virtual bool IsResolved(const UObject* WorldContextObject) const;
 
 	const TArray<UQuestCondition*>& GetPreConditions() const;
 

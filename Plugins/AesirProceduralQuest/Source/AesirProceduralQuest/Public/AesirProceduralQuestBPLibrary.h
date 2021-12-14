@@ -25,7 +25,5 @@ class UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
 
 	static void DebugLogAction(const UQuestAction* Action, const int Indentation = 0);
 
-	static void DebugLogPreCondition(const UQuestCondition* Condition, const int Indentation = 0);
-
-	static void DebugLogPostCondition(const UQuestCondition* Condition, const int Indentation = 0);
+	static void DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation = 0);
 };
