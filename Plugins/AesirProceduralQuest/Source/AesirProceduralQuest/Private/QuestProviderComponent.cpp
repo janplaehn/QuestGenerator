@@ -1,7 +1,6 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestProviderComponent.h"
-
 #include "AesirProceduralQuestBPLibrary.h"
 #include "QuestCreator.h"
 #include "QuestDataCreationComponent.h"
@@ -19,6 +18,7 @@ bool UQuestProviderComponent::TryGetQuestData(FQuestData& OutQuestData) const
 	{
 		return false;
 	}
+	
 	AGameModeBase* GameMode =  World->GetAuthGameMode();
 	if (!ensureMsgf(IsValid(GameMode), TEXT("QuestProviderComponent: Could not find valid gamemode")))
 	{
