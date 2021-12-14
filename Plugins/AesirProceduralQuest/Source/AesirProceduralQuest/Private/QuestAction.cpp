@@ -14,6 +14,18 @@ bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
 	return true;
 }
 
+bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
+{
+	for (UQuestCondition* Condition : PreConditions)
+	{
+		if (!Condition->SimulateIsResolved(WorldContextObject, SimulatedPostConditions))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 bool UQuestAction::IsResolved(const UObject* WorldContextObject) const
 {
 	for (UQuestCondition* Condition : PostConditions)

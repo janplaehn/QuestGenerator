@@ -29,5 +29,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
+	UPROPERTY(EditAnywhere)
+	bool bEnableConditionMatching = true;
+
+	bool TryApplyNextQuestAction(UQuest* Quest, TArray<UQuestCondition*>& AccumulatedPostConditions) const;
+
 	UQuestAction* GetRandomQuestAction() const;
+
+	void CachePossibleQuestActions();
+
+	UPROPERTY(Transient)
+	TArray<UQuestAction*> CachedPossibleQuestActions;
 };

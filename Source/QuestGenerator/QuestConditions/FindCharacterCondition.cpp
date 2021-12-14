@@ -9,7 +9,22 @@ bool UFindCharacterCondition::IsResolved_Implementation(const UObject* WorldCont
 
 bool UFindCharacterCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
 {
-	return true;
+	bool bHasFoundCharacter = false; //Todo: Need to check world state here instead
+
+	for (UQuestCondition* Condition : SimulatedPostConditions)
+	{
+		UFindCharacterCondition* FindCharacterCondition = Cast<UFindCharacterCondition>(Condition);
+		if (!IsValid(FindCharacterCondition))
+		{
+			continue;
+		}
+		if (FindCharacterCondition->CharacterName != CharacterName)
+		{
+			continue;
+		}
+		bHasFoundCharacter = bHasFoundCharacter || !FindCharacterCondition->bInvertCondition;
+	}
+	return bHasFoundCharacter != bInvertCondition;
 }
 
 FString UFindCharacterCondition::GetPropertyInfo_Implementation() const

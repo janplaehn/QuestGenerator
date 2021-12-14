@@ -14,8 +14,6 @@ UQuestCreationComponent::UQuestCreationComponent()
 
 UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
 {	
-	//Todo: Initialize QuestActions Array from DataTable at initialization
-
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Generating quest for provider '%s'..."), *Preferences->ProviderName.ToString())
 
 	const double GenerationStartTimestamp = FPlatformTime::Seconds();
@@ -25,13 +23,20 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 
 	if (QuestActionDataTable->GetRowNames().Num() <= 0)
 		return nullptr;
-	
+
+	if (CachedPossibleQuestActions.Num() <= 0)
+		CachePossibleQuestActions();
+
+	TArray<UQuestCondition*> AccumulatedPostConditions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
 	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
-		const UQuestAction* Action = GetRandomQuestAction();
-		RandomQuest->AddQuestAction(Action);
+		if (!ensure(TryApplyNextQuestAction(RandomQuest, AccumulatedPostConditions))) //Todo: Remove ensure once the rest is implemented
+		{
+			//Todo: remove the last action again
+			//Todo: Start over from there
+		}
 	}
 
 	const double GenerationTimeMilliseconds = (FPlatformTime::Seconds() - GenerationStartTimestamp) * 1000;
@@ -41,13 +46,47 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 	return RandomQuest;
 }
 
+bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TArray<UQuestCondition*>& AccumulatedPostConditions) const
+{
+	const int MaxSampleCount = 20; //Todo: Might need to reduce this, set it via property or set it dynamically
+	for(int AttemptIndex = 0; AttemptIndex < MaxSampleCount; AttemptIndex++)
+	{
+		UQuestAction* ActionCandidate = GetRandomQuestAction();
+		if (ActionCandidate->SimulateIsAvailable(this, AccumulatedPostConditions))
+		{
+			Quest->AddQuestAction(ActionCandidate);
+			AccumulatedPostConditions.Append(ActionCandidate->GetPostConditions());
+			return true;
+		}
+		else
+		{
+			UE_LOG(LogProceduralQuests, Verbose, TEXT("Could not append action %s at Index %d"), *ActionCandidate->GetName(), Quest->GetActions().Num())
+		}
+	}
+	return false;
+}
+
 UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
 {
-	const TArray<FName> RowNames = QuestActionDataTable->GetRowNames();
-	const int TotalActionCount = RowNames.Num();
-	const int RandomRowIndex = FMath::RandRange(0, TotalActionCount - 1);
-	const FName RandomRowName = RowNames[RandomRowIndex];
-	const FQuestActionRow* QuestActionRow = QuestActionDataTable->FindRow<FQuestActionRow>(RandomRowName, TEXT("UQuestCreationComponent::CreateQuest"));
-	return QuestActionRow->QuestAction;
+	const int TotalActionCount = CachedPossibleQuestActions.Num();
+	if (!ensureMsgf(TotalActionCount > 0, TEXT("QuestCreationComponent: Could not find cached quests.")))
+	{
+		return nullptr;
+	}
+	
+	const int RandomIndex = FMath::RandRange(0, TotalActionCount - 1);
+	return CachedPossibleQuestActions[RandomIndex];
+}
+
+void UQuestCreationComponent::CachePossibleQuestActions()
+{
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Caching %d possible quest actions"), QuestActionDataTable->GetRowNames().Num());
+	
+	QuestActionDataTable->ForeachRow<FQuestActionRow>("UQuestCreationComponent::CachePossibleQuestActions",
+		[this](const FName& RowName, const FQuestActionRow& Row)
+		{
+			CachedPossibleQuestActions.AddUnique(Row.QuestAction);
+		}
+	);
 }
 

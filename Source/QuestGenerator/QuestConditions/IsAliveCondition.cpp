@@ -5,12 +5,28 @@
 
 bool UIsAliveCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	return true;
+	return true; //Todo: Need to check world state here instead
 }
 
 bool UIsAliveCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
 {
-	return true;
+
+	bool bIsAlive = true; //Todo: Need to check world state here instead
+
+	for (UQuestCondition* Condition : SimulatedPostConditions)
+	{
+		UIsAliveCondition* IsAliveCondition = Cast<UIsAliveCondition>(Condition);
+		if (!IsValid(IsAliveCondition))
+		{
+			continue;
+		}
+		if (IsAliveCondition->CharacterName != CharacterName)
+		{
+			continue;
+		}
+		bIsAlive = !IsAliveCondition->bInvertCondition;
+	}
+	return bIsAlive != bInvertCondition;
 }
 
 FString UIsAliveCondition::GetPropertyInfo_Implementation() const
