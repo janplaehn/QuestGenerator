@@ -27,7 +27,7 @@ protected:
 	UDataTable* QuestActionDataTable;
 
 	UPROPERTY(EditAnywhere)
-	int QuestActionCount = 5;
+	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UQuestAction* GetRandomQuestAction() const;
 };

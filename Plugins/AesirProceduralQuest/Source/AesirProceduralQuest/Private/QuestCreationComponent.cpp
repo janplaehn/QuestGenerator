@@ -13,8 +13,10 @@ UQuestCreationComponent::UQuestCreationComponent()
 }
 
 UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
-{
+{	
 	//Todo: Initialize QuestActions Array from DataTable at initialization
+
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Generating quest for provider '%s'..."), *Preferences->ProviderName.ToString())
 
 	const double GenerationStartTimestamp = FPlatformTime::Seconds();
 	
@@ -25,6 +27,7 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 		return nullptr;
 	
 	UQuest* RandomQuest = NewObject<UQuest>(this);
+	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
 		const UQuestAction* Action = GetRandomQuestAction();

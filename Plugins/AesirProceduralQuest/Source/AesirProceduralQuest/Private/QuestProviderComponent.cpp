@@ -34,8 +34,8 @@ bool UQuestProviderComponent::TryGetQuestData(FQuestData& OutQuestData) const
 	{
 		return false;
 	}	
-
 	OutQuestData =  QuestDataCreator->CreateQuestData(Preferences);
 	UAesirProceduralQuestBPLibrary::DebugLogQuest(OutQuestData.Quest);
+	
 	return true;
 }
