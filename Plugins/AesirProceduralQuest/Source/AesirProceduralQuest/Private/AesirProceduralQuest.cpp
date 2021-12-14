@@ -2,7 +2,13 @@
 
 #include "AesirProceduralQuest.h"
 
+#if WITH_UNREAL_DEVELOPER_TOOLS
+#include "Developer/MessageLog/Public/MessageLogModule.h"
+#endif
+
 #define LOCTEXT_NAMESPACE "FAesirProceduralQuestModule"
+
+DEFINE_LOG_CATEGORY(LogProceduralQuests);
 
 void FAesirProceduralQuestModule::StartupModule()
 {

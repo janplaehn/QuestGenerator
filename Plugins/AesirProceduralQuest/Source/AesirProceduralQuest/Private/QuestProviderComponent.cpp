@@ -2,6 +2,7 @@
 
 #include "QuestProviderComponent.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
 #include "QuestCreator.h"
 #include "QuestDataCreationComponent.h"
 #include "GameFramework/GameModeBase.h"
@@ -35,5 +36,6 @@ bool UQuestProviderComponent::TryGetQuestData(FQuestData& OutQuestData) const
 	}	
 
 	OutQuestData =  QuestDataCreator->CreateQuestData(Preferences);
+	UAesirProceduralQuestBPLibrary::DebugLogQuest(OutQuestData.Quest);
 	return true;
 }

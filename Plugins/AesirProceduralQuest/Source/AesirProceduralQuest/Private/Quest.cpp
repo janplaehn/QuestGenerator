@@ -31,3 +31,8 @@ void UQuest::AddQuestAction(const UQuestAction* NewAction)
 {
 	Actions.Add(NewAction);
 }
+
+const TArray<const UQuestAction*>& UQuest::GetActions() const
+{
+	return Actions;
+}

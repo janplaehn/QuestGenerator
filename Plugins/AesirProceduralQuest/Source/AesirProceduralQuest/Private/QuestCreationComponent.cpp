@@ -2,8 +2,10 @@
 
 #include "QuestCreationComponent.h"
 
+#include "AesirProceduralQuest.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
+#include "Kismet/GameplayStatics.h"
 
 UQuestCreationComponent::UQuestCreationComponent()
 {
@@ -13,6 +15,8 @@ UQuestCreationComponent::UQuestCreationComponent()
 UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
 {
 	//Todo: Initialize QuestActions Array from DataTable at initialization
+
+	const double GenerationStartTimestamp = FPlatformTime::Seconds();
 	
 	if (!IsValid(QuestActionDataTable))
 		return nullptr;
@@ -26,6 +30,11 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 		const UQuestAction* Action = GetRandomQuestAction();
 		RandomQuest->AddQuestAction(Action);
 	}
+
+	const double GenerationTimeMilliseconds = (FPlatformTime::Seconds() - GenerationStartTimestamp) * 1000;
+
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Quest generation took %f milliseconds"), GenerationTimeMilliseconds)
+	
 	return RandomQuest;
 }
 

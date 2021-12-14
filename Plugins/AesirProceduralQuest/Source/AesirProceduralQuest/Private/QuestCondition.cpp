@@ -6,3 +6,8 @@ bool UQuestCondition::IsResolved_Implementation() const
 {
 	return false;
 }
+
+bool UQuestCondition::SimulateIsResolved_Implementation(TArray<UQuestCondition*>& SimulatedPostConditions) const
+{
+	return false;
+}

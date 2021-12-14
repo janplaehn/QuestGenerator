@@ -21,6 +21,8 @@ public:
 	virtual bool IsResolved() const override;
 
     virtual void AddQuestAction(const UQuestAction* NewAction);
+
+	const TArray<const UQuestAction*>& GetActions() const;
 	
 protected:
 	UPROPERTY(Transient)

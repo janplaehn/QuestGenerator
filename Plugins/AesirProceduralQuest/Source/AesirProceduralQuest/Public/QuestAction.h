@@ -20,6 +20,10 @@ public:
 
 	virtual bool IsResolved() const;
 
+	const TArray<UQuestCondition*>& GetPreConditions() const;
+
+	const TArray<UQuestCondition*>& GetPostConditions() const;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PreConditions;

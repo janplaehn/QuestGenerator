@@ -17,4 +17,7 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
+	bool SimulateIsResolved(TArray<UQuestCondition*>& SimulatedPostConditions) const;
 };

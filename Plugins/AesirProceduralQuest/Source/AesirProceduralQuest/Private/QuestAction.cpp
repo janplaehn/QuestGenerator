@@ -25,3 +25,13 @@ bool UQuestAction::IsResolved() const
 	}
 	return true;
 }
+
+const TArray<UQuestCondition*>& UQuestAction::GetPreConditions() const
+{
+	return PreConditions;
+}
+
+const TArray<UQuestCondition*>& UQuestAction::GetPostConditions() const
+{
+	return PostConditions;
+}

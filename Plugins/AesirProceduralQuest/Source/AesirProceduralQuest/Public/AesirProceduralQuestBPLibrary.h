@@ -5,6 +5,9 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AesirProceduralQuestBPLibrary.generated.h"
 
+class UQuestCondition;
+class UQuestAction;
+class UQuest;
 class UWidgetBlueprint;
 
 /* 
@@ -17,4 +20,12 @@ class UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
 	static TArray<UObject*>  LoadObjectLibrary(TSubclassOf<UObject> ObjectClass);
+
+	static void DebugLogQuest(const UQuest* Quest);
+
+	static void DebugLogAction(const UQuestAction* Action, const int Indentation = 0);
+
+	static void DebugLogPreCondition(const UQuestCondition* Condition, const int Indentation = 0);
+
+	static void DebugLogPostCondition(const UQuestCondition* Condition, const int Indentation = 0);
 };
