@@ -25,6 +25,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	FQuestLabelCollection AssociatedLabels;
 
-	UPROPERTY(EditAnywhere)
-	TArray<TSoftClassPtr<UQuestCondition>> DesiredConditions;
+	UPROPERTY(EditAnywhere, Instanced)
+	TArray<UQuestCondition*> DesiredConditions;
 };
