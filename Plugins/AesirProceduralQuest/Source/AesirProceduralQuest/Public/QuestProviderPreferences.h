@@ -23,7 +23,7 @@ public:
 	FName ProviderName = "GenericQuestProvider";
 
 	UPROPERTY(EditAnywhere)
-	TArray<FQuestLabel> AssociatedLabels;
+	FQuestLabelCollection AssociatedLabels;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TSoftClassPtr<UQuestCondition>> DesiredConditions;

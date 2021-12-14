@@ -28,6 +28,6 @@ protected:
 	TArray<UQuestCondition*> PostConditions;
 
 	UPROPERTY(EditDefaultsOnly)
-	TArray<FQuestLabel> Labels;	
+	FQuestLabelCollection Labels;	
 };
  
