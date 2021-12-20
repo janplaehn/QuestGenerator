@@ -5,12 +5,7 @@
 
 bool UIsAliveCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	return true;
-}
-
-bool UIsAliveCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
-{
-	return true;
+	return !bInvertCondition; //Todo: Need to check world state here instead
 }
 
 FString UIsAliveCondition::GetPropertyInfo_Implementation() const
@@ -18,4 +13,9 @@ FString UIsAliveCondition::GetPropertyInfo_Implementation() const
 	FString BaseString = Super::GetPropertyInfo_Implementation();
 	BaseString.Append(FString::Printf(TEXT("Character: %s; "), *CharacterName.ToString()));	
 	return BaseString;
+}
+
+uint32 UIsAliveCondition::GenerateId() const
+{
+	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }

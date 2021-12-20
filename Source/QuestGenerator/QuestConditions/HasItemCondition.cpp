@@ -5,12 +5,8 @@
 
 bool UHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	return true;
-}
-
-bool UHasItemCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
-{
-	return true;
+	//Todo: check if world state provides us with item
+	return bInvertCondition;
 }
 
 FString UHasItemCondition::GetPropertyInfo_Implementation() const
@@ -18,4 +14,12 @@ FString UHasItemCondition::GetPropertyInfo_Implementation() const
 	FString BaseString = Super::GetPropertyInfo_Implementation();
 	BaseString.Append(FString::Printf(TEXT("Item: %s; "), *ItemName.ToString()));	
 	return BaseString;
+}
+
+uint32 UHasItemCondition::GenerateId() const
+{
+	const uint32 TypeHash = GetTypeHash(GetClass());
+	const uint32 ItemNameHash = TextKeyUtil::HashString(ItemName.ToString());
+	const uint32 CombinedHash = HashCombine(TypeHash, ItemNameHash);
+	return CombinedHash;
 }

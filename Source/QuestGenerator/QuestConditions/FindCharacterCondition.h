@@ -15,10 +15,10 @@ class QUESTGENERATOR_API UFindCharacterCondition : public UQuestCondition
 	GENERATED_BODY()
 public:
 	virtual bool IsResolved_Implementation(const UObject* WorldContextObject) const override;
-	
-	virtual bool SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const override;
 
 	virtual FString GetPropertyInfo_Implementation() const override;
+
+	virtual uint32 GenerateId() const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

@@ -2,14 +2,7 @@
 
 #include "QuestCondition.h"
 
-#include "UObject/PropertyAccessUtil.h"
-
 bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
-{
-	return false;
-}
-
-bool UQuestCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
 {
 	return false;
 }
@@ -17,4 +10,24 @@ bool UQuestCondition::SimulateIsResolved_Implementation(const UObject* WorldCont
 FString UQuestCondition::GetPropertyInfo_Implementation() const
 {
 	return FString::Printf(TEXT("bInvertCondition: %s; "), bInvertCondition ? TEXT("true") : TEXT("false"));
+}
+
+void UQuestCondition::Init()
+{
+	ConditionId = GenerateId();
+}
+
+bool UQuestCondition::SimulateIsAvailable(const bool bWasPreviouslyResolved) const
+{
+	return !bMatchWithConditionHistory || bWasPreviouslyResolved != bInvertCondition;
+}
+
+uint32 UQuestCondition::GetId() const
+{
+	return ConditionId;
+}
+
+uint32 UQuestCondition::GenerateId() const
+{
+	return GetTypeHash(GetClass());
 }

@@ -17,6 +17,9 @@ class AESIRPROCEDURALQUEST_API UQuestCreationComponent : public UActorComponent
 public:
 	UQuestCreationComponent();
 
+	UFUNCTION(BlueprintCallable)
+	void Initialize();
+
 	UQuest* CreateQuest(UQuestProviderPreferences* Preferences);
 
 protected:
@@ -29,5 +32,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
+	UPROPERTY(EditAnywhere)
+	int MaxQuestSampleCount = 10;
+
+	UPROPERTY(EditAnywhere)
+	bool bEnableConditionMatching = true;
+
+	bool TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
+
 	UQuestAction* GetRandomQuestAction() const;
+
+	void InitPossibleQuestActions();
+
+	UPROPERTY(Transient)
+	TArray<UQuestAction*> CachedPossibleQuestActions;
 };
