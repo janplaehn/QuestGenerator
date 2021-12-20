@@ -18,7 +18,7 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 public:
 	virtual bool IsAvailable(const UObject* WorldContextObject) const;
 
-	virtual bool SimulateIsAvailable(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const;
+	virtual bool SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, bool> SimulatedConditionResolutions) const;
 
 	virtual bool IsResolved(const UObject* WorldContextObject) const;
 

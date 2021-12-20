@@ -21,10 +21,12 @@ public:
 
 	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
-	bool SimulateIsResolved(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const;
+	bool SimulateIsResolved(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
+
+	virtual uint32 GetId() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;

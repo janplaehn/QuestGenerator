@@ -4,27 +4,12 @@
 
 bool UFindCharacterCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	return true;
+	return bInvertCondition;
 }
 
-bool UFindCharacterCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
+bool UFindCharacterCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
 {
-	bool bHasFoundCharacter = false; //Todo: Need to check world state here instead
-
-	for (UQuestCondition* Condition : SimulatedPostConditions)
-	{
-		UFindCharacterCondition* FindCharacterCondition = Cast<UFindCharacterCondition>(Condition);
-		if (!IsValid(FindCharacterCondition))
-		{
-			continue;
-		}
-		if (FindCharacterCondition->CharacterName != CharacterName)
-		{
-			continue;
-		}
-		bHasFoundCharacter = bHasFoundCharacter || !FindCharacterCondition->bInvertCondition;
-	}
-	return bHasFoundCharacter != bInvertCondition;
+	return bWasPreviouslyResolved != bInvertCondition;
 }
 
 FString UFindCharacterCondition::GetPropertyInfo_Implementation() const
@@ -32,4 +17,9 @@ FString UFindCharacterCondition::GetPropertyInfo_Implementation() const
 	FString BaseString = Super::GetPropertyInfo_Implementation();
 	BaseString.Append(FString::Printf(TEXT("Character: %s; "), *CharacterName.ToString()));	
 	return BaseString;
+}
+
+uint32 UFindCharacterCondition::GetId() const
+{
+	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }

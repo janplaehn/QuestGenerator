@@ -30,9 +30,12 @@ protected:
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UPROPERTY(EditAnywhere)
+	int MaxQuestSampleCount = 10;
+
+	UPROPERTY(EditAnywhere)
 	bool bEnableConditionMatching = true;
 
-	bool TryApplyNextQuestAction(UQuest* Quest, TArray<UQuestCondition*>& AccumulatedPostConditions) const;
+	bool TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
 
 	UQuestAction* GetRandomQuestAction() const;
 

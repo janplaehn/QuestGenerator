@@ -16,9 +16,11 @@ class QUESTGENERATOR_API UHasItemCondition : public UQuestCondition
 public:
 	virtual bool IsResolved_Implementation(const UObject* WorldContextObject) const override;
 	
-	virtual bool SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const override;
+	virtual bool SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const override;
 
 	virtual FString GetPropertyInfo_Implementation() const override;
+
+	virtual uint32 GetId() const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

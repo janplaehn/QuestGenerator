@@ -14,13 +14,25 @@ bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
 	return true;
 }
 
-bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
+bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, bool> SimulatedConditionResolutions) const
 {
 	for (UQuestCondition* Condition : PreConditions)
 	{
-		if (!Condition->SimulateIsResolved(WorldContextObject, SimulatedPostConditions))
+		bool* FoundResolution = SimulatedConditionResolutions.Find(Condition->GetId());
+
+		if (FoundResolution != nullptr)
 		{
-			return false;
+			if (!Condition->SimulateIsResolved(WorldContextObject, *FoundResolution))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (!Condition->IsResolved(WorldContextObject))
+			{
+				return false;
+			}
 		}
 	}
 	return true;

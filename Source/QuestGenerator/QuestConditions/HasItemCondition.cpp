@@ -6,27 +6,12 @@
 bool UHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	//Todo: check if world state provides us with item
-	return true;
+	return bInvertCondition;
 }
 
-bool UHasItemCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, TArray<UQuestCondition*>& SimulatedPostConditions) const
+bool UHasItemCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
 {
-	bool bHasItem = false; //Todo: Need to check world state here instead
-
-	for (UQuestCondition* Condition : SimulatedPostConditions)
-	{
-		UHasItemCondition* HasItemCondition = Cast<UHasItemCondition>(Condition);
-		if (!IsValid(HasItemCondition))
-		{
-			continue;
-		}
-		if (HasItemCondition->ItemName != ItemName)
-		{
-			continue;
-		}
-		bHasItem = !HasItemCondition->bInvertCondition;
-	}
-	return bHasItem != bInvertCondition;
+	return bWasPreviouslyResolved != bInvertCondition;
 }
 
 FString UHasItemCondition::GetPropertyInfo_Implementation() const
@@ -34,4 +19,9 @@ FString UHasItemCondition::GetPropertyInfo_Implementation() const
 	FString BaseString = Super::GetPropertyInfo_Implementation();
 	BaseString.Append(FString::Printf(TEXT("Item: %s; "), *ItemName.ToString()));	
 	return BaseString;
+}
+
+uint32 UHasItemCondition::GetId() const
+{
+	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(ItemName.ToString()));
 }

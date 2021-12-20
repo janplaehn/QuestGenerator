@@ -27,12 +27,12 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 	if (CachedPossibleQuestActions.Num() <= 0)
 		CachePossibleQuestActions();
 
-	TArray<UQuestCondition*> AccumulatedPostConditions;
+	TMap<uint32, bool> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
 	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
-		if (!ensure(TryApplyNextQuestAction(RandomQuest, AccumulatedPostConditions))) //Todo: Remove ensure once the rest is implemented
+		if (!ensure(TryApplyNextQuestAction(RandomQuest, SimulatedConditionResolutions))) //Todo: Remove ensure once the rest is implemented
 		{
 			//Todo: remove the last action again
 			//Todo: Start over from there
@@ -46,16 +46,18 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 	return RandomQuest;
 }
 
-bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TArray<UQuestCondition*>& AccumulatedPostConditions) const
+bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const
 {
-	const int MaxSampleCount = 20; //Todo: Might need to reduce this, set it via property or set it dynamically
-	for(int AttemptIndex = 0; AttemptIndex < MaxSampleCount; AttemptIndex++)
+	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
 		UQuestAction* ActionCandidate = GetRandomQuestAction();
-		if (ActionCandidate->SimulateIsAvailable(this, AccumulatedPostConditions))
+		if (ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
 			Quest->AddQuestAction(ActionCandidate);
-			AccumulatedPostConditions.Append(ActionCandidate->GetPostConditions());
+			for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
+			{
+				SimulatedConditionResolutions.FindOrAdd(Condition->GetId(), !Condition->bInvertCondition);
+			}
 			return true;
 		}
 		else
