@@ -1,11 +1,9 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestCreationComponent.h"
-
 #include "AesirProceduralQuest.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
-#include "QuestCreator.h"
 #include "Kismet/GameplayStatics.h"
 
 UQuestCreationComponent::UQuestCreationComponent()
@@ -20,28 +18,32 @@ void UQuestCreationComponent::Initialize()
 
 UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
 {	
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("Generating quest for provider '%s'..."), *Preferences->ProviderName.ToString())
+	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
+		return nullptr;
 
 	const double GenerationStartTimestamp = FPlatformTime::Seconds();
-	
-	if (CachedPossibleQuestActions.Num() == 0) //Todo: Add ensure!
-		return nullptr;
 
 	TMap<uint32, bool> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
 	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
-		if (!ensure(TryApplyNextQuestAction(RandomQuest, SimulatedConditionResolutions))) //Todo: Remove ensure once the rest is implemented
+		if (!TryApplyNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
-			//Todo: remove the last action again
-			//Todo: Start over from there
+			ensure(false);
+			RandomQuest->MarkPendingKill();
+			return nullptr;
 		}
 	}
 
 	const double GenerationTimeMilliseconds = (FPlatformTime::Seconds() - GenerationStartTimestamp) * 1000;
 
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("Quest generation took %f milliseconds"), GenerationTimeMilliseconds)
+	UE_LOG(LogProceduralQuests, Verbose,
+		TEXT("Quest generation for provider '%s' took %f milliseconds"),
+		*Preferences->ProviderName.ToString(),
+		GenerationTimeMilliseconds
+		
+	);
 	
 	return RandomQuest;
 }
@@ -50,7 +52,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
-		UQuestAction* ActionCandidate = GetRandomQuestAction();
+		const UQuestAction* ActionCandidate = GetRandomQuestAction();
 		if (ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
 			Quest->AddQuestAction(ActionCandidate);
@@ -101,7 +103,7 @@ void UQuestCreationComponent::InitPossibleQuestActions()
 			{
 				Condition->Init();
 			}
-			CachedPossibleQuestActions.AddUnique(Row.QuestAction);
+			CachedPossibleQuestActions.Add(Row.QuestAction);
 		}
 	);
 }

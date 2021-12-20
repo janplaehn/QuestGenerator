@@ -4,7 +4,7 @@
 
 bool UFindCharacterCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	return bInvertCondition;
+	return bInvertCondition; //Todo: Need to check world state here instead
 }
 
 bool UFindCharacterCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const

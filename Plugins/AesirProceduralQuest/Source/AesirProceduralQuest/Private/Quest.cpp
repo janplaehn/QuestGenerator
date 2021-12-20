@@ -9,8 +9,6 @@ bool UQuest::IsAvailable(const UObject* WorldContextObject) const
 		return true;
 	}
 	return Actions[0]->IsAvailable(WorldContextObject);
-
-	//Todo: Instantiate and Initialize QuestActions when applicable or use the COD
 }
 
 bool UQuest::IsResolved(const UObject* WorldContextObject) const
@@ -23,8 +21,6 @@ bool UQuest::IsResolved(const UObject* WorldContextObject) const
 		}
 	}
 	return true;
-
-	//Todo: Instantiate and Initialize Conditions when applicable or use the COD
 }
 
 void UQuest::AddQuestAction(const UQuestAction* NewAction)

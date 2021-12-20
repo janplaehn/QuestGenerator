@@ -46,6 +46,11 @@ void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UQuest* Quest)
 
 void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, const int Indentation)
 {
+	if (!IsValid(Action))
+	{
+		UE_LOG(LogProceduralQuests, Error, TEXT("Can not log empty action"), *Action->GetName());
+	}
+	
 	FString IndentationString;
 	for (int Index = 0; Index < Indentation; Index++)
 	{
