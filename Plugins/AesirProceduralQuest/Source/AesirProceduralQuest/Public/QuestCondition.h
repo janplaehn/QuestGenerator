@@ -21,14 +21,15 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
 
-	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
-	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
-	bool SimulateIsResolved(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const;
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
 
+	UPROPERTY(EditAnywhere)
+	bool bMatchWithConditionHistory = true;
+
 	uint32 GetId() const;
+
+	bool SimulateIsAvailable(const bool bWasPreviouslyResolved) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;

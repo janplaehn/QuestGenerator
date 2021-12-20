@@ -7,11 +7,6 @@ bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObjec
 	return false;
 }
 
-bool UQuestCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
-{
-	return false;
-}
-
 FString UQuestCondition::GetPropertyInfo_Implementation() const
 {
 	return FString::Printf(TEXT("bInvertCondition: %s; "), bInvertCondition ? TEXT("true") : TEXT("false"));
@@ -20,6 +15,11 @@ FString UQuestCondition::GetPropertyInfo_Implementation() const
 void UQuestCondition::Init()
 {
 	ConditionId = GenerateId();
+}
+
+bool UQuestCondition::SimulateIsAvailable(const bool bWasPreviouslyResolved) const
+{
+	return !bMatchWithConditionHistory || bWasPreviouslyResolved != bInvertCondition;
 }
 
 uint32 UQuestCondition::GetId() const

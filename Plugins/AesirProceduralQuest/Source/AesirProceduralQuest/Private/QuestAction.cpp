@@ -18,11 +18,12 @@ bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<u
 {
 	for (UQuestCondition* Condition : PreConditions)
 	{
-		bool* FoundResolution = SimulatedConditionResolutions.Find(Condition->GetId());
+		const uint32 Id = Condition->GetId();
+		bool* FoundResolution = SimulatedConditionResolutions.Find(Id);
 
 		if (FoundResolution != nullptr)
 		{
-			if (!Condition->SimulateIsResolved(WorldContextObject, *FoundResolution))
+			if (!Condition->SimulateIsAvailable(*FoundResolution))
 			{
 				return false;
 			}

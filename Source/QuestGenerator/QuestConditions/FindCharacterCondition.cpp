@@ -7,11 +7,6 @@ bool UFindCharacterCondition::IsResolved_Implementation(const UObject* WorldCont
 	return bInvertCondition; //Todo: Need to check world state here instead
 }
 
-bool UFindCharacterCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
-{
-	return bWasPreviouslyResolved != bInvertCondition;
-}
-
 FString UFindCharacterCondition::GetPropertyInfo_Implementation() const
 {
 	FString BaseString = Super::GetPropertyInfo_Implementation();

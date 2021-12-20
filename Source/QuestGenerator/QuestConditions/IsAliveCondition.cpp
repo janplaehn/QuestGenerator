@@ -8,11 +8,6 @@ bool UIsAliveCondition::IsResolved_Implementation(const UObject* WorldContextObj
 	return !bInvertCondition; //Todo: Need to check world state here instead
 }
 
-bool UIsAliveCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
-{
-	return bWasPreviouslyResolved != bInvertCondition;
-}
-
 FString UIsAliveCondition::GetPropertyInfo_Implementation() const
 {
 	FString BaseString = Super::GetPropertyInfo_Implementation();

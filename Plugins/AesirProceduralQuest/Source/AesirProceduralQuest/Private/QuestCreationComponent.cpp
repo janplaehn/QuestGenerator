@@ -58,7 +58,8 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 			Quest->AddQuestAction(ActionCandidate);
 			for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 			{
-				SimulatedConditionResolutions.FindOrAdd(Condition->GetId(), !Condition->bInvertCondition);
+				const uint32 Id = Condition->GetId();
+				SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
 			}
 			return true;
 		}
@@ -98,7 +99,7 @@ void UQuestCreationComponent::InitPossibleQuestActions()
 
 			TSet<UQuestCondition*> Conditions;
 			Conditions.Append(Row.QuestAction->GetPreConditions());
-			Conditions.Append(Row.QuestAction->GetPreConditions());
+			Conditions.Append(Row.QuestAction->GetPostConditions());
 			for (UQuestCondition* Condition : Conditions)
 			{
 				Condition->Init();

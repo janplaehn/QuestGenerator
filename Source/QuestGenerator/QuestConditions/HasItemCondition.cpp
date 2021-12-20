@@ -9,11 +9,6 @@ bool UHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObj
 	return bInvertCondition;
 }
 
-bool UHasItemCondition::SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const
-{
-	return bWasPreviouslyResolved != bInvertCondition;
-}
-
 FString UHasItemCondition::GetPropertyInfo_Implementation() const
 {
 	FString BaseString = Super::GetPropertyInfo_Implementation();
@@ -23,5 +18,8 @@ FString UHasItemCondition::GetPropertyInfo_Implementation() const
 
 uint32 UHasItemCondition::GenerateId() const
 {
-	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(ItemName.ToString()));
+	const uint32 TypeHash = GetTypeHash(GetClass());
+	const uint32 ItemNameHash = TextKeyUtil::HashString(ItemName.ToString());
+	const uint32 CombinedHash = HashCombine(TypeHash, ItemNameHash);
+	return CombinedHash;
 }

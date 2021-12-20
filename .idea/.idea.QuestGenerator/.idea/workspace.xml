@@ -6,12 +6,21 @@
   <component name="ChangeListManager">
     <list default="true" id="999770ea-1362-43df-b3a9-5d8b52b04357" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.QuestGenerator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QuestGenerator/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/DT_QuestActions.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/DT_QuestActions.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Quests/BP_QuestProviderActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/BP_QuestProviderActor.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/AesirProceduralQuestBPLibrary.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/AesirProceduralQuestBPLibrary.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/Quest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/Quest.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindAladdin.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindAladdin.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindDragon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindDragon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindGenie.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindGenie.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindJafar.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindJafar.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindJasmine.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/Actions/QA_FindJasmine.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,19 +52,19 @@
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCreationComponent.h" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/Quest.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/AesirProceduralQuestBPLibrary.cpp" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.h" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.h" />
-      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.cpp" />
-      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.h" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.cpp" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCreationComponent.h" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/Quest.cpp" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.h" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" />
-      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/AesirProceduralQuestBPLibrary.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.cpp" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="22XaSb2ESqkXpCPsvbejmjp9oUB" />
@@ -214,7 +223,7 @@
       <updated>1639986396383</updated>
       <workItem from="1639986414304" duration="3000" />
       <workItem from="1639986524230" duration="3553000" />
-      <workItem from="1639992564638" duration="5577000" />
+      <workItem from="1639992564638" duration="9257000" />
     </task>
     <servers />
   </component>
@@ -228,19 +237,19 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp</url>
-          <line>85</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp</url>
+          <line>25</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp</url>
+          <line>17</line>
+          <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp</url>
-          <line>51</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp</url>
-          <line>97</line>
-          <option name="timeStamp" value="6" />
+          <line>60</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

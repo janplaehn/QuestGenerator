@@ -15,8 +15,6 @@ class QUESTGENERATOR_API UIsAliveCondition : public UQuestCondition
 	GENERATED_BODY()
 public:
 	virtual bool IsResolved_Implementation(const UObject* WorldContextObject) const override;
-	
-	virtual bool SimulateIsResolved_Implementation(const UObject* WorldContextObject, bool bWasPreviouslyResolved) const override;
 
 	virtual FString GetPropertyInfo_Implementation() const override;
 
