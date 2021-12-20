@@ -17,7 +17,17 @@ FString UQuestCondition::GetPropertyInfo_Implementation() const
 	return FString::Printf(TEXT("bInvertCondition: %s; "), bInvertCondition ? TEXT("true") : TEXT("false"));
 }
 
+void UQuestCondition::Init()
+{
+	ConditionId = GenerateId();
+}
+
 uint32 UQuestCondition::GetId() const
+{
+	return ConditionId;
+}
+
+uint32 UQuestCondition::GenerateId() const
 {
 	return GetTypeHash(GetClass());
 }

@@ -20,7 +20,7 @@ public:
 
 	virtual FString GetPropertyInfo_Implementation() const override;
 
-	virtual uint32 GetId() const override;
+	virtual uint32 GenerateId() const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

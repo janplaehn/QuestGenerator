@@ -20,7 +20,7 @@ FString UIsAliveCondition::GetPropertyInfo_Implementation() const
 	return BaseString;
 }
 
-uint32 UIsAliveCondition::GetId() const
+uint32 UIsAliveCondition::GenerateId() const
 {
 	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }

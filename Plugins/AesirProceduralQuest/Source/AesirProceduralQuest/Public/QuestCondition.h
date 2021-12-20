@@ -15,6 +15,8 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 	GENERATED_BODY()
 
 public:
+	virtual void Init();
+	
 	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
@@ -26,8 +28,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
 
-	virtual uint32 GetId() const;
+	uint32 GetId() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;
+
+protected:
+	virtual uint32 GenerateId() const;
+
+private:
+	uint32 ConditionId;
 };

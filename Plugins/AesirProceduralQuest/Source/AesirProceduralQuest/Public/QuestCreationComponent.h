@@ -17,6 +17,9 @@ class AESIRPROCEDURALQUEST_API UQuestCreationComponent : public UActorComponent
 public:
 	UQuestCreationComponent();
 
+	UFUNCTION(BlueprintCallable)
+	void Initialize();
+
 	UQuest* CreateQuest(UQuestProviderPreferences* Preferences);
 
 protected:
@@ -39,7 +42,7 @@ protected:
 
 	UQuestAction* GetRandomQuestAction() const;
 
-	void CachePossibleQuestActions();
+	void InitPossibleQuestActions();
 
 	UPROPERTY(Transient)
 	TArray<UQuestAction*> CachedPossibleQuestActions;

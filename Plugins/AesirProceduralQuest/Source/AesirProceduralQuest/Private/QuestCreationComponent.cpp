@@ -5,11 +5,17 @@
 #include "AesirProceduralQuest.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
+#include "QuestCreator.h"
 #include "Kismet/GameplayStatics.h"
 
 UQuestCreationComponent::UQuestCreationComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UQuestCreationComponent::Initialize()
+{
+	InitPossibleQuestActions();
 }
 
 UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
@@ -18,14 +24,8 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 
 	const double GenerationStartTimestamp = FPlatformTime::Seconds();
 	
-	if (!IsValid(QuestActionDataTable))
+	if (CachedPossibleQuestActions.Num() == 0) //Todo: Add ensure!
 		return nullptr;
-
-	if (QuestActionDataTable->GetRowNames().Num() <= 0)
-		return nullptr;
-
-	if (CachedPossibleQuestActions.Num() <= 0)
-		CachePossibleQuestActions();
 
 	TMap<uint32, bool> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
@@ -80,13 +80,27 @@ UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
 	return CachedPossibleQuestActions[RandomIndex];
 }
 
-void UQuestCreationComponent::CachePossibleQuestActions()
+void UQuestCreationComponent::InitPossibleQuestActions()
 {
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Caching %d possible quest actions"), QuestActionDataTable->GetRowNames().Num());
+
+	if (!IsValid(QuestActionDataTable))
+		return;
+
+	if (QuestActionDataTable->GetRowNames().Num() <= 0)
+		return;
 	
-	QuestActionDataTable->ForeachRow<FQuestActionRow>("UQuestCreationComponent::CachePossibleQuestActions",
+	QuestActionDataTable->ForeachRow<FQuestActionRow>("UQuestCreationComponent::InitPossibleQuestActions",
 		[this](const FName& RowName, const FQuestActionRow& Row)
 		{
+
+			TSet<UQuestCondition*> Conditions;
+			Conditions.Append(Row.QuestAction->GetPreConditions());
+			Conditions.Append(Row.QuestAction->GetPreConditions());
+			for (UQuestCondition* Condition : Conditions)
+			{
+				Condition->Init();
+			}
 			CachedPossibleQuestActions.AddUnique(Row.QuestAction);
 		}
 	);

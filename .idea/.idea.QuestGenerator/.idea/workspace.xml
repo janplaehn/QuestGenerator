@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="999770ea-1362-43df-b3a9-5d8b52b04357" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuestGenerator/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.QuestGenerator/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.QuestGenerator/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/BP_QuestGenerationGamemode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/BP_QuestGenerationGamemode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Quests/BP_QuestProviderActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Quests/BP_QuestProviderActor.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestAction.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestAction.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCreationComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCreationComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" afterDir="false" />
@@ -31,10 +31,15 @@
     <changedPaths>
       <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestAction.cpp" />
       <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCondition.h" />
-      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.cpp" />
       <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCondition.cpp" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.cpp" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/FindCharacterCondition.h" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.h" />
       <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/HasItemCondition.cpp" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.h" />
+      <option value="$PROJECT_DIR$/Source/QuestGenerator/QuestConditions/IsAliveCondition.cpp" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Public/QuestCreationComponent.h" />
+      <option value="$PROJECT_DIR$/Plugins/AesirProceduralQuest/Source/AesirProceduralQuest/Private/QuestCreationComponent.cpp" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="22XaSb2ESqkXpCPsvbejmjp9oUB" />
@@ -192,7 +197,8 @@
       <option name="presentableId" value="Default" />
       <updated>1639986396383</updated>
       <workItem from="1639986414304" duration="3000" />
-      <workItem from="1639986524230" duration="2698000" />
+      <workItem from="1639986524230" duration="3553000" />
+      <workItem from="1639992564638" duration="476000" />
     </task>
     <servers />
   </component>

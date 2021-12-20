@@ -19,7 +19,7 @@ FString UFindCharacterCondition::GetPropertyInfo_Implementation() const
 	return BaseString;
 }
 
-uint32 UFindCharacterCondition::GetId() const
+uint32 UFindCharacterCondition::GenerateId() const
 {
 	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }

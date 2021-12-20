@@ -21,7 +21,7 @@ FString UHasItemCondition::GetPropertyInfo_Implementation() const
 	return BaseString;
 }
 
-uint32 UHasItemCondition::GetId() const
+uint32 UHasItemCondition::GenerateId() const
 {
 	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(ItemName.ToString()));
 }
