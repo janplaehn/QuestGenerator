@@ -1,6 +1,7 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestCreationComponent.h"
+#include "QuestProviderComponent.h"
 #include "AesirProceduralQuest.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
@@ -8,7 +9,7 @@
 
 UQuestCreationComponent::UQuestCreationComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UQuestCreationComponent::Initialize()
@@ -16,7 +17,43 @@ void UQuestCreationComponent::Initialize()
 	InitPossibleQuestActions();
 }
 
-UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferences)
+void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
+{
+	QuestRequesters.Add(QuestProviderComponent);
+}
+
+void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
+{
+	QuestRequesters.Remove(QuestProviderComponent);
+}
+
+void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	for (UQuestProviderComponent* Provider : QuestRequesters)
+	{
+		TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
+		UQuest* NewQuest = CreateRandomQuest(Provider->GetPreferences());
+		UQuest* SelectedQuest = SelectFitterQuest(OldQuest.Get(), NewQuest);
+		Provider->SetQuest(SelectedQuest);
+	}
+}
+
+UQuest* UQuestCreationComponent::SelectFitterQuest(UQuest* QuestA, UQuest* QuestB)
+{
+	if (!IsValid(QuestA))
+	{
+		return QuestB;
+	}
+	if (!IsValid(QuestB))
+	{
+		return QuestA;
+	}
+
+	return (QuestA->GetActions().Num() > QuestB->GetActions().Num()) ? QuestA : QuestB;
+}
+
+UQuest* UQuestCreationComponent::CreateRandomQuest(UQuestProviderPreferences* Preferences)
 {	
 	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
 		return nullptr;
@@ -30,7 +67,6 @@ UQuest* UQuestCreationComponent::CreateQuest(UQuestProviderPreferences* Preferen
 	{
 		if (!TryApplyNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
-			ensure(false);
 			RandomQuest->MarkPendingKill();
 			return nullptr;
 		}
