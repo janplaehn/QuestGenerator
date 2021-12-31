@@ -9,15 +9,10 @@ UQuestDataCreationComponent::UQuestDataCreationComponent()
 	// ...
 }
 
-void UQuestDataCreationComponent::InjectDependencies(TSoftObjectPtr<UQuestCreationComponent> InQuestCreator)
-{
-	QuestCreator = InQuestCreator;
-}
-
-FQuestData UQuestDataCreationComponent::CreateQuestData(UQuestProviderPreferences* Preferences)
+FQuestData UQuestDataCreationComponent::CreateQuestData(UQuest* Quest)
 {
 	FQuestData Data;
-	Data.Quest = QuestCreator->CreateQuest(Preferences);
+	Data.Quest = Quest;
 	return Data;
 }
 

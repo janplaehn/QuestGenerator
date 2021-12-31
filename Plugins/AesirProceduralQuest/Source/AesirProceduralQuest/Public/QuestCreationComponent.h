@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "QuestProviderComponent.h"
 #include "QuestProviderPreferences.h"
 #include "Components/ActorComponent.h"
 #include "QuestCreationComponent.generated.h"
@@ -19,21 +21,29 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
-
-	UQuest* CreateQuest(UQuestProviderPreferences* Preferences);
+	
+	void RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
+	
+	void PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
 
 protected:
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UQuest* SelectFitterQuest(UQuest* QuestA, UQuest* QuestB);
+	
 	/**
 	* DataTable that holds all possible quest actions
 	* */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
+	UQuest* CreateRandomQuest(UQuestProviderPreferences* Preferences);
+
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UPROPERTY(EditAnywhere)
-	int MaxQuestSampleCount = 10;
+	int MaxQuestSampleCount = 30;
 
 	UPROPERTY(EditAnywhere)
 	bool bEnableConditionMatching = true;
@@ -46,4 +56,7 @@ protected:
 
 	UPROPERTY(Transient)
 	TArray<UQuestAction*> CachedPossibleQuestActions;
+
+	UPROPERTY(Transient)
+	TSet<UQuestProviderComponent*> QuestRequesters;
 };

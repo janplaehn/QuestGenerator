@@ -18,10 +18,7 @@ class AESIRPROCEDURALQUEST_API UQuestDataCreationComponent : public UActorCompon
 public:
 	UQuestDataCreationComponent();
 
-	UFUNCTION(BlueprintCallable)
-	void InjectDependencies(TSoftObjectPtr<UQuestCreationComponent> InQuestCreator);
-
-	FQuestData CreateQuestData(UQuestProviderPreferences* Preferences);
+	FQuestData CreateQuestData(UQuest* Quest);
 
 protected:
 	TSoftObjectPtr<UQuestCreationComponent> QuestCreator;
