@@ -65,10 +65,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
 		const UQuestAction* ActionCandidate = GetRandomQuestAction();
-		if (ActionCandidate->GetName() == "QA_KillAladdin")
-		{
-			UE_LOG(LogTemp, Warning, TEXT("KILLALADDIN"));
-		}
+
 		if (ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
 			Quest->AddQuestAction(ActionCandidate);

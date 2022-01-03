@@ -40,10 +40,6 @@ float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(UQuest* Quest, UQu
 	{
 		for (const UQuestCondition* QuestPostCondition : QuestPostConditions)
 		{
-			if (DesiredCondition->GetClass() == QuestPostCondition->GetClass())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("SAME CLASS UH OH"));
-			}
 			
 			if (DesiredCondition->GetId() != QuestPostCondition->GetId())
 			{
