@@ -15,7 +15,11 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 	GENERATED_BODY()
 
 public:
-	virtual void Init();
+	virtual void PostInitProperties() override;
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+	virtual void PostLoad() override;
 	
 	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
@@ -38,5 +42,6 @@ protected:
 	virtual uint32 GenerateId() const;
 
 private:
+	UPROPERTY(VisibleAnywhere)
 	uint32 ConditionId;
 };

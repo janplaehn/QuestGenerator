@@ -56,7 +56,7 @@ const TArray<UQuestCondition*>& UQuestAction::GetPreConditions() const
 	return PreConditions;
 }
 
-const TArray<UQuestCondition*>& UQuestAction::GetPostConditions() const
+TArray<UQuestCondition*> UQuestAction::GetPostConditions() const
 {
 	return PostConditions;
 }

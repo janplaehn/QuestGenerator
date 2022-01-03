@@ -5,6 +5,7 @@
 #include "AesirProceduralQuest.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
+#include "QuestFitnessBPLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 UQuestCreationComponent::UQuestCreationComponent()
@@ -33,32 +34,16 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	for (UQuestProviderComponent* Provider : QuestRequesters)
 	{
 		TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
-		UQuest* NewQuest = CreateRandomQuest(Provider->GetPreferences());
-		UQuest* SelectedQuest = SelectFitterQuest(OldQuest.Get(), NewQuest);
+		UQuest* NewQuest = CreateRandomQuest();
+		UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(OldQuest.Get(), NewQuest, Provider->GetPreferences());
 		Provider->SetQuest(SelectedQuest);
 	}
 }
 
-UQuest* UQuestCreationComponent::SelectFitterQuest(UQuest* QuestA, UQuest* QuestB)
-{
-	if (!IsValid(QuestA))
-	{
-		return QuestB;
-	}
-	if (!IsValid(QuestB))
-	{
-		return QuestA;
-	}
-
-	return (QuestA->GetActions().Num() > QuestB->GetActions().Num()) ? QuestA : QuestB;
-}
-
-UQuest* UQuestCreationComponent::CreateRandomQuest(UQuestProviderPreferences* Preferences)
+UQuest* UQuestCreationComponent::CreateRandomQuest()
 {	
 	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
 		return nullptr;
-
-	const double GenerationStartTimestamp = FPlatformTime::Seconds();
 
 	TMap<uint32, bool> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
@@ -71,15 +56,6 @@ UQuest* UQuestCreationComponent::CreateRandomQuest(UQuestProviderPreferences* Pr
 			return nullptr;
 		}
 	}
-
-	const double GenerationTimeMilliseconds = (FPlatformTime::Seconds() - GenerationStartTimestamp) * 1000;
-
-	UE_LOG(LogProceduralQuests, Verbose,
-		TEXT("Quest generation for provider '%s' took %f milliseconds"),
-		*Preferences->ProviderName.ToString(),
-		GenerationTimeMilliseconds
-		
-	);
 	
 	return RandomQuest;
 }
@@ -89,6 +65,10 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
 		const UQuestAction* ActionCandidate = GetRandomQuestAction();
+		if (ActionCandidate->GetName() == "QA_KillAladdin")
+		{
+			UE_LOG(LogTemp, Warning, TEXT("KILLALADDIN"));
+		}
 		if (ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
 			Quest->AddQuestAction(ActionCandidate);
@@ -101,7 +81,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 		}
 		else
 		{
-			UE_LOG(LogProceduralQuests, Verbose, TEXT("Could not append action %s at Index %d"), *ActionCandidate->GetName(), Quest->GetActions().Num())
+			UE_LOG(LogProceduralQuests, VeryVerbose, TEXT("Could not append action %s at Index %d"), *ActionCandidate->GetName(), Quest->GetActions().Num())
 		}
 	}
 	return false;
@@ -136,10 +116,6 @@ void UQuestCreationComponent::InitPossibleQuestActions()
 			TSet<UQuestCondition*> Conditions;
 			Conditions.Append(Row.QuestAction->GetPreConditions());
 			Conditions.Append(Row.QuestAction->GetPostConditions());
-			for (UQuestCondition* Condition : Conditions)
-			{
-				Condition->Init();
-			}
 			CachedPossibleQuestActions.Add(Row.QuestAction);
 		}
 	);

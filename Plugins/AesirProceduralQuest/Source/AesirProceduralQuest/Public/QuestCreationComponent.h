@@ -28,8 +28,6 @@ public:
 
 protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	UQuest* SelectFitterQuest(UQuest* QuestA, UQuest* QuestB);
 	
 	/**
 	* DataTable that holds all possible quest actions
@@ -37,7 +35,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
-	UQuest* CreateRandomQuest(UQuestProviderPreferences* Preferences);
+	UQuest* CreateRandomQuest();
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);

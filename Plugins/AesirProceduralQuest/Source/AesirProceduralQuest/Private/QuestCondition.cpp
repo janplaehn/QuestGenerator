@@ -2,6 +2,24 @@
 
 #include "QuestCondition.h"
 
+void UQuestCondition::PostInitProperties()
+{
+	Super::PostInitProperties();
+	ConditionId = GenerateId();
+}
+
+void UQuestCondition::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	ConditionId = GenerateId();
+}
+
+void UQuestCondition::PostLoad()
+{
+	Super::PostLoad();
+	ConditionId = GenerateId();
+}
+
 bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	return false;
@@ -10,11 +28,6 @@ bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObjec
 FString UQuestCondition::GetPropertyInfo_Implementation() const
 {
 	return FString::Printf(TEXT("bInvertCondition: %s; "), bInvertCondition ? TEXT("true") : TEXT("false"));
-}
-
-void UQuestCondition::Init()
-{
-	ConditionId = GenerateId();
 }
 
 bool UQuestCondition::SimulateIsAvailable(const bool bWasPreviouslyResolved) const
