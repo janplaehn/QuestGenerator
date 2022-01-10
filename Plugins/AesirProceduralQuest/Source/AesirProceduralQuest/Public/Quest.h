@@ -23,6 +23,8 @@ public:
     virtual void AddQuestAction(const UQuestAction* NewAction);
 
 	const TArray<const UQuestAction*>& GetActions() const;
+
+	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 	
 protected:
 	UPROPERTY(Transient)

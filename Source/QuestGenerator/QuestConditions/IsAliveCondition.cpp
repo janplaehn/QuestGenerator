@@ -17,5 +17,8 @@ FString UIsAliveCondition::GetPropertyInfo_Implementation() const
 
 uint32 UIsAliveCondition::GenerateId() const
 {
-	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
+	const uint32 TypeHash = GetTypeHash(GetClass());
+	const uint32 CharacterNameHash = TextKeyUtil::HashString(CharacterName.ToString());
+	const uint32 CombinedHash = HashCombine(TypeHash, CharacterNameHash);
+	return CombinedHash;
 }

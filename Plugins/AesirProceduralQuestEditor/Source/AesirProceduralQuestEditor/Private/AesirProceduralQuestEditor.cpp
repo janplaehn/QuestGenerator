@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AesirProceduralQuestEditor.h"
+
+#include "AesirProceduralQuestBPLibrary.h"
 #include "AesirProceduralQuestEditorStyle.h"
 #include "AesirProceduralQuestEditorCommands.h"
 #include "EditorUtilityWidget.h"
@@ -9,6 +11,8 @@
 #include "LevelEditor.h"
 #include "QuestLabel.h"
 #include "QuestLabelCollectionDetails.h"
+#include "QuestProviderComponent.h"
+#include "QuestProviderPreferences.h"
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"

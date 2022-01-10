@@ -32,3 +32,13 @@ const TArray<const UQuestAction*>& UQuest::GetActions() const
 {
 	return Actions;
 }
+
+TArray<UQuestCondition*> UQuest::GetPostConditions() const
+{
+	TArray<UQuestCondition*> OutPostConditions;
+	for (const UQuestAction* Action : Actions)
+	{
+		OutPostConditions.Append(Action->GetPostConditions());
+	}
+	return OutPostConditions;
+}

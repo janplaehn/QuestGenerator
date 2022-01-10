@@ -24,16 +24,16 @@ public:
 
 	const TArray<UQuestCondition*>& GetPreConditions() const;
 
-	const TArray<UQuestCondition*>& GetPostConditions() const;
-
+	virtual TArray<UQuestCondition*> GetPostConditions() const;
+	
+	UPROPERTY(EditAnywhere)
+	FQuestLabelCollection AssociatedLabels;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PreConditions;
 
 	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PostConditions;
-
-	UPROPERTY(EditDefaultsOnly)
-	FQuestLabelCollection Labels;	
 };
  
