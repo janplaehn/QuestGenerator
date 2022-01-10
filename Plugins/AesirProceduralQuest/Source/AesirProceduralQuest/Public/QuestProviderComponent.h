@@ -26,7 +26,7 @@ public:
 	UQuestProviderPreferences* GetPreferences() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetQuest(UQuest* NewQuest);
+	void SetQuest(const UQuest* NewQuest);
 
 	UFUNCTION(BlueprintCallable)
 	TSoftObjectPtr<UQuest> GetQuest() const;
@@ -38,6 +38,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	bool PauseAsyncQuestGeneration();
 
+	UPROPERTY(Transient)
 	TSoftObjectPtr<UQuest> Quest;
 	
 	UPROPERTY(EditAnywhere)

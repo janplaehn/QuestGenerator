@@ -24,7 +24,7 @@ public:
 
 	const TArray<const UQuestAction*>& GetActions() const;
 
-	virtual TArray<UQuestCondition*> GetPostConditions() const;
+	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 	
 protected:
 	UPROPERTY(Transient)

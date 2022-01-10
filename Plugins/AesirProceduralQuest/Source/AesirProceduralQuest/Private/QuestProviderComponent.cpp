@@ -43,7 +43,7 @@ UQuestProviderPreferences* UQuestProviderComponent::GetPreferences() const
 	return Preferences;
 }
 
-void UQuestProviderComponent::SetQuest(UQuest* NewQuest)
+void UQuestProviderComponent::SetQuest(const UQuest* NewQuest)
 {
 	Quest = NewQuest;
 }
@@ -53,7 +53,7 @@ TSoftObjectPtr<UQuest> UQuestProviderComponent::GetQuest() const
 	return Quest;
 }
 
-bool UQuestProviderComponent::RequestAsyncQuestGeneration()
+bool UQuestProviderComponent::RequestAsyncQuestGeneration() //Todo: Provide functions that just get the IQuestCreator Interface!
 {
 	const UWorld* World = GetWorld();
 	if (!ensureMsgf(IsValid(World), TEXT("QuestProviderComponent: Could not find valid world")))
@@ -104,7 +104,7 @@ bool UQuestProviderComponent::PauseAsyncQuestGeneration()
 		return false;
 	}	
 	QuestCreator->PauseQuestGeneration(this);		
-	UAesirProceduralQuestBPLibrary::DebugLogQuest(Quest.Get());
+	UAesirProceduralQuestBPLibrary::DebugLogQuest(this, Quest.Get(), Preferences);
 
 	return true;
 }

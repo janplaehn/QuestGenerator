@@ -31,13 +31,17 @@ void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* Ques
 void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
-	for (UQuestProviderComponent* Provider : QuestRequesters)
+	//Todo: Maybe do this with a timer instead (do as many iterations as possible in 1ms or so)
+	for (int GenerationIteration = 0; GenerationIteration < GenerationIterationsPerFrame; GenerationIteration++)
 	{
-		TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
-		UQuest* NewQuest = CreateRandomQuest();
-		UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(OldQuest.Get(), NewQuest, Provider->GetPreferences());
-		Provider->SetQuest(SelectedQuest);
-	}
+		for (UQuestProviderComponent* Provider : QuestRequesters)
+		{
+			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
+			UQuest* NewQuest = CreateRandomQuest();
+			const UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(this, OldQuest.Get(), NewQuest, Provider->GetPreferences());
+			Provider->SetQuest(SelectedQuest);
+		}
+	}	
 }
 
 UQuest* UQuestCreationComponent::CreateRandomQuest()

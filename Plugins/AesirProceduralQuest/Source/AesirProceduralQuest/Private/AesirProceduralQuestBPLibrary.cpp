@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "LevelEditor.h"
 #include "Quest.h"
+#include "QuestFitnessBPLibrary.h"
 #include "WidgetBlueprint.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 
@@ -37,9 +38,11 @@ TArray<UObject*> UAesirProceduralQuestBPLibrary::LoadObjectLibrary(TSubclassOf<U
 	return Assets;
 }
 
-void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UQuest* Quest)
+void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----BEGIN LOGGING QUEST----"));
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Condtion Fitness   : %f"), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences));
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("QuestLabel Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByTags(Quest, Preferences));
 	DebugLogAction(Quest);
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----END LOGGING QUEST----"));
 }

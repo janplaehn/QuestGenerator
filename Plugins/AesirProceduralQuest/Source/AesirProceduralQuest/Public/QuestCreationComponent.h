@@ -41,6 +41,9 @@ protected:
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UPROPERTY(EditAnywhere)
+	int GenerationIterationsPerFrame = 5.0f;
+
+	UPROPERTY(EditAnywhere)
 	int MaxQuestSampleCount = 30;
 
 	UPROPERTY(EditAnywhere)

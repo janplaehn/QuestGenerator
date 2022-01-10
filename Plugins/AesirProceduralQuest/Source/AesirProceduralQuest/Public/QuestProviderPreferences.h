@@ -26,5 +26,5 @@ public:
 	FQuestLabelCollection AssociatedLabels;
 
 	UPROPERTY(EditAnywhere, Instanced)
-	TArray<UQuestCondition*> DesiredConditions;
+	TSet<UQuestCondition*> DesiredConditions;
 };
