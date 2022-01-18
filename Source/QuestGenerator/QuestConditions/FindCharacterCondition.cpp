@@ -18,3 +18,9 @@ uint32 UFindCharacterCondition::GenerateId() const
 {
 	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }
+
+void UFindCharacterCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+{	
+	InjectNameParameter(CharacterName, Parameters);
+	Super::InjectParameters(Parameters);
+}

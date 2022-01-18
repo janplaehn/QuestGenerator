@@ -19,6 +19,8 @@ public:
 	virtual FString GetPropertyInfo_Implementation() const override;
 
 	virtual uint32 GenerateId() const override;
+
+	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters) override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

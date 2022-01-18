@@ -22,3 +22,9 @@ uint32 UIsAliveCondition::GenerateId() const
 	const uint32 CombinedHash = HashCombine(TypeHash, CharacterNameHash);
 	return CombinedHash;
 }
+
+void UIsAliveCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+{
+	InjectNameParameter(CharacterName, Parameters);
+	Super::InjectParameters(Parameters);
+}

@@ -61,7 +61,7 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 		IndentationString.Append("    ");	
 	}
 
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("%sObjective '%s'"), *IndentationString, *Action->GetName());
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("%sObjective '%s'"), *IndentationString, *Action->GetFormattedHumanReadableName().ToString());
 
 	IndentationString.Append("    ");
 
