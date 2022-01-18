@@ -1,7 +1,6 @@
 // Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestFitnessBPLibrary.h"
-
 #include "AesirProceduralQuestBPLibrary.h"
 #include "Quest.h"
 #include "QuestProviderPreferences.h"
