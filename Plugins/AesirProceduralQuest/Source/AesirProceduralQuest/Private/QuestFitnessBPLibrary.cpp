@@ -19,8 +19,8 @@ const UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObjec
 float UQuestFitnessUtils::CalculateFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	//Todo: Give Fitness values weights based on the preferences!
-	const float FitnessByTags = CalculateFitnessByTags(Quest, Preferences) * 0.3f;
-	const float FitnessByConditions = CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences) * 0.7f;
+	const float FitnessByTags = CalculateFitnessByTags(Quest, Preferences) * 0.5f;
+	const float FitnessByConditions = CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences) * 0.5f;
 	return FitnessByTags + FitnessByConditions;
 }
 
