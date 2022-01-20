@@ -20,6 +20,11 @@ void UQuestCondition::PostLoad()
 	ConditionId = GenerateId();
 }
 
+void UQuestCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+{
+	ConditionId = GenerateId();
+}
+
 bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	return false;
@@ -38,6 +43,21 @@ bool UQuestCondition::SimulateIsAvailable(const bool bWasPreviouslyResolved) con
 uint32 UQuestCondition::GetId() const
 {
 	return ConditionId;
+}
+
+void UQuestCondition::InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters)
+{
+	const auto FoundParameter = Parameters.FindByPredicate([InOutName](UQuestParameter* Parameter)
+	{
+		return InOutName == Parameter->GetParameterName();
+	});
+
+	if (FoundParameter == nullptr)
+	{
+		return;
+	}
+
+	InOutName = (*FoundParameter)->GetValueAsName();
 }
 
 uint32 UQuestCondition::GenerateId() const

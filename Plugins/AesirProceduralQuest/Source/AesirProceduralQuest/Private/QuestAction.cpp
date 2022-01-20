@@ -2,6 +2,39 @@
 
 #include "QuestAction.h"
 
+UQuestAction* UQuestAction::MakeRandomInstance() const
+{
+	UQuestAction* DuplicateAction = DuplicateObject(this, nullptr);
+	DuplicateAction->InitializeAsInstance();
+	return DuplicateAction;
+}
+
+void UQuestAction::InitializeAsInstance()
+{	
+	for (UQuestParameter* Parameter : Parameters)
+	{
+		Parameter->Initialize();
+	}
+	for (UQuestCondition* Condition : PreConditions)
+	{
+		Condition->InjectParameters(Parameters);
+	}
+	for (UQuestCondition* Condition : PostConditions)
+	{
+		Condition->InjectParameters(Parameters);
+	}
+}
+
+uint32 UQuestAction::GetPossibleInstanceCount() const
+{
+	uint32 OutInstanceCount = 1;
+	for (UQuestParameter* Parameter : Parameters)
+	{
+		OutInstanceCount *= Parameter->GetInstanceCount();
+	}
+	return OutInstanceCount;
+}
+
 bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
 {
 	for (UQuestCondition* Condition : PreConditions)
@@ -59,4 +92,16 @@ const TArray<UQuestCondition*>& UQuestAction::GetPreConditions() const
 TArray<UQuestCondition*> UQuestAction::GetPostConditions() const
 {
 	return PostConditions;
+}
+
+FText UQuestAction::GetFormattedHumanReadableName() const
+{
+	FText OutText = ReadableDescription;
+	for (UQuestParameter* Parameter : Parameters)
+	{
+		FString ParameterName = Parameter->GetParameterName().ToString();
+		FText ValueAsName =  FText::FromName(Parameter->GetValueAsName());
+		OutText = FText::FormatNamed(OutText, *ParameterName, ValueAsName);
+	}
+	return OutText;	
 }

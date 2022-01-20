@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "QuestParameter.h"
 #include "UObject/Object.h"
 #include "QuestCondition.generated.h"
 
@@ -24,6 +25,8 @@ public:
 	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
+	
+	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
@@ -37,6 +40,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;
+
+	static void InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters);
 
 protected:
 	virtual uint32 GenerateId() const;

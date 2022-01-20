@@ -23,3 +23,9 @@ uint32 UHasItemCondition::GenerateId() const
 	const uint32 CombinedHash = HashCombine(TypeHash, ItemNameHash);
 	return CombinedHash;
 }
+
+void UHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+{
+	InjectNameParameter(ItemName, Parameters);
+	Super::InjectParameters(Parameters);
+}

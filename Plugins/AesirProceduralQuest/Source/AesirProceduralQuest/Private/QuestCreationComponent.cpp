@@ -68,22 +68,29 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
-		const UQuestAction* ActionCandidate = GetRandomQuestAction();
+		UQuestAction* ActionCandidate = GetRandomQuestAction();
 
-		if (ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
+		if (ActionCandidate->AssociatedLabels.Labels.Num() == 1)
 		{
-			Quest->AddQuestAction(ActionCandidate);
-			for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
+			if (ActionCandidate->AssociatedLabels.Labels[0].RowName == FName("Motivation_Conquest"))
 			{
-				const uint32 Id = Condition->GetId();
-				SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
+				int debug = 0;
 			}
-			return true;
 		}
-		else
+		
+		if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
-			UE_LOG(LogProceduralQuests, VeryVerbose, TEXT("Could not append action %s at Index %d"), *ActionCandidate->GetName(), Quest->GetActions().Num())
+			ActionCandidate->MarkPendingKill();
+			continue;
 		}
+		
+		Quest->AddQuestAction(ActionCandidate);
+		for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
+		{
+			const uint32 Id = Condition->GetId();
+			SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
+		}
+		return true;
 	}
 	return false;
 }
@@ -97,7 +104,7 @@ UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
 	}
 	
 	const int RandomIndex = FMath::RandRange(0, TotalActionCount - 1);
-	return CachedPossibleQuestActions[RandomIndex];
+	return CachedPossibleQuestActions[RandomIndex]->MakeRandomInstance();
 }
 
 void UQuestCreationComponent::InitPossibleQuestActions()

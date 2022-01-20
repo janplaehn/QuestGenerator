@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "QuestCondition.h"
-#include "HasItemCondition.generated.h"
+#include "CharacterHasItemCondition.generated.h"
 
 /**
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class QUESTGENERATOR_API UHasItemCondition : public UQuestCondition
+class QUESTGENERATOR_API UCharacterHasItemCondition : public UQuestCondition
 {
 	GENERATED_BODY()
 public:
@@ -23,6 +23,9 @@ public:
 	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters) override;
 	
 protected:
+	UPROPERTY(EditAnywhere)
+	FName CharacterName;
+	
 	UPROPERTY(EditAnywhere)
 	FName ItemName;
 };
