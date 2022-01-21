@@ -51,7 +51,7 @@ protected:
 
 	bool TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
 
-	UQuestAction* GetRandomQuestAction() const;
+	UQuestAction* GetRandomQuestAction(UObject* Outer = nullptr) const;
 
 	void InitPossibleQuestActions();
 

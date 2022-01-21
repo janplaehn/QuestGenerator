@@ -2,9 +2,9 @@
 
 #include "QuestAction.h"
 
-UQuestAction* UQuestAction::MakeRandomInstance() const
+UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 {
-	UQuestAction* DuplicateAction = DuplicateObject(this, nullptr);
+	UQuestAction* DuplicateAction = DuplicateObject(this, Outer);
 	DuplicateAction->InitializeAsInstance();
 	return DuplicateAction;
 }

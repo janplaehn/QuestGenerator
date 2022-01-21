@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "QuestCondition.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AesirProceduralQuestBPLibrary.generated.h"
 
@@ -46,6 +47,35 @@ class UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
 		int IntersectionNum = 0;
 		for (const T Element : A)
 		{
+			if (B.Contains(Element))
+			{
+				IntersectionNum++;
+			}
+		}
+		
+		return IntersectionNum / Max;
+	};
+
+	static float GetActionListSimilarity(const TArray<UQuestCondition*> SetA, const TArray<UQuestCondition*> SetB)
+	{		
+		const float Max = FMath::Max(SetA.Num(), SetB.Num());
+		if (Max == 0)
+		{
+			return 1.0f;
+		}
+
+		//calculate intersection num
+		const bool bBSmaller = (SetA.Num() > SetB.Num());
+		const TArray<UQuestCondition*>& A = (bBSmaller ? SetB : SetA);
+		const TArray<UQuestCondition*>& B = (bBSmaller ? SetA : SetB);
+
+		int IntersectionNum = 0;
+		for (const UQuestCondition* Element : A)
+		{
+			if(B.ContainsByPredicate([Element](UQuestCondition* Condition){ return Element->GetId() == Condition->GetId();}))
+			{
+				IntersectionNum++;
+			}
 			if (B.Contains(Element))
 			{
 				IntersectionNum++;

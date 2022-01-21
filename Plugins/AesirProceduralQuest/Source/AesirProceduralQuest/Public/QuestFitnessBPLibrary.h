@@ -14,11 +14,13 @@ public:
 	UQuestFitnessUtils();
 	
 	static const UQuest* SelectFittest(const UObject* WorldContextObject, const UQuest* QuestA, const UQuest* QuestB, const UQuestProviderPreferences* Preferences);
-
-	static float CalculateFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+	
+	static float CalculateWeightedFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
     
     static float CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
    
     static float CalculateFitnessByTags(const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+
+	static float CalculateFitnessByIntentionality(const UQuest* Quest);
 	
 };

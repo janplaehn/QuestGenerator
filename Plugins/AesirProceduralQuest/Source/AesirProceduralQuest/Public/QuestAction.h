@@ -18,11 +18,8 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	TArray<UQuestAction*> MakeAllInstances() const;
-
-	void MakeCombination(TArray<uint32>& InOutCurrentCombination, TArray<uint32> IndexCounts);
 	
-	UQuestAction* MakeRandomInstance() const;
+	UQuestAction* MakeRandomInstance(UObject* Outer) const;
 	
 	virtual void InitializeAsInstance();
 
