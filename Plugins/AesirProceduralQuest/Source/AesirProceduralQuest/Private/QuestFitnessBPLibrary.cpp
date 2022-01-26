@@ -26,11 +26,11 @@ const UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObjec
 
 float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
-	//Todo: Give Fitness values weights based on the preferences!
 	const float FitnessByTags = CalculateFitnessByTags(Quest, Preferences) * Preferences->FitnessWeights.TagWeight;
 	const float FitnessByConditions = CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences) * Preferences->FitnessWeights.ConditionWeight;
 	const float FitnessByIntentionality = CalculateFitnessByIntentionality(Quest) * Preferences->FitnessWeights.IntentionalityWeight;
-	return FitnessByTags + FitnessByConditions + FitnessByIntentionality;
+	const float FitnessByAffinity = CalculateFitnessByIntentionality(Quest) * Preferences->FitnessWeights.AffinityWeight;
+	return FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 }
 
 float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
@@ -87,6 +87,45 @@ float UQuestFitnessUtils::CalculateFitnessByTags(const UQuest* Quest, const UQue
 		AverageSimilarity += UAesirProceduralQuestBPLibrary::GetListSimilarity(Action->AssociatedLabels.Labels, Preferences->AssociatedLabels.Labels);
 	}
 	return AverageSimilarity / Quest->GetActions().Num();
+}
+
+float UQuestFitnessUtils::CalculateFitnessByAffinity(const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+{
+	if (!IsValid(Quest))
+	{
+		return 0.0f;
+	}
+	float AverageAffinityMatch = 0;
+	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	for (const UQuestAction* Action : Actions)
+	{
+		float NewAffinityMatch;
+		if (Action->CharacterImpact.Character.IsNone())
+		{
+			NewAffinityMatch = 1.0f;
+		}
+		else if (Action->CharacterImpact.Character == Preferences->ProviderName)
+		{
+			NewAffinityMatch = 1 - FMath::Abs(1 - Action->CharacterImpact.Affinity) / 2.0f;
+		}
+		else
+		{
+			const auto FoundAffinity =  Preferences->CharacterAffinities.FindByPredicate([&Action](const FCharacterAffinity& Affinity)
+			{
+				return Action->CharacterImpact.Character== Affinity.Character;
+			});
+			if (FoundAffinity == nullptr)
+			{
+				NewAffinityMatch = 1 - FMath::Abs(Preferences->DefaultAffinity - Action->CharacterImpact.Affinity) / 2.0f;
+			}
+			else
+			{
+				NewAffinityMatch = 1 - FMath::Abs((*FoundAffinity).Affinity - Action->CharacterImpact.Affinity) / 2.0f;
+			}
+		}
+		AverageAffinityMatch += NewAffinityMatch;
+	}
+	return AverageAffinityMatch / Quest->GetActions().Num();
 }
 
 float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)

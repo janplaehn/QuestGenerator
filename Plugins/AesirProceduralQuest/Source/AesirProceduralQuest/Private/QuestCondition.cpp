@@ -45,21 +45,6 @@ uint32 UQuestCondition::GetId() const
 	return ConditionId;
 }
 
-void UQuestCondition::InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters)
-{
-	const auto FoundParameter = Parameters.FindByPredicate([InOutName](UQuestParameter* Parameter)
-	{
-		return InOutName == Parameter->GetParameterName();
-	});
-
-	if (FoundParameter == nullptr)
-	{
-		return;
-	}
-
-	InOutName = (*FoundParameter)->GetValueAsName();
-}
-
 uint32 UQuestCondition::GenerateId() const
 {
 	return GetTypeHash(GetClass());

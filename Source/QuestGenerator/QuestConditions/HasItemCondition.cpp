@@ -3,6 +3,8 @@
 
 #include "HasItemCondition.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
+
 bool UHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	//Todo: check if world state provides us with item
@@ -26,6 +28,6 @@ uint32 UHasItemCondition::GenerateId() const
 
 void UHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
 {
-	InjectNameParameter(ItemName, Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
 	Super::InjectParameters(Parameters);
 }

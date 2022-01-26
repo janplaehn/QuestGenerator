@@ -16,7 +16,7 @@ class UWidgetBlueprint;
 *	
 */
 UCLASS()
-class UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
+class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
@@ -29,6 +29,8 @@ class UAesirProceduralQuestBPLibrary : public UBlueprintFunctionLibrary
 	static void DebugLogAction(const UQuestAction* Action, const int Indentation = 0);
 
 	static void DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation = 0);
+	
+	static void InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters);
 	
 	template <class T>
 	static float GetListSimilarity(const TArray<T> SetA, const TArray<T> SetB)

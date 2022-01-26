@@ -2,6 +2,8 @@
 
 #include "CharacterHasItemCondition.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
+
 bool UCharacterHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	//Todo: check if world state provides us with item
@@ -28,7 +30,7 @@ uint32 UCharacterHasItemCondition::GenerateId() const
 
 void UCharacterHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
 {
-	InjectNameParameter(ItemName, Parameters);
-	InjectNameParameter(CharacterName, Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
 	Super::InjectParameters(Parameters);
 }

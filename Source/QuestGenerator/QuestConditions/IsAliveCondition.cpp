@@ -3,6 +3,8 @@
 
 #include "IsAliveCondition.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
+
 bool UIsAliveCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	return !bInvertCondition; //Todo: Need to check world state here instead
@@ -25,6 +27,6 @@ uint32 UIsAliveCondition::GenerateId() const
 
 void UIsAliveCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
 {
-	InjectNameParameter(CharacterName, Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
 	Super::InjectParameters(Parameters);
 }

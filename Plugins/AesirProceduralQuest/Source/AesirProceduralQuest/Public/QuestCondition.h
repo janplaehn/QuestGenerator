@@ -41,8 +41,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;
 
-	static void InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters);
-
 protected:
 	virtual uint32 GenerateId() const;
 
