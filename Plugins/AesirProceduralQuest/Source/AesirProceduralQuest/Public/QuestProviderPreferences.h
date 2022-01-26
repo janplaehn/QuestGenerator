@@ -11,7 +11,7 @@
 class UQuestAction;
 
 /**
-* Parameters for Crashing
+* Parameters for Fitness Weights
 */
 USTRUCT(BlueprintType) 
 struct AESIRPROCEDURALQUEST_API FQuestFitnessWeights
@@ -22,10 +22,25 @@ public:
 	float ConditionWeight = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
-	float IntentionalityWeight = 0.35f;
+	float IntentionalityWeight = 1.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
-	float TagWeight = 0.15f;
+	float TagWeight = 0.3f;
+};
+
+/**
+* Parameters for Affinities
+*/
+USTRUCT(BlueprintType) 
+struct AESIRPROCEDURALQUEST_API FCharacterAffinity
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName Character;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = -1, Max = 1))
+	int32 Affinity = 0;
 };
 
 /**
@@ -48,4 +63,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Instanced)
 	TSet<UQuestCondition*> DesiredConditions;
+
+	UPROPERTY(EditAnywhere)
+	FCharacterAffinity DefaultAffinity;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<FCharacterAffinity> Affinities;
 };

@@ -48,6 +48,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 				OldQuest->MarkPendingKill();
 			}
 			Provider->SetQuest(SelectedQuest);
+			UE_LOG(LogProceduralQuests, Verbose, TEXT("Current Fitness: [%f (Primary)] [%f (Secondary)]"),UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
 		}
 	}	
 }
