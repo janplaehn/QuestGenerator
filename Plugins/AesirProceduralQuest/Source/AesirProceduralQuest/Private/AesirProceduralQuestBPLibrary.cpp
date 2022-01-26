@@ -53,7 +53,7 @@ void UAesirProceduralQuestBPLibrary::InjectNameParameter(FName& InOutName, const
 	InOutName = (*FoundParameter)->GetValueAsName();
 }
 
-void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----BEGIN LOGGING QUEST----"));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Condtion Fitness   : %f"), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences));

@@ -24,7 +24,7 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 	static TArray<UObject*> LoadObjectLibrary(TSubclassOf<UObject> ObjectClass);
 
 	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
-	static void DebugLogQuest(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+	static void DebugLogQuest(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
 	static void DebugLogAction(const UQuestAction* Action, const int Indentation = 0);
 

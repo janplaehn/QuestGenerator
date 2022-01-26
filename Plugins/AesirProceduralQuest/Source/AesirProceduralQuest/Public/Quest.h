@@ -25,8 +25,27 @@ public:
 	const TArray<const UQuestAction*>& GetActions() const;
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
+
+	float GetFitnessByTags();
+
+	float GetFitnessByConditions(const UObject* Context);
+
+	float GetFitnessByIntentionality();
+
+	float GetFitnessByAffinity();
+
+	void SetProviderData(UQuestProviderPreferences* Data);
 	
 protected:
 	UPROPERTY(Transient)
 	TArray<const UQuestAction*> Actions;
+
+	UPROPERTY(Transient)
+	UQuestProviderPreferences* ProviderData;
+
+private:
+	float CachedFitnessByTags = -1;
+	float CachedFitnessByConditions = -1;
+	float CachedFitnessByIntentionality = -1;
+	float CachedFitnessByAffinity = -1;
 };

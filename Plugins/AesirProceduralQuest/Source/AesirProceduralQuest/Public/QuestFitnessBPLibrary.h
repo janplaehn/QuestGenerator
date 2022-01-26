@@ -13,15 +13,15 @@ class AESIRPROCEDURALQUEST_API UQuestFitnessUtils
 public:
 	UQuestFitnessUtils();
 	
-	static const UQuest* SelectFittest(const UObject* WorldContextObject, const UQuest* QuestA, const UQuest* QuestB, const UQuestProviderPreferences* Preferences);
+	static UQuest* SelectFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences);
 	
-	static float CalculateWeightedFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+	static float CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
     
-    static float CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+    static float CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
    
-    static float CalculateFitnessByTags(const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+    static float CalculateFitnessByTags(UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
-	static float CalculateFitnessByAffinity(const UQuest* Quest, const UQuestProviderPreferences* Preferences);
+	static float CalculateFitnessByAffinity(UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
 	static float CalculateFitnessByIntentionality(const UQuest* Quest);
 	

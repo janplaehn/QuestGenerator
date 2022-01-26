@@ -60,4 +60,8 @@ protected:
 
 	UPROPERTY(Transient)
 	TSet<UQuestProviderComponent*> QuestRequesters;
+
+private:
+	double StartTimestamp;
+	double LastLogTimestamp;
 };

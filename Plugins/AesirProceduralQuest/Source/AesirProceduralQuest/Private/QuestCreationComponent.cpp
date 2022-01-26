@@ -21,6 +21,7 @@ void UQuestCreationComponent::Initialize()
 void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
 {
 	QuestRequesters.Add(QuestProviderComponent);
+	StartTimestamp = LastLogTimestamp = FPlatformTime::Seconds();
 }
 
 void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
@@ -31,6 +32,7 @@ void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* Ques
 void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
+	
 	//Todo: Maybe do this with a timer instead (do as many iterations as possible in 1ms or so)
 	for (int GenerationIteration = 0; GenerationIteration < GenerationIterationsPerFrame; GenerationIteration++)
 	{
@@ -38,17 +40,34 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		{
 			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
 			UQuest* NewQuest = CreateRandomQuest();
-			const UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(this, OldQuest.Get(), NewQuest, Provider->GetPreferences());
-			if (NewQuest != SelectedQuest && IsValid(NewQuest))
+			if (!IsValid(NewQuest))
+			{
+				continue;
+			}
+			NewQuest->SetProviderData(Provider->GetPreferences());
+			UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(this, OldQuest.Get(), NewQuest, Provider->GetPreferences());
+			if (NewQuest != SelectedQuest)
 			{
 				NewQuest->MarkPendingKill();
 			}
 			else if (OldQuest.IsValid())
 			{
 				OldQuest->MarkPendingKill();
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
+			}
+			else
+			{
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
 			}
 			Provider->SetQuest(SelectedQuest);
-			UE_LOG(LogProceduralQuests, Verbose, TEXT("Current Fitness: [%f (Primary)] [%f (Secondary)]"),UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
+
+			// const double LogInterval = 0.001;
+			// if (FPlatformTime::Seconds() - LastLogTimestamp > LogInterval)
+			// {
+			// 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Current Fitness: [%f (Primary)] [%f (Secondary)]"),UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
+			// 	LastLogTimestamp = FPlatformTime::Seconds() - (FPlatformTime::Seconds() - LastLogTimestamp - LogInterval);
+			// }
+			
 		}
 	}	
 }

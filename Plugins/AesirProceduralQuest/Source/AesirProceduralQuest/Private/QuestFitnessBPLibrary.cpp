@@ -9,31 +9,35 @@ UQuestFitnessUtils::UQuestFitnessUtils()
 {
 }
 
-const UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, const UQuest* QuestA, const UQuest* QuestB, const UQuestProviderPreferences* Preferences)
+UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences)
 {
-	const float ConditionFitnessA = CalculateFitnessByDesiredConditions(WorldContextObject, QuestA, Preferences);
-	const float ConditionFitnessB = CalculateFitnessByDesiredConditions(WorldContextObject, QuestB, Preferences);
-
-	if (!FMath::IsNearlyEqual(ConditionFitnessA, ConditionFitnessB, 0.1f))
-	{
-		return ConditionFitnessA > ConditionFitnessB ? QuestA : QuestB;
-	}
+	// const float ConditionFitnessA = !IsValid(QuestA) ? 0.0f : QuestA->GetFitnessByConditions(WorldContextObject);
+	// const float ConditionFitnessB = !IsValid(QuestB) ? 0.0f : QuestB->GetFitnessByConditions(WorldContextObject);
+	//
+	// if (!FMath::IsNearlyEqual(ConditionFitnessA, ConditionFitnessB, 0.1f))
+	// {
+	// 	return ConditionFitnessA > ConditionFitnessB ? QuestA : QuestB;
+	// }
 	
 	const float FitnessA = CalculateWeightedFitness(WorldContextObject, QuestA, Preferences);
 	const float FitnessB = CalculateWeightedFitness(WorldContextObject, QuestB, Preferences);
 	return FitnessA > FitnessB ? QuestA : QuestB;
 }
 
-float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
-	const float FitnessByTags = CalculateFitnessByTags(Quest, Preferences) * Preferences->FitnessWeights.TagWeight;
-	const float FitnessByConditions = CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences) * Preferences->FitnessWeights.ConditionWeight;
-	const float FitnessByIntentionality = CalculateFitnessByIntentionality(Quest) * Preferences->FitnessWeights.IntentionalityWeight;
-	const float FitnessByAffinity = CalculateFitnessByIntentionality(Quest) * Preferences->FitnessWeights.AffinityWeight;
+	if (!IsValid(Quest))
+	{
+		return 0.0f;
+	}
+	const float FitnessByTags = Quest->GetFitnessByTags() * Preferences->FitnessWeights.TagWeight;
+	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
+	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
+	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
 	return FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 }
 
-float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	if (!IsValid(Quest))
 	{
@@ -74,7 +78,7 @@ float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* Wor
 	return Fitness;
 }
 
-float UQuestFitnessUtils::CalculateFitnessByTags(const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+float UQuestFitnessUtils::CalculateFitnessByTags(UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	if (!IsValid(Quest))
     {
@@ -89,7 +93,7 @@ float UQuestFitnessUtils::CalculateFitnessByTags(const UQuest* Quest, const UQue
 	return AverageSimilarity / Quest->GetActions().Num();
 }
 
-float UQuestFitnessUtils::CalculateFitnessByAffinity(const UQuest* Quest, const UQuestProviderPreferences* Preferences)
+float UQuestFitnessUtils::CalculateFitnessByAffinity(UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	if (!IsValid(Quest))
 	{
