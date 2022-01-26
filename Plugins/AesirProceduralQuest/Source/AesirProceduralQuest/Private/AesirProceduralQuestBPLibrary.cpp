@@ -38,12 +38,28 @@ TArray<UObject*> UAesirProceduralQuestBPLibrary::LoadObjectLibrary(TSubclassOf<U
 	return Assets;
 }
 
+void UAesirProceduralQuestBPLibrary::InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters)
+{
+	const auto FoundParameter = Parameters.FindByPredicate([InOutName](UQuestParameter* Parameter)
+	{
+		return InOutName == Parameter->GetParameterName();
+	});
+
+	if (FoundParameter == nullptr)
+	{
+		return;
+	}
+
+	InOutName = (*FoundParameter)->GetValueAsName();
+}
+
 void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextObject, const UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----BEGIN LOGGING QUEST----"));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Condtion Fitness   : %f"), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("QuestLabel Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByTags(Quest, Preferences));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Intentionality Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByIntentionality(Quest));
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Affinity Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByAffinity(Quest, Preferences));
 	DebugLogAction(Quest);
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----END LOGGING QUEST----"));
 }

@@ -2,6 +2,8 @@
 
 #include "FindCharacterCondition.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
+
 bool UFindCharacterCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	return bInvertCondition; //Todo: Need to check world state here instead
@@ -21,6 +23,6 @@ uint32 UFindCharacterCondition::GenerateId() const
 
 void UFindCharacterCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
 {	
-	InjectNameParameter(CharacterName, Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
 	Super::InjectParameters(Parameters);
 }

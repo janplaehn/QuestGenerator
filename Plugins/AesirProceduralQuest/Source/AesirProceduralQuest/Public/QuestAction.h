@@ -6,6 +6,7 @@
 #include "QuestCondition.h"
 #include "QuestLabel.h"
 #include "QuestParameter.h"
+#include "QuestProviderPreferences.h"
 
 #include "QuestAction.generated.h"
 
@@ -18,7 +19,6 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	
 	UQuestAction* MakeRandomInstance(UObject* Outer) const;
 	
 	virtual void InitializeAsInstance();
@@ -39,6 +39,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	FQuestLabelCollection AssociatedLabels;
+
+	UPROPERTY(EditAnywhere)
+	FCharacterAffinity CharacterImpact;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Instanced)

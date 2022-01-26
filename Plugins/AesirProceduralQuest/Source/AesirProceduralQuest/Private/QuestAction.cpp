@@ -2,6 +2,8 @@
 
 #include "QuestAction.h"
 
+#include "AesirProceduralQuestBPLibrary.h"
+
 UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 {
 	UQuestAction* DuplicateAction = DuplicateObject(this, Outer);
@@ -15,6 +17,7 @@ void UQuestAction::InitializeAsInstance()
 	{
 		Parameter->Initialize();
 	}
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterImpact.Character, Parameters);
 	for (UQuestCondition* Condition : PreConditions)
 	{
 		Condition->InjectParameters(Parameters);

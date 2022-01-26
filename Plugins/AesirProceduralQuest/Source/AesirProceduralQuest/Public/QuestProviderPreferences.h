@@ -26,10 +26,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
 	float TagWeight = 0.3f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
+	float AffinityWeight = 0.5f;
 };
 
 /**
-* Parameters for Affinities
+* Parameters for CharacterAffinities
 */
 USTRUCT(BlueprintType) 
 struct AESIRPROCEDURALQUEST_API FCharacterAffinity
@@ -39,8 +42,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName Character;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = -1, Max = 1))
-	int32 Affinity = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = -1, Max = 1, ClampMin = -1, ClampMax = 1))
+	int Affinity = 0;
 };
 
 /**
@@ -64,9 +67,9 @@ public:
 	UPROPERTY(EditAnywhere, Instanced)
 	TSet<UQuestCondition*> DesiredConditions;
 
-	UPROPERTY(EditAnywhere)
-	FCharacterAffinity DefaultAffinity;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = -1, Max = 1, ClampMin = -1, ClampMax = 1))
+	int DefaultAffinity = 0;
 	
 	UPROPERTY(EditAnywhere)
-	TArray<FCharacterAffinity> Affinities;
+	TArray<FCharacterAffinity> CharacterAffinities;
 };
