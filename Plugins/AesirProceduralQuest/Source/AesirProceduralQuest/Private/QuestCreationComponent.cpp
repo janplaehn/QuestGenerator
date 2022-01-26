@@ -39,6 +39,14 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
 			UQuest* NewQuest = CreateRandomQuest();
 			const UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(this, OldQuest.Get(), NewQuest, Provider->GetPreferences());
+			if (NewQuest != SelectedQuest && IsValid(NewQuest))
+			{
+				NewQuest->MarkPendingKill();
+			}
+			else if (OldQuest.IsValid())
+			{
+				OldQuest->MarkPendingKill();
+			}
 			Provider->SetQuest(SelectedQuest);
 		}
 	}	
@@ -68,15 +76,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
-		UQuestAction* ActionCandidate = GetRandomQuestAction();
-
-		if (ActionCandidate->AssociatedLabels.Labels.Num() == 1)
-		{
-			if (ActionCandidate->AssociatedLabels.Labels[0].RowName == FName("Motivation_Conquest"))
-			{
-				int debug = 0;
-			}
-		}
+		UQuestAction* ActionCandidate = GetRandomQuestAction(Quest);
 		
 		if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
@@ -95,7 +95,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 	return false;
 }
 
-UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
+UQuestAction* UQuestCreationComponent::GetRandomQuestAction(UObject* Outer) const
 {
 	const int TotalActionCount = CachedPossibleQuestActions.Num();
 	if (!ensureMsgf(TotalActionCount > 0, TEXT("QuestCreationComponent: Could not find cached quests.")))
@@ -104,7 +104,7 @@ UQuestAction* UQuestCreationComponent::GetRandomQuestAction() const
 	}
 	
 	const int RandomIndex = FMath::RandRange(0, TotalActionCount - 1);
-	return CachedPossibleQuestActions[RandomIndex]->MakeRandomInstance();
+	return CachedPossibleQuestActions[RandomIndex]->MakeRandomInstance(Outer);
 }
 
 void UQuestCreationComponent::InitPossibleQuestActions()

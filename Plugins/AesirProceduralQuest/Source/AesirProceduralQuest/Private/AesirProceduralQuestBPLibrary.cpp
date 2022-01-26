@@ -43,6 +43,7 @@ void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextOb
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----BEGIN LOGGING QUEST----"));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Condtion Fitness   : %f"), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("QuestLabel Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByTags(Quest, Preferences));
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Intentionality Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByIntentionality(Quest));
 	DebugLogAction(Quest);
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----END LOGGING QUEST----"));
 }
