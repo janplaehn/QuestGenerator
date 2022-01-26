@@ -11,12 +11,23 @@ UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 	return DuplicateAction;
 }
 
+UQuestAction* UQuestAction::DuplicateInstance(UObject* Outer) const
+{
+	UQuestAction* DuplicateAction = DuplicateObject(this, Outer);
+	return DuplicateAction;
+}
+
 void UQuestAction::InitializeAsInstance()
 {	
 	for (UQuestParameter* Parameter : Parameters)
 	{
 		Parameter->Initialize();
 	}
+	InjectParameters();
+}
+
+void UQuestAction::InjectParameters()
+{
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterImpact.Character, Parameters);
 	for (UQuestCondition* Condition : PreConditions)
 	{
@@ -26,6 +37,7 @@ void UQuestAction::InitializeAsInstance()
 	{
 		Condition->InjectParameters(Parameters);
 	}
+	ReadableDescription = MakeFormattedHumanReadableName();
 }
 
 uint32 UQuestAction::GetPossibleInstanceCount() const
@@ -97,7 +109,12 @@ TArray<UQuestCondition*> UQuestAction::GetPostConditions() const
 	return PostConditions;
 }
 
-FText UQuestAction::GetFormattedHumanReadableName() const
+FText UQuestAction::GetDescription() const
+{
+	return ReadableDescription;
+}
+
+FText UQuestAction::MakeFormattedHumanReadableName() const
 {
 	FText OutText = ReadableDescription;
 	for (UQuestParameter* Parameter : Parameters)

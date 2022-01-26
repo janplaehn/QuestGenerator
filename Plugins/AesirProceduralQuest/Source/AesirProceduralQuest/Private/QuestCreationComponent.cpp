@@ -3,6 +3,7 @@
 #include "QuestCreationComponent.h"
 #include "QuestProviderComponent.h"
 #include "AesirProceduralQuest.h"
+#include "AesirProceduralQuestBPLibrary.h"
 #include "Quest.h"
 #include "QuestActionRow.h"
 #include "QuestFitnessBPLibrary.h"
@@ -39,7 +40,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 		for (UQuestProviderComponent* Provider : QuestRequesters)
 		{
 			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
-			UQuest* NewQuest = CreateRandomQuest();
+			UQuest* NewQuest = MutateQuest(OldQuest.Get());
 			if (!IsValid(NewQuest))
 			{
 				continue;
@@ -54,10 +55,12 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			{
 				OldQuest->MarkPendingKill();
 				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
+				//UAesirProceduralQuestBPLibrary::DebugLogQuest(this, NewQuest, Provider->GetPreferences());
 			}
 			else
 			{
 				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
+				//UAesirProceduralQuestBPLibrary::DebugLogQuest(this, NewQuest, Provider->GetPreferences());
 			}
 			Provider->SetQuest(SelectedQuest);
 
@@ -82,7 +85,7 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
-		if (!TryApplyNextQuestAction(RandomQuest, SimulatedConditionResolutions))
+		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
 			RandomQuest->MarkPendingKill();
 			return nullptr;
@@ -92,7 +95,55 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 	return RandomQuest;
 }
 
-bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const
+UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest)
+{
+	if (!IsValid(BaseQuest))
+	{
+		return CreateRandomQuest();
+	}
+	UQuest* NewQuest = NewObject<UQuest>(this);
+	
+	const int MutatedActionIndex = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
+
+	TMap<uint32, bool> SimulatedConditionResolutions;
+
+	//Initialize first few actions just as they were
+	for (int ActionIndex = 0; ActionIndex < MutatedActionIndex; ActionIndex++)
+	{
+		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
+		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+		TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions);
+	}
+
+	//Apply random next action as mutation
+	if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
+	{
+		return nullptr;
+	}
+
+	if (MutatedActionIndex == BaseQuest->GetActions().Num()-1)
+	{
+		return NewQuest;
+	}
+
+	//Initialize last few actions: Try to keep them the same, otherwise change them
+	for (int ActionIndex = MutatedActionIndex+1; ActionIndex < BaseQuest->GetActions().Num(); ActionIndex++)
+	{
+		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
+		if (TryApplyNextQuestAction(NewQuest, DuplicateObject(BaseAction, NewQuest), SimulatedConditionResolutions))
+		{
+			continue;
+		}
+		if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
+		{
+			return nullptr;
+		}
+	}
+
+	return NewQuest;
+}
+
+bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
@@ -113,6 +164,23 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, TMap<uint32
 		return true;
 	}
 	return false;
+}
+
+bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate,
+	TMap<uint32, bool>& SimulatedConditionResolutions) const
+{
+	if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
+	{
+		return false;
+	}
+		
+	Quest->AddQuestAction(ActionCandidate);
+	for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
+	{
+		const uint32 Id = Condition->GetId();
+		SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
+	}
+	return true;
 }
 
 UQuestAction* UQuestCreationComponent::GetRandomQuestAction(UObject* Outer) const
