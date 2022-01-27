@@ -20,8 +20,12 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 
 public:
 	UQuestAction* MakeRandomInstance(UObject* Outer) const;
+
+	UQuestAction* DuplicateInstance(UObject* Outer) const;
 	
 	virtual void InitializeAsInstance();
+
+	virtual void InjectParameters();
 
 	uint32 GetPossibleInstanceCount() const;
 	
@@ -35,7 +39,7 @@ public:
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const;
 
-	FText GetFormattedHumanReadableName() const;
+	FText GetDescription() const;
 	
 	UPROPERTY(EditAnywhere)
 	FQuestLabelCollection AssociatedLabels;
@@ -44,6 +48,8 @@ public:
 	FCharacterAffinity CharacterImpact;
 	
 protected:
+	FText MakeFormattedHumanReadableName() const;
+	
 	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PreConditions;
 

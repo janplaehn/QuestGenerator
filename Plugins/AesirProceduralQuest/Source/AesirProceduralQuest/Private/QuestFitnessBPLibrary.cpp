@@ -21,7 +21,7 @@ UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, UQu
 	
 	const float FitnessA = CalculateWeightedFitness(WorldContextObject, QuestA, Preferences);
 	const float FitnessB = CalculateWeightedFitness(WorldContextObject, QuestB, Preferences);
-	return FitnessA > FitnessB ? QuestA : QuestB;
+	return FitnessA >= FitnessB ? QuestA : QuestB;
 }
 
 float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
@@ -106,7 +106,7 @@ float UQuestFitnessUtils::CalculateFitnessByAffinity(UQuest* Quest, const UQuest
 		float NewAffinityMatch;
 		if (Action->CharacterImpact.Character.IsNone())
 		{
-			NewAffinityMatch = 1.0f;
+			NewAffinityMatch = 0.5f;
 		}
 		else if (Action->CharacterImpact.Character == Preferences->ProviderName)
 		{

@@ -37,6 +37,8 @@ protected:
 
 	UQuest* CreateRandomQuest();
 
+	UQuest* MutateQuest(UQuest* BaseQuest);
+
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
@@ -49,7 +51,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	bool bEnableConditionMatching = true;
 
-	bool TryApplyNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
+	UPROPERTY(EditAnywhere)
+	int32 IterationsToAbandonLocalMaximum = 500;
+
+	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
+
+	bool TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate, TMap<uint32, bool>& SimulatedConditionResolutions) const;
 
 	UQuestAction* GetRandomQuestAction(UObject* Outer = nullptr) const;
 
@@ -62,6 +69,9 @@ protected:
 	TSet<UQuestProviderComponent*> QuestRequesters;
 
 private:
+	TSoftObjectPtr<UQuest> LocalMaximumQuest;
 	double StartTimestamp;
 	double LastLogTimestamp;
+	int32 IterationsSinceLastGlobalImprovement = 0;
+	int32 IterationsSinceLastLocalImprovement = 0;
 };
