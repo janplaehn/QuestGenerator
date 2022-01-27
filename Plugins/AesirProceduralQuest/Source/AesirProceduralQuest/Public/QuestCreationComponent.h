@@ -68,4 +68,5 @@ protected:
 private:
 	double StartTimestamp;
 	double LastLogTimestamp;
+	int32 IterationsSinceLastImprovement = 0;
 };

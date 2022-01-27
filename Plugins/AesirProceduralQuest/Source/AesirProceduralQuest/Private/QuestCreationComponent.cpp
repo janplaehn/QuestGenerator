@@ -23,6 +23,7 @@ void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* Qu
 {
 	QuestRequesters.Add(QuestProviderComponent);
 	StartTimestamp = LastLogTimestamp = FPlatformTime::Seconds();
+	IterationsSinceLastImprovement = 0;
 }
 
 void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
@@ -39,6 +40,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		for (UQuestProviderComponent* Provider : QuestRequesters)
 		{
+			IterationsSinceLastImprovement++;
 			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
 			UQuest* NewQuest = MutateQuest(OldQuest.Get());
 			if (!IsValid(NewQuest))
@@ -54,13 +56,13 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			else if (OldQuest.IsValid())
 			{
 				OldQuest->MarkPendingKill();
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
-				//UAesirProceduralQuestBPLibrary::DebugLogQuest(this, NewQuest, Provider->GetPreferences());
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()), IterationsSinceLastImprovement);
+				IterationsSinceLastImprovement = 0;
 			}
 			else
 			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)]"), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()));
-				//UAesirProceduralQuestBPLibrary::DebugLogQuest(this, NewQuest, Provider->GetPreferences());
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()), IterationsSinceLastImprovement);
+				IterationsSinceLastImprovement = 0;
 			}
 			Provider->SetQuest(SelectedQuest);
 
