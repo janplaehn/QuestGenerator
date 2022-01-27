@@ -28,7 +28,7 @@ void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* Qu
 
 void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
 {
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("FINAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, QuestProviderComponent->GetQuest().Get(), QuestProviderComponent->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, QuestProviderComponent->GetQuest().Get(),  QuestProviderComponent->GetPreferences()), IterationsSinceLastGlobalImprovement);
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("FINAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, QuestProviderComponent->GetQuest().Get(),  QuestProviderComponent->GetPreferences()), IterationsSinceLastGlobalImprovement);
 	IterationsSinceLastGlobalImprovement = 0;
 	QuestRequesters.Remove(QuestProviderComponent);
 }
@@ -46,10 +46,12 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			IterationsSinceLastLocalImprovement++;
 			TSoftObjectPtr<UQuest> GlobalMaximumQuest = Provider->GetQuest();
 			UQuest* NewQuest;
-			if (IterationsSinceLastLocalImprovement > IterationsToAbandonLocalMaximum)
+			if (IterationsSinceLastLocalImprovement >= IterationsToAbandonLocalMaximum)
 			{
 				LocalMaximumQuest = nullptr;
+				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
 				NewQuest = CreateRandomQuest();
+				IterationsSinceLastLocalImprovement = 0;
 			}
 			else
 			{
@@ -77,12 +79,12 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			UQuest* NewGlobalMaximum = UQuestFitnessUtils::SelectFittest(this, GlobalMaximumQuest.Get(), LocalMaximumQuest.Get(), Provider->GetPreferences());
 			if (NewQuest == NewGlobalMaximum)
 			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewGlobalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastGlobalImprovement);
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastGlobalImprovement);
 				IterationsSinceLastGlobalImprovement = 0;
 			}
 			else if (NewQuest == NewLocalMaximum)
 			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewLocalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastLocalImprovement);
+				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewLocalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastLocalImprovement);
 				IterationsSinceLastLocalImprovement = 0;
 			}
 			Provider->SetQuest(NewGlobalMaximum);
@@ -181,6 +183,10 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 		Quest->AddQuestAction(ActionCandidate);
 		for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 		{
+			//if (Condition->GetName().StartsWith("HasItem") && Condition->bInvertCondition)
+			//{
+			//	int x = 0;
+			//}
 			const uint32 Id = Condition->GetId();
 			SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
 		}

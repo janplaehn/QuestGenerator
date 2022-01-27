@@ -1,8 +1,6 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
-
 #include "HasItemCondition.h"
-
 #include "AesirProceduralQuestBPLibrary.h"
 
 bool UHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
