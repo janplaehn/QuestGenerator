@@ -23,11 +23,13 @@ void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* Qu
 {
 	QuestRequesters.Add(QuestProviderComponent);
 	StartTimestamp = LastLogTimestamp = FPlatformTime::Seconds();
-	IterationsSinceLastImprovement = 0;
+	IterationsSinceLastGlobalImprovement = 0;
 }
 
 void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
 {
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("FINAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, QuestProviderComponent->GetQuest().Get(), QuestProviderComponent->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, QuestProviderComponent->GetQuest().Get(),  QuestProviderComponent->GetPreferences()), IterationsSinceLastGlobalImprovement);
+	IterationsSinceLastGlobalImprovement = 0;
 	QuestRequesters.Remove(QuestProviderComponent);
 }
 
@@ -40,31 +42,50 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	{
 		for (UQuestProviderComponent* Provider : QuestRequesters)
 		{
-			IterationsSinceLastImprovement++;
-			TSoftObjectPtr<UQuest> OldQuest = Provider->GetQuest();
-			UQuest* NewQuest = MutateQuest(OldQuest.Get());
+			IterationsSinceLastGlobalImprovement++;
+			IterationsSinceLastLocalImprovement++;
+			TSoftObjectPtr<UQuest> GlobalMaximumQuest = Provider->GetQuest();
+			UQuest* NewQuest;
+			if (IterationsSinceLastLocalImprovement > IterationsToAbandonLocalMaximum)
+			{
+				LocalMaximumQuest = nullptr;
+				NewQuest = CreateRandomQuest();
+			}
+			else
+			{
+				NewQuest = MutateQuest(LocalMaximumQuest.Get());
+			}
 			if (!IsValid(NewQuest))
 			{
 				continue;
 			}
 			NewQuest->SetProviderData(Provider->GetPreferences());
-			UQuest* SelectedQuest = UQuestFitnessUtils::SelectFittest(this, OldQuest.Get(), NewQuest, Provider->GetPreferences());
-			if (NewQuest != SelectedQuest)
+			UQuest* NewLocalMaximum = UQuestFitnessUtils::SelectFittest(this, LocalMaximumQuest.Get(), NewQuest, Provider->GetPreferences());
+			if (NewQuest != NewLocalMaximum)
 			{
 				NewQuest->MarkPendingKill();
 			}
-			else if (OldQuest.IsValid())
-			{
-				OldQuest->MarkPendingKill();
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()), IterationsSinceLastImprovement);
-				IterationsSinceLastImprovement = 0;
-			}
 			else
 			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, SelectedQuest, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, SelectedQuest, Provider->GetPreferences()), IterationsSinceLastImprovement);
-				IterationsSinceLastImprovement = 0;
+				if (LocalMaximumQuest.IsValid())
+				{
+					LocalMaximumQuest->MarkPendingKill();
+				}
 			}
-			Provider->SetQuest(SelectedQuest);
+			LocalMaximumQuest = NewLocalMaximum;
+
+			UQuest* NewGlobalMaximum = UQuestFitnessUtils::SelectFittest(this, GlobalMaximumQuest.Get(), LocalMaximumQuest.Get(), Provider->GetPreferences());
+			if (NewQuest == NewGlobalMaximum)
+			{
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewGlobalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastGlobalImprovement);
+				IterationsSinceLastGlobalImprovement = 0;
+			}
+			else if (NewQuest == NewLocalMaximum)
+			{
+				UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM | Timestamp: %f | Current Fitness: [%f (Primary)] [%f (Secondary)] after %d iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewLocalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastLocalImprovement);
+				IterationsSinceLastLocalImprovement = 0;
+			}
+			Provider->SetQuest(NewGlobalMaximum);
 
 			// const double LogInterval = 0.001;
 			// if (FPlatformTime::Seconds() - LastLogTimestamp > LogInterval)

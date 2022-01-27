@@ -106,7 +106,7 @@ float UQuestFitnessUtils::CalculateFitnessByAffinity(UQuest* Quest, const UQuest
 		float NewAffinityMatch;
 		if (Action->CharacterImpact.Character.IsNone())
 		{
-			NewAffinityMatch = 1.0f;
+			NewAffinityMatch = 0.5f;
 		}
 		else if (Action->CharacterImpact.Character == Preferences->ProviderName)
 		{

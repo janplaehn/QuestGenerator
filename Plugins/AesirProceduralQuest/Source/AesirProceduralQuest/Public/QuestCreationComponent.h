@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	bool bEnableConditionMatching = true;
 
+	UPROPERTY(EditAnywhere)
+	int32 IterationsToAbandonLocalMaximum = 500;
+
 	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
 
 	bool TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate, TMap<uint32, bool>& SimulatedConditionResolutions) const;
@@ -66,7 +69,9 @@ protected:
 	TSet<UQuestProviderComponent*> QuestRequesters;
 
 private:
+	TSoftObjectPtr<UQuest> LocalMaximumQuest;
 	double StartTimestamp;
 	double LastLogTimestamp;
-	int32 IterationsSinceLastImprovement = 0;
+	int32 IterationsSinceLastGlobalImprovement = 0;
+	int32 IterationsSinceLastLocalImprovement = 0;
 };
