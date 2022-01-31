@@ -3,11 +3,21 @@
 #include "CharacterHasItemCondition.h"
 
 #include "AesirProceduralQuestBPLibrary.h"
+#include "QuestGenerator/WorldState/SimulatedWorldStateComponent.h"
 
 bool UCharacterHasItemCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
-	//Todo: check if world state provides us with item
-	return bInvertCondition;
+	USimulatedWorldStateComponent* WorldStateComponent = USimulatedWorldStateComponent::TryFindWorldStateComponent(WorldContextObject);
+	if (!IsValid(WorldStateComponent))
+	{
+		return bInvertCondition;
+	}
+	FCharacterInventory* CharacterInventory = WorldStateComponent->CharacterHasItemMap.Find(CharacterName);
+	if (CharacterInventory == nullptr)
+	{
+		return bInvertCondition;
+	}
+	return CharacterInventory->Items.Contains(ItemName) != bInvertCondition;
 }
 
 FString UCharacterHasItemCondition::GetPropertyInfo_Implementation() const

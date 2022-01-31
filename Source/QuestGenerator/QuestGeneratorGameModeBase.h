@@ -13,5 +13,4 @@ UCLASS()
 class QUESTGENERATOR_API AQuestGeneratorGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };
