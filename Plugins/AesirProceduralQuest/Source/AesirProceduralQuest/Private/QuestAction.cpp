@@ -66,6 +66,12 @@ bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<u
 {
 	for (UQuestCondition* Condition : PreConditions)
 	{
+
+		if (Condition->GetName().StartsWith("HasItem") && Condition->bInvertCondition)
+		{
+			int x = 0;
+		}
+		
 		const uint32 Id = Condition->GetId();
 		bool* FoundResolution = SimulatedConditionResolutions.Find(Id);
 
