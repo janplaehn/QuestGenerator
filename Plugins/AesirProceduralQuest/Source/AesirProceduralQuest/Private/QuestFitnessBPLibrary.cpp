@@ -34,7 +34,8 @@ float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextOb
 	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
 	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
 	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
-	return FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
+	const float FitnessByDuplicates = Quest->GetFitnessByDuplicates() * Preferences->FitnessWeights.DuplicateWeight;
+	return FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity + FitnessByDuplicates;
 }
 
 float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
@@ -149,4 +150,24 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 		AverageConditionMatchup += UAesirProceduralQuestBPLibrary::GetActionListSimilarity(PreviousAction->GetPostConditions(), NextAction->GetPreConditions());
 	}
 	return AverageConditionMatchup / ConnectionCount;
+}
+
+float UQuestFitnessUtils::CalculateFitnessByDuplicates(UQuest* Quest)
+{
+	if (!IsValid(Quest))
+	{
+		return 0.0f;
+	}
+	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	TSet<uint32> Ids;
+	for (const UQuestAction* Action : Actions)
+	{
+		uint32 Id = Action->GetId();
+		if (Ids.Contains(Id))
+		{
+			return 0.0f;
+		}
+		Ids.Add(Id);
+	}
+	return 1.0f;
 }

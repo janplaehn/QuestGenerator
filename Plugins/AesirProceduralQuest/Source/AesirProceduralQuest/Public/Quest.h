@@ -35,7 +35,9 @@ public:
 	float GetFitnessByAffinity();
 
 	void SetProviderData(UQuestProviderPreferences* Data);
-	
+
+	float GetFitnessByDuplicates();
+
 protected:
 	UPROPERTY(Transient)
 	TArray<const UQuestAction*> Actions;
@@ -48,4 +50,5 @@ private:
 	float CachedFitnessByConditions = -1;
 	float CachedFitnessByIntentionality = -1;
 	float CachedFitnessByAffinity = -1;
+	float CachedFitnessByDuplicates = -1;
 };

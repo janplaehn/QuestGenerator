@@ -85,3 +85,12 @@ void UQuest::SetProviderData(UQuestProviderPreferences* Data)
 {
 	ProviderData = Data;
 }
+
+float UQuest::GetFitnessByDuplicates()
+{
+	if (CachedFitnessByDuplicates == -1)
+	{
+		CachedFitnessByDuplicates = UQuestFitnessUtils::CalculateFitnessByDuplicates(this);
+	}
+	return CachedFitnessByDuplicates;
+}

@@ -38,6 +38,7 @@ void UQuestAction::InjectParameters()
 		Condition->InjectParameters(Parameters);
 	}
 	ReadableDescription = MakeFormattedHumanReadableName();
+	GenerateId();
 }
 
 uint32 UQuestAction::GetPossibleInstanceCount() const
@@ -72,8 +73,8 @@ bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<u
 			int x = 0;
 		}
 		
-		const uint32 Id = Condition->GetId();
-		bool* FoundResolution = SimulatedConditionResolutions.Find(Id);
+		const uint32 ConditionId = Condition->GetId();
+		bool* FoundResolution = SimulatedConditionResolutions.Find(ConditionId);
 
 		if (FoundResolution != nullptr)
 		{
@@ -120,6 +121,12 @@ FText UQuestAction::GetDescription() const
 	return ReadableDescription;
 }
 
+uint32 UQuestAction::GetId() const
+{
+	const FString DescriptionString = MakeFormattedHumanReadableName().ToString();
+	return TextKeyUtil::HashString(DescriptionString);
+}
+
 FText UQuestAction::MakeFormattedHumanReadableName() const
 {
 	FText OutText = ReadableDescription;
@@ -130,4 +137,11 @@ FText UQuestAction::MakeFormattedHumanReadableName() const
 		OutText = FText::FormatNamed(OutText, *ParameterName, ValueAsName);
 	}
 	return OutText;	
+}
+
+void UQuestAction::GenerateId()
+{
+	Id = GetTypeHash(GetClass());
+	const FString DescriptionString = MakeFormattedHumanReadableName().ToString();
+	HashCombine(Id, TextKeyUtil::HashString(DescriptionString));
 }

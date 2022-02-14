@@ -183,7 +183,7 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 		Quest->AddQuestAction(ActionCandidate);
 		for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 		{
-			if (Condition->GetName().StartsWith("HasItem") && Condition->bInvertCondition)
+			if (Condition->GetName().StartsWith("HasItem") && !Condition->bInvertCondition)
 			{
 				int x = 0;
 			}
@@ -207,7 +207,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestActio
 	for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 	{
 		const uint32 Id = Condition->GetId();
-		SimulatedConditionResolutions.FindOrAdd(Id, !Condition->bInvertCondition);
+		SimulatedConditionResolutions.Add(Id, !Condition->bInvertCondition);
 	}
 	return true;
 }

@@ -60,6 +60,7 @@ void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextOb
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("QuestLabel Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByTags(Quest, Preferences));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Intentionality Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByIntentionality(Quest));
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("Affinity Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByAffinity(Quest, Preferences));
+	UE_LOG(LogProceduralQuests, Verbose, TEXT("Duplicate Fitness : %f"), UQuestFitnessUtils::CalculateFitnessByDuplicates(Quest));
 	DebugLogAction(Quest);
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("----END LOGGING QUEST----"));
 }

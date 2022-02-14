@@ -24,5 +24,6 @@ public:
 	static float CalculateFitnessByAffinity(UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
 	static float CalculateFitnessByIntentionality(const UQuest* Quest);
-	
+
+	static float CalculateFitnessByDuplicates(UQuest* Quest);
 };

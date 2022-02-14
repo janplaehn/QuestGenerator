@@ -22,7 +22,7 @@ public:
 	UQuestAction* MakeRandomInstance(UObject* Outer) const;
 
 	UQuestAction* DuplicateInstance(UObject* Outer) const;
-	
+
 	virtual void InitializeAsInstance();
 
 	virtual void InjectParameters();
@@ -46,6 +46,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FCharacterAffinity CharacterImpact;
+
+	uint32 GetId() const;
 	
 protected:
 	FText MakeFormattedHumanReadableName() const;
@@ -62,5 +64,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<UQuestParameter*> Parameters;
+
+	void GenerateId();
+
+	uint32 Id = 0;
 };
  
