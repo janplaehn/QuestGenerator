@@ -86,6 +86,11 @@ void UQuest::SetProviderData(UQuestProviderPreferences* Data)
 	ProviderData = Data;
 }
 
+UQuestProviderPreferences* UQuest::GetProviderData() const
+{
+	return ProviderData;
+}
+
 float UQuest::GetFitnessByDuplicates()
 {
 	if (CachedFitnessByDuplicates == -1)

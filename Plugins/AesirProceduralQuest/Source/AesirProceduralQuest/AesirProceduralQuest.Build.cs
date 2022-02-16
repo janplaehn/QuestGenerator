@@ -26,6 +26,8 @@ public class AesirProceduralQuest : ModuleRules
 			new string[]
 			{
 				"Core",
+				"OpenAIAPI"
+				
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -41,7 +43,8 @@ public class AesirProceduralQuest : ModuleRules
 				"UnrealEd",
 				"Blutility",
 				"UMG",
-				"UMGEditor"
+				"UMGEditor",
+				"OpenAIAPI"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

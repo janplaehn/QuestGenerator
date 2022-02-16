@@ -83,14 +83,14 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 
 	IndentationString.Append("    ");
 
-	for (const UQuestCondition* QuestCondition : Action->GetPreConditions())
-	{
-		DebugLogCondition("Pre", QuestCondition, Indentation + 1);
-	}
-	for (const UQuestCondition* QuestCondition : Action->GetPostConditions())
-	{
-		DebugLogCondition("Post", QuestCondition, Indentation + 1);
-	}
+	// for (const UQuestCondition* QuestCondition : Action->GetPreConditions())
+	// {
+	// 	DebugLogCondition("Pre", QuestCondition, Indentation + 1);
+	// }
+	// for (const UQuestCondition* QuestCondition : Action->GetPostConditions())
+	// {
+	// 	DebugLogCondition("Post", QuestCondition, Indentation + 1);
+	// }
 	
 	const UQuest* Quest = Cast<UQuest>(Action);
 	if (IsValid(Quest))
@@ -110,5 +110,33 @@ void UAesirProceduralQuestBPLibrary::DebugLogCondition(const FString Prefix, con
 		IndentationString.Append("    ");	
 	}
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("%s%sCondition '%s' (%s)"), *IndentationString, *Prefix, *Condition->GetName(), *Condition->GetPropertyInfo());
+}
+
+
+FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
+{
+	FString OutString;
+	OutString += "Describe the following game-quest. Do not use bullet points.";
+	OutString += Quest->GetProviderData()->ProviderName.ToString();
+	OutString += ":";
+	OutString += LINE_TERMINATOR;
+
+	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	
+	for (int I = 0; I < Actions.Num(); I++)
+	{
+		OutString += LINE_TERMINATOR;
+		OutString += FString::Printf(TEXT("%d"),I) + ". ";
+		OutString += Actions[I]->GetDescription().ToString();
+	}
+	return OutString;
+}
+
+void UAesirProceduralQuestBPLibrary::LogOpenAiResponses(const TArray<FCompletion> Completions)
+{
+	for (const FCompletion& Completion: Completions)
+	{
+		UE_LOG(LogProceduralQuests, Verbose, TEXT("OpenAI completion received: '%s'"), *Completion.text);
+	}
 }
 

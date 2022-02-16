@@ -4,6 +4,7 @@
 
 #include "QuestCondition.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "OpenAIDefinitions.h"
 #include "AesirProceduralQuestBPLibrary.generated.h"
 
 class UQuestProviderPreferences;
@@ -31,6 +32,12 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 	static void DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation = 0);
 	
 	static void InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters);
+
+	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
+	static FString CreateOpenAiPrompt(const UQuest* Quest);
+
+	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
+	static void LogOpenAiResponses(const TArray<FCompletion> Completions);
 	
 	template <class T>
 	static float GetListSimilarity(const TArray<T> SetA, const TArray<T> SetB)

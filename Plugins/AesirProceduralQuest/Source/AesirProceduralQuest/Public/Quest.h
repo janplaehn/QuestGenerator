@@ -36,6 +36,8 @@ public:
 
 	void SetProviderData(UQuestProviderPreferences* Data);
 
+	UQuestProviderPreferences* GetProviderData() const;
+
 	float GetFitnessByDuplicates();
 
 protected:

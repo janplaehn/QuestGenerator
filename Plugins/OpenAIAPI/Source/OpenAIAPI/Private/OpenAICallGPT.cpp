@@ -63,7 +63,7 @@ void UOpenAICallGPT::Activate()
 	switch (engine)
 	{
 	case EOAEngineType::DAVINCI:
-			apiMethod = "davinci";
+			apiMethod = "text-davinci-001";
 	break;
 	case EOAEngineType::CURIE:
 			apiMethod = "curie";

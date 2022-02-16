@@ -2,9 +2,11 @@
 
 #include "QuestProviderComponent.h"
 #include "AesirProceduralQuestBPLibrary.h"
+#include "OpenAICallGPT.h"
 #include "QuestCreator.h"
 #include "QuestDataCreationComponent.h"
 #include "GameFramework/GameModeBase.h"
+#include "OpenAIUtils.h"
 
 UQuestProviderComponent::UQuestProviderComponent()
 {
@@ -112,6 +114,7 @@ bool UQuestProviderComponent::PauseAsyncQuestGeneration()
 	}	
 	QuestCreator->PauseQuestGeneration(this);		
 	UAesirProceduralQuestBPLibrary::DebugLogQuest(this, Quest.Get(), Preferences);
-
+	UOpenAIUtils::setOpenAIApiKey("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");
+	UE_LOG(LogTemp, Verbose, TEXT("Sending OpenAI Prompt %s"), *UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(Quest.Get()));
 	return true;
 }
