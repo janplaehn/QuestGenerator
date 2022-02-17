@@ -136,6 +136,7 @@ void UAesirProceduralQuestBPLibrary::LogOpenAiResponses(const TArray<FCompletion
 {
 	for (const FCompletion& Completion: Completions)
 	{
+		FString Output = Completion.text.Replace(TEXT("\r"),TEXT("")).Replace(TEXT("\n"),TEXT(""));	
 		UE_LOG(LogProceduralQuests, Verbose, TEXT("OpenAI completion received: '%s'"), *Completion.text);
 	}
 }
