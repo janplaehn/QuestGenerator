@@ -133,7 +133,7 @@ FText UQuestAction::MakeFormattedHumanReadableName() const
 	for (UQuestParameter* Parameter : Parameters)
 	{
 		FString ParameterName = Parameter->GetParameterName().ToString();
-		FText ValueAsName =  FText::FromName(Parameter->GetValueAsName());
+		FText ValueAsName = FText::FromName(Parameter->GetValueAsName());
 		OutText = FText::FormatNamed(OutText, *ParameterName, ValueAsName);
 	}
 	return OutText;	

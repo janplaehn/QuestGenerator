@@ -26,10 +26,10 @@ public:
 	UQuestProviderPreferences* GetPreferences() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetQuest(const UQuest* NewQuest);
+	void SetQuest(UQuest* NewQuest);
 
 	UFUNCTION(BlueprintCallable)
-	TSoftObjectPtr<UQuest> GetQuest() const;
+	UQuest* GetQuest() const;
 
 protected:
 	UFUNCTION(BlueprintCallable)
@@ -39,7 +39,7 @@ protected:
 	bool PauseAsyncQuestGeneration();
 
 	UPROPERTY(Transient)
-	TSoftObjectPtr<UQuest> Quest;
+	TWeakObjectPtr<UQuest> Quest;
 	
 	UPROPERTY(EditAnywhere)
 	FText Name = FText::FromString("GenericQuestProvider");

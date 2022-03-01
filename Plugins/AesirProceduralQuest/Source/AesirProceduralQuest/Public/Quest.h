@@ -40,6 +40,8 @@ public:
 
 	float GetFitnessByDuplicates();
 
+	float DebugFitness = 0;
+
 protected:
 	UPROPERTY(Transient)
 	TArray<const UQuestAction*> Actions;

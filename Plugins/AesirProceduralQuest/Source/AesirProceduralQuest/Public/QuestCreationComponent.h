@@ -39,6 +39,12 @@ protected:
 
 	UQuest* MutateQuest(UQuest* BaseQuest);
 
+	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest);
+
+	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest);
+
+	UQuest* MutateQuestByChangingSize(UQuest* BaseQuest);
+
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
@@ -69,7 +75,7 @@ protected:
 	TSet<UQuestProviderComponent*> QuestRequesters;
 
 private:
-	TSoftObjectPtr<UQuest> LocalMaximumQuest;
+	TWeakObjectPtr<UQuest> LocalMaximumQuest;
 	double StartTimestamp;
 	double LastLogTimestamp;
 	int32 IterationsSinceLastGlobalImprovement = 0;
