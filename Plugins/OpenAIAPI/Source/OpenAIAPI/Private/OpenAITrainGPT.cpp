@@ -125,7 +125,7 @@ void UOpenAITrainGPT::OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Respo
 			return;
 		}
 
-		Finished.Broadcast(*responseObject->GetStringField("fine_tuned_model"), "", true);
+		Finished.Broadcast(*responseObject->GetStringField("fine-tune"), "", true);
 	}
 }
 
