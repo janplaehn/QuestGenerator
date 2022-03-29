@@ -41,12 +41,16 @@
 *.VC.db
 *.VC.opendb
 
+**/.idea
+.idea/
+
 # Precompiled Assets
 SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
 Binaries/*
+**/Binaries
 Plugins/*/Binaries/*
 
 # Builds
@@ -69,8 +73,13 @@ Saved/*
 # Compiled source files for the engine to use
 Intermediate/*
 Plugins/*/Intermediate/*
+**/Intermediate
 
 # Cache files for the editor to use
 DerivedDataCache/*
 
 .idea/.idea.QuestGenerator/.idea/
+
+Plugins/Developer/RiderLink/Binaries/
+
+Plugins/Developer/RiderLink/Intermediate/
