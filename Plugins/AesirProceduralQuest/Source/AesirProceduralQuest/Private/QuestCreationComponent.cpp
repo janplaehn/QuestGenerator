@@ -118,7 +118,7 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
 		return nullptr;
 
-	TMap<uint32, bool> SimulatedConditionResolutions;
+	TMap<uint32, uint32> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
 	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
@@ -160,7 +160,7 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
 	
 	const int MutatedActionIndex = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 
-	TMap<uint32, bool> SimulatedConditionResolutions;
+	TMap<uint32, uint32> SimulatedConditionResolutions;
 
 	//Initialize first few actions just as they were
 	for (int ActionIndex = 0; ActionIndex < MutatedActionIndex; ActionIndex++)
@@ -209,7 +209,7 @@ UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQues
     const int SwapIndexA = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 	const int SwapIndexB = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
    
-    TMap<uint32, bool> SimulatedConditionResolutions;
+    TMap<uint32, uint32> SimulatedConditionResolutions;
    
     //Initialize first few actions just as they were
     for (int ActionIndex = 0; ActionIndex < BaseQuest->GetActions().Num(); ActionIndex++)
@@ -242,7 +242,7 @@ UQuest* UQuestCreationComponent::MutateQuestByChangingSize(UQuest* BaseQuest)
     
 	const int NewSize = FMath::RandRange(QuestActionCountRange.GetLowerBoundValue(), QuestActionCountRange.GetUpperBoundValue());
    
-	TMap<uint32, bool> SimulatedConditionResolutions;
+	TMap<uint32, uint32> SimulatedConditionResolutions;
    
 	//Initialize first few actions just as they were
 	for (int ActionIndex = 0; ActionIndex < NewSize; ActionIndex++)
@@ -272,7 +272,7 @@ UQuest* UQuestCreationComponent::MutateQuestByChangingSize(UQuest* BaseQuest)
 	return NewQuest;
 }
 
-bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const
+bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
@@ -300,7 +300,7 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 }
 
 bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate,
-	TMap<uint32, bool>& SimulatedConditionResolutions) const
+	TMap<uint32, uint32>& SimulatedConditionResolutions) const
 {
 	if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 	{
@@ -311,7 +311,24 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestActio
 	for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 	{
 		const uint32 Id = Condition->GetId();
-		SimulatedConditionResolutions.Add(Id, !Condition->bInvertCondition);
+		uint32 Resolution = 0;
+
+		switch (Condition->GetConditionType())
+		{
+			default:
+			case EConditionType::Boolean:
+				{
+					Resolution = Condition->bInvertCondition ? false : true;
+					break;
+				}
+			case EConditionType::State:
+				{
+					Resolution = Condition->GetStateId();
+					break;
+				}
+		}
+		
+		SimulatedConditionResolutions.Add(Id, Resolution);
 	}
 	return true;
 }

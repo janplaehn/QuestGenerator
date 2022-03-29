@@ -31,7 +31,7 @@ public:
 	
 	virtual bool IsAvailable(const UObject* WorldContextObject) const;
 
-	virtual bool SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, bool> SimulatedConditionResolutions) const;
+	virtual bool SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, uint32> SimulatedConditionResolutions) const;
 
 	virtual bool IsResolved(const UObject* WorldContextObject) const;
 

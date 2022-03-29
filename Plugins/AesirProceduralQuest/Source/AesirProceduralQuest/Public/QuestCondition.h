@@ -7,6 +7,13 @@
 #include "UObject/Object.h"
 #include "QuestCondition.generated.h"
 
+UENUM()
+enum EConditionType
+{
+	Boolean	UMETA(DisplayName = "Boolean"),
+	State	UMETA(DisplayName = "State")
+};
+
 /**
  * 
  */
@@ -35,16 +42,24 @@ public:
 	bool bMatchWithConditionHistory = true;
 
 	uint32 GetId() const;
+	uint32 GetStateId() const;
 
-	bool SimulateIsAvailable(const bool bWasPreviouslyResolved) const;
+	bool SimulateIsAvailable(const uint32 Resolution) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	FString GetPropertyInfo() const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
+	EConditionType GetConditionType() const;
+
 protected:
 	virtual uint32 GenerateId() const;
+	virtual uint32 GenerateStateId() const;
 
 private:
 	UPROPERTY(VisibleAnywhere)
 	uint32 ConditionId;
+
+	UPROPERTY(VisibleAnywhere)
+	uint32 StateId;
 };
