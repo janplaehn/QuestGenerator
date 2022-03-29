@@ -81,7 +81,27 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 		int IntersectionNum = 0;
 		for (const UQuestCondition* Element : A)
 		{
-			if(B.ContainsByPredicate([Element](UQuestCondition* Condition){ return Element->GetId() == Condition->GetId();}))
+			if(B.ContainsByPredicate([Element](UQuestCondition* Condition)
+			{
+				if (Element->GetId() != Condition->GetId())
+				{
+					return false;
+				}
+
+				if (Element->bInvertCondition != Condition->bInvertCondition)
+				{
+					return false;
+				}
+				
+				switch (Element->GetConditionType())
+				{
+					default:
+					case EConditionType::Boolean:
+						return true;
+					case EConditionType::State:
+						return Element->GetStateId() == Condition->GetStateId();
+				}
+			}))
 			{
 				IntersectionNum++;
 			}

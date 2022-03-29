@@ -72,6 +72,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			if (NewQuest != NewLocalMaximum)
 			{
 				NewQuest->MarkPendingKill();
+				NewQuest->MarkPackageDirty();
 			}
 			else
 			{
@@ -126,6 +127,7 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
 			RandomQuest->MarkPendingKill();
+			RandomQuest->MarkPackageDirty();
 			return nullptr;
 		}
 	}
@@ -135,19 +137,19 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 
 UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest)
 {
-	int MutationIndex = FMath::RandRange(0,2);
+	int MutationIndex = FMath::RandRange(0,1);
 	if (MutationIndex == 0)
 	{
 		return MutateQuestByReplaceAction(BaseQuest);
 	}
-	else if (MutationIndex == 1)
+	else //if (MutationIndex == 1)
 	{
 		return MutateQuestByScramblingActions(BaseQuest);
 	}
-	else
-	{
-		return MutateQuestByChangingSize(BaseQuest);
-	}
+	// else
+	// {
+	// 	return MutateQuestByChangingSize(BaseQuest);
+	// }
 }
 
 UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
@@ -167,6 +169,7 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
 	{
 		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
 		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+		DuplicateAction->InitializeAsInstance();
 		TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions);
 	}
 
@@ -185,12 +188,16 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
 	for (int ActionIndex = MutatedActionIndex+1; ActionIndex < BaseQuest->GetActions().Num(); ActionIndex++)
 	{
 		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
-		if (TryApplyNextQuestAction(NewQuest, DuplicateObject(BaseAction, NewQuest), SimulatedConditionResolutions))
+		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+		DuplicateAction->InitializeAsInstance();
+		if (TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions))
 		{
 			continue;
 		}
 		if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
 		{
+			DuplicateAction->MarkPendingKill();
+			DuplicateAction->MarkPackageDirty();
 			return nullptr;
 		}
 	}
@@ -219,6 +226,7 @@ UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQues
     		ActionIndex == SwapIndexB ? BaseQuest->GetActions()[SwapIndexA] :   	
     		BaseQuest->GetActions()[ActionIndex];
     	UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+    	DuplicateAction->InitializeAsInstance();
     	if (TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions))
     	{
     		continue;
@@ -281,9 +289,9 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 		if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
 			ActionCandidate->MarkPendingKill();
+			ActionCandidate->MarkPackageDirty();
 			continue;
 		}
-		
 		Quest->AddQuestAction(ActionCandidate);
 		for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 		{
@@ -306,7 +314,7 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestActio
 	{
 		return false;
 	}
-		
+
 	Quest->AddQuestAction(ActionCandidate);
 	for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
 	{

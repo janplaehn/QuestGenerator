@@ -61,4 +61,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<FName, FCharacterInventory> CharacterHasItemMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TMap<FName, FName> CharacterIsAtLocationMap;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TMap<FName, FName> ItemIsAtLocationMap;
 };

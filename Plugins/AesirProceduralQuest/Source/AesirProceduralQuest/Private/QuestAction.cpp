@@ -6,9 +6,9 @@
 
 UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 {
-	UQuestAction* DuplicateAction = DuplicateObject(this, Outer);
-	DuplicateAction->InitializeAsInstance();
-	return DuplicateAction;
+	UQuestAction* RandomInstance = DuplicateObject(this, Outer);
+	RandomInstance->InitializeAsInstance();
+	return RandomInstance;
 }
 
 UQuestAction* UQuestAction::DuplicateInstance(UObject* Outer) const
