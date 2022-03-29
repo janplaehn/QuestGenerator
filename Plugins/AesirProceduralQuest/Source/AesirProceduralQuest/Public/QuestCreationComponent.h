@@ -60,9 +60,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int32 IterationsToAbandonLocalMaximum = 500;
 
-	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, bool>& SimulatedConditionResolutions) const;
+	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
-	bool TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate, TMap<uint32, bool>& SimulatedConditionResolutions) const;
+	bool TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
 	UQuestAction* GetRandomQuestAction(UObject* Outer = nullptr) const;
 

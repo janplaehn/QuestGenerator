@@ -63,7 +63,7 @@ bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
 	return true;
 }
 
-bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, bool> SimulatedConditionResolutions) const
+bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<uint32, uint32> SimulatedConditionResolutions) const
 {
 	for (UQuestCondition* Condition : PreConditions)
 	{
@@ -74,7 +74,7 @@ bool UQuestAction::SimulateIsAvailable(const UObject* WorldContextObject, TMap<u
 		}
 		
 		const uint32 ConditionId = Condition->GetId();
-		bool* FoundResolution = SimulatedConditionResolutions.Find(ConditionId);
+		uint32* FoundResolution = SimulatedConditionResolutions.Find(ConditionId);
 
 		if (FoundResolution != nullptr)
 		{
