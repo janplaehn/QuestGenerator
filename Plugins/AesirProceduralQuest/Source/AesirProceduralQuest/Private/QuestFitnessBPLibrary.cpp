@@ -9,6 +9,22 @@ UQuestFitnessUtils::UQuestFitnessUtils()
 {
 }
 
+UQuest* UQuestFitnessUtils::SelectSimulatedAnnealingFittest(const UObject* WorldContextObject, UQuest* QuestA,
+	UQuest* QuestB, const UQuestProviderPreferences* Preferences)
+{
+	UQuest* Fittest = SelectFittest(WorldContextObject, QuestA, QuestB, Preferences);
+	if (Fittest == QuestB)
+	{
+		return QuestB;
+	}
+	const float Random = FMath::Pow(FMath::FRand(), 32);
+	if (Random > CalculateWeightedFitness(WorldContextObject, QuestA, Preferences))
+	{
+		return QuestB;
+	}
+	return QuestA;
+}
+
 UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences)
 {
 	// const float ConditionFitnessA = !IsValid(QuestA) ? 0.0f : QuestA->GetFitnessByConditions(WorldContextObject);
@@ -30,11 +46,20 @@ float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextOb
 	{
 		return 0.0f;
 	}
+	if (Quest->GetActions().Num() == 0)
+	{
+		return 0.0f;
+	}
 	const float FitnessByTags = Quest->GetFitnessByTags() * Preferences->FitnessWeights.TagWeight;
 	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
 	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
 	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
 	const float FitnessByDuplicates = Quest->GetFitnessByDuplicates() * Preferences->FitnessWeights.DuplicateWeight;
+	Quest->DebugFitness = FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity + FitnessByDuplicates;
+	if (!ensure(!FMath::IsNaN(Quest->DebugFitness)))
+	{
+		return 0.0f;
+	}
 	return FitnessByTags + FitnessByConditions + FitnessByIntentionality + FitnessByAffinity + FitnessByDuplicates;
 }
 
@@ -142,6 +167,10 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 	
 	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
 	const int ConnectionCount = Actions.Num() - 1;
+	if (ConnectionCount <= 0)
+	{
+		return 0.0f;
+	}
 	float AverageConditionMatchup = 0;
 	for (int ActionIndex = 0; ActionIndex < ConnectionCount; ActionIndex++)
 	{

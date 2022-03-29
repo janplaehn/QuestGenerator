@@ -19,6 +19,15 @@ enum class EOAEngineType : uint8
 
 };
 
+UENUM(BlueprintType)
+enum class EOAPurposeType : uint8
+{
+	SEARCH = 0,
+	ANSWERS = 1,
+	CLASSIFICATIONS = 2,
+	FINE_TUNE = 3
+};
+
 
 USTRUCT(BlueprintType)
 struct FCompletionInfo

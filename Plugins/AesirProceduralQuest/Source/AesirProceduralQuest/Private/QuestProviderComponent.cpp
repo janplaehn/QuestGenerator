@@ -7,6 +7,7 @@
 #include "QuestDataCreationComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "OpenAIUtils.h"
+#include "QuestFitnessBPLibrary.h"
 
 UQuestProviderComponent::UQuestProviderComponent()
 {
@@ -52,14 +53,18 @@ UQuestProviderPreferences* UQuestProviderComponent::GetPreferences() const
 	return Preferences;
 }
 
-void UQuestProviderComponent::SetQuest(const UQuest* NewQuest)
+void UQuestProviderComponent::SetQuest(UQuest* NewQuest)
 {
+	if (UQuestFitnessUtils::CalculateWeightedFitness(this, NewQuest, GetPreferences()) < UQuestFitnessUtils::CalculateWeightedFitness(this, Quest.Get(), GetPreferences()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("SOMETHING IS WRONG!"));			
+	}
 	Quest = NewQuest;
 }
 
-TSoftObjectPtr<UQuest> UQuestProviderComponent::GetQuest() const
+UQuest* UQuestProviderComponent::GetQuest() const
 {
-	return Quest;
+	return Quest.Get();
 }
 
 bool UQuestProviderComponent::RequestAsyncQuestGeneration() //Todo: Provide functions that just get the IQuestCreator Interface!

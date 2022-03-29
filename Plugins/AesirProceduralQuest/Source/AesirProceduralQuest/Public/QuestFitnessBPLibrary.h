@@ -13,6 +13,8 @@ class AESIRPROCEDURALQUEST_API UQuestFitnessUtils
 public:
 	UQuestFitnessUtils();
 	
+	static UQuest* SelectSimulatedAnnealingFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences);
+	
 	static UQuest* SelectFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences);
 	
 	static float CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
