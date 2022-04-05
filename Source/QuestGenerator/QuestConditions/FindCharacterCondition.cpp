@@ -18,7 +18,17 @@ FString UFindCharacterCondition::GetPropertyInfo_Implementation() const
 
 uint32 UFindCharacterCondition::GenerateId() const
 {
-	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
+	return GetTypeHash(GetClass());
+}
+
+uint32 UFindCharacterCondition::GenerateStateId() const
+{
+	return TextKeyUtil::HashString(CharacterName.ToString());
+}
+
+EConditionType UFindCharacterCondition::GetConditionType_Implementation() const
+{
+	return EConditionType::State;
 }
 
 void UFindCharacterCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)

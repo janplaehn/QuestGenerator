@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "QuestCondition.h"
-#include "FindCharacterCondition.generated.h"
+#include "CharacterIsAtLocationCondition.generated.h"
 
 /**
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class QUESTGENERATOR_API UFindCharacterCondition : public UQuestCondition
+class QUESTGENERATOR_API UCharacterIsAtLocationCondition : public UQuestCondition
 {
 	GENERATED_BODY()
 public:
@@ -28,5 +28,8 @@ public:
 	
 protected:
 	UPROPERTY(EditAnywhere)
-	FName  CharacterName;
+	FName CharacterName;
+	
+	UPROPERTY(EditAnywhere)
+	FName LocationName;
 };
