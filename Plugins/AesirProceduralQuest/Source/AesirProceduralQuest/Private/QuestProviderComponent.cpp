@@ -43,11 +43,10 @@ bool UQuestProviderComponent::TryGetQuestData(FQuestData& OutQuestData) const
 
 UQuestProviderPreferences* UQuestProviderComponent::GetPreferences() const
 {
-	const float FitnessWeightSum = Preferences->FitnessWeights.AffinityWeight + Preferences->FitnessWeights.ConditionWeight + Preferences->FitnessWeights.IntentionalityWeight + + Preferences->FitnessWeights.DuplicateWeight;
+	const float FitnessWeightSum = Preferences->FitnessWeights.AffinityWeight + Preferences->FitnessWeights.ConditionWeight + Preferences->FitnessWeights.IntentionalityWeight;
 	Preferences->FitnessWeights.AffinityWeight /= FitnessWeightSum;
 	Preferences->FitnessWeights.ConditionWeight /= FitnessWeightSum;
 	Preferences->FitnessWeights.IntentionalityWeight /= FitnessWeightSum;
-	Preferences->FitnessWeights.DuplicateWeight /= FitnessWeightSum;
 
 	return Preferences;
 }

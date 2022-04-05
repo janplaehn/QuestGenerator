@@ -53,13 +53,12 @@ float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextOb
 	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
 	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
 	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
-	const float FitnessByDuplicates = Quest->GetFitnessByDuplicates() * Preferences->FitnessWeights.DuplicateWeight;
-	Quest->DebugFitness = FitnessByConditions + FitnessByIntentionality + FitnessByAffinity + FitnessByDuplicates;
+	Quest->DebugFitness = FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 	if (!ensure(!FMath::IsNaN(Quest->DebugFitness)))
 	{
 		return 0.0f;
 	}
-	return FitnessByConditions + FitnessByIntentionality + FitnessByAffinity + FitnessByDuplicates;
+	return FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 }
 
 float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
@@ -159,28 +158,8 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 	{
 		const TArray<UQuestCondition*>& PreviousConditions = Actions[ActionIndex]->GetPostConditions();
 		const TArray<UQuestCondition*>& NextConditions =  ActionIndex < Actions.Num() - 1 ? Actions[ActionIndex+1]->GetPreConditions() : Quest->GetProviderData()->DesiredConditions.Array();
-		AverageConditionMatchup += UAesirProceduralQuestBPLibrary::GetActionListSimilarity(PreviousConditions, NextConditions);
+		AverageConditionMatchup += FMath::Sign(UAesirProceduralQuestBPLibrary::GetActionListSimilarity(PreviousConditions, NextConditions));
 	}
 	
 	return AverageConditionMatchup / Actions.Num();
-}
-
-float UQuestFitnessUtils::CalculateFitnessByDuplicates(UQuest* Quest)
-{
-	if (!IsValid(Quest))
-	{
-		return 0.0f;
-	}
-	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
-	TSet<uint32> Ids;
-	for (const UQuestAction* Action : Actions)
-	{
-		uint32 Id = Action->GetId();
-		if (Ids.Contains(Id))
-		{
-			return 0.0f;
-		}
-		Ids.Add(Id);
-	}
-	return 1.0f;
 }

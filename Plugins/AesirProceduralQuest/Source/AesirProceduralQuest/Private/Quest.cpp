@@ -81,12 +81,3 @@ UQuestProviderPreferences* UQuest::GetProviderData() const
 {
 	return ProviderData;
 }
-
-float UQuest::GetFitnessByDuplicates()
-{
-	if (CachedFitnessByDuplicates == -1)
-	{
-		CachedFitnessByDuplicates = UQuestFitnessUtils::CalculateFitnessByDuplicates(this);
-	}
-	return CachedFitnessByDuplicates;
-}

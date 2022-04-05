@@ -51,5 +51,4 @@ private:
 	float CachedFitnessByConditions = -1;
 	float CachedFitnessByIntentionality = -1;
 	float CachedFitnessByAffinity = -1;
-	float CachedFitnessByDuplicates = -1;
 };

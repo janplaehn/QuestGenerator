@@ -26,9 +26,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
 	float AffinityWeight = 0.5f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
-	float DuplicateWeight = 0.5f;
 };
 
 /**

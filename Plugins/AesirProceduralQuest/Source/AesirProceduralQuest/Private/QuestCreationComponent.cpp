@@ -284,24 +284,14 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
 		UQuestAction* ActionCandidate = GetRandomQuestAction(Quest);
+
+		if (TryApplyNextQuestAction(Quest, ActionCandidate, SimulatedConditionResolutions))
+		{
+			return true;
+		}
 		
-		if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
-		{
-			ActionCandidate->ConditionalBeginDestroy();
-			ActionCandidate = nullptr;
-			continue;
-		}
-		Quest->AddQuestAction(ActionCandidate);
-		for (const UQuestCondition* Condition : ActionCandidate->GetPostConditions())
-		{
-			if (Condition->GetName().StartsWith("HasItem") && !Condition->bInvertCondition)
-			{
-				int x = 0;
-			}
-			const uint32 Id = Condition->GetId();
-			SimulatedConditionResolutions.Add(Id, !Condition->bInvertCondition);
-		}
-		return true;
+		ActionCandidate->ConditionalBeginDestroy();
+		ActionCandidate = nullptr;
 	}
 	return false;
 }
@@ -310,6 +300,11 @@ bool UQuestCreationComponent::TryApplyNextQuestAction(UQuest* Quest, UQuestActio
 	TMap<uint32, uint32>& SimulatedConditionResolutions) const
 {
 	if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
+	{
+		return false;
+	}
+
+	if (Quest->GetActions().ContainsByPredicate([&ActionCandidate](const UQuestAction* Action){return Action->GetId() == ActionCandidate->GetId();}))
 	{
 		return false;
 	}
