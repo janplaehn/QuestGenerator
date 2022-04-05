@@ -23,9 +23,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
 	float IntentionalityWeight = 1.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
-	float TagWeight = 0.3f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Min = 0.0f, Max = 1.0f))
 	float AffinityWeight = 0.5f;
@@ -63,9 +60,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	FQuestFitnessWeights FitnessWeights = FQuestFitnessWeights();
-
-	UPROPERTY(EditAnywhere)
-	FQuestLabelCollection AssociatedLabels;
 
 	UPROPERTY(EditAnywhere, Instanced)
 	TSet<UQuestCondition*> DesiredConditions;

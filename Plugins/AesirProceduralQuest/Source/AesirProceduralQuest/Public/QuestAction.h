@@ -40,9 +40,6 @@ public:
 	virtual TArray<UQuestCondition*> GetPostConditions() const;
 
 	FText GetDescription() const;
-	
-	UPROPERTY(EditAnywhere)
-	FQuestLabelCollection AssociatedLabels;
 
 	UPROPERTY(EditAnywhere)
 	FCharacterAffinity CharacterImpact;

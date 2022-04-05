@@ -20,8 +20,6 @@ public:
 	static float CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
     
     static float CalculateFitnessByDesiredConditions(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
-   
-    static float CalculateFitnessByTags(UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
 	static float CalculateFitnessByAffinity(UQuest* Quest, const UQuestProviderPreferences* Preferences);
 

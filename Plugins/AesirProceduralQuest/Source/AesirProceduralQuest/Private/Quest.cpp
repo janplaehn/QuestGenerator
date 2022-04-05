@@ -45,15 +45,6 @@ TArray<UQuestCondition*> UQuest::GetPostConditions() const
 	return OutPostConditions;
 }
 
-float UQuest::GetFitnessByTags()
-{
-	if (CachedFitnessByTags == -1)
-	{
-		CachedFitnessByTags = UQuestFitnessUtils::CalculateFitnessByTags(this, ProviderData);
-	}
-	return CachedFitnessByTags;
-}
-
 float UQuest::GetFitnessByConditions(const UObject* Context)
 {
 	if (CachedFitnessByConditions == -1)

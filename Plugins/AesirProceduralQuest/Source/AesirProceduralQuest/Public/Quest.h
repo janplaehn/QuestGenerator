@@ -26,8 +26,6 @@ public:
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 
-	float GetFitnessByTags();
-
 	float GetFitnessByConditions(const UObject* Context);
 
 	float GetFitnessByIntentionality();
@@ -50,7 +48,6 @@ protected:
 	UQuestProviderPreferences* ProviderData;
 
 private:
-	float CachedFitnessByTags = -1;
 	float CachedFitnessByConditions = -1;
 	float CachedFitnessByIntentionality = -1;
 	float CachedFitnessByAffinity = -1;

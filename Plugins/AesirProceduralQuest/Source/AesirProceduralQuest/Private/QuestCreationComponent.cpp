@@ -71,8 +71,8 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 			if (NewQuest != NewLocalMaximum)
 			{
-				NewQuest->MarkPendingKill();
-				NewQuest->MarkPackageDirty();
+				NewQuest->ConditionalBeginDestroy();
+				NewQuest = nullptr;
 			}
 			else
 			{
@@ -126,8 +126,7 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 	{
 		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
-			RandomQuest->MarkPendingKill();
-			RandomQuest->MarkPackageDirty();
+			RandomQuest->ConditionalBeginDestroy();
 			return nullptr;
 		}
 	}
@@ -196,8 +195,8 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
 		}
 		if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
 		{
-			DuplicateAction->MarkPendingKill();
-			DuplicateAction->MarkPackageDirty();
+			DuplicateAction->ConditionalBeginDestroy();
+			DuplicateAction = nullptr;
 			return nullptr;
 		}
 	}
@@ -288,8 +287,8 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 		
 		if (!ActionCandidate->SimulateIsAvailable(this, SimulatedConditionResolutions))
 		{
-			ActionCandidate->MarkPendingKill();
-			ActionCandidate->MarkPackageDirty();
+			ActionCandidate->ConditionalBeginDestroy();
+			ActionCandidate = nullptr;
 			continue;
 		}
 		Quest->AddQuestAction(ActionCandidate);
