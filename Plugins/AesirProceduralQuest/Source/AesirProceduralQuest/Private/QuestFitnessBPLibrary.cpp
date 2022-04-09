@@ -27,14 +27,6 @@ UQuest* UQuestFitnessUtils::SelectSimulatedAnnealingFittest(const UObject* World
 
 UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, UQuest* QuestA, UQuest* QuestB, const UQuestProviderPreferences* Preferences)
 {
-	// const float ConditionFitnessA = !IsValid(QuestA) ? 0.0f : QuestA->GetFitnessByConditions(WorldContextObject);
-	// const float ConditionFitnessB = !IsValid(QuestB) ? 0.0f : QuestB->GetFitnessByConditions(WorldContextObject);
-	//
-	// if (!FMath::IsNearlyEqual(ConditionFitnessA, ConditionFitnessB, 0.1f))
-	// {
-	// 	return ConditionFitnessA > ConditionFitnessB ? QuestA : QuestB;
-	// }
-	
 	const float FitnessA = CalculateWeightedFitness(WorldContextObject, QuestA, Preferences);
 	const float FitnessB = CalculateWeightedFitness(WorldContextObject, QuestB, Preferences);
 	return FitnessA >= FitnessB ? QuestA : QuestB;
@@ -109,7 +101,7 @@ float UQuestFitnessUtils::CalculateFitnessByAffinity(UQuest* Quest, const UQuest
 		return 0.0f;
 	}
 	float AverageAffinityMatch = 0;
-	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	const TArray<UQuestAction*>& Actions = Quest->GetActions();
 	for (const UQuestAction* Action : Actions)
 	{
 		float NewAffinityMatch;
@@ -147,7 +139,7 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 	{
 		return 0.0f;
 	}
-	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	const TArray<UQuestAction*>& Actions = Quest->GetActions();
 	if (!Actions.Num())
 	{
 		return 0.0f;
@@ -158,7 +150,8 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 	{
 		const TArray<UQuestCondition*>& PreviousConditions = Actions[ActionIndex]->GetPostConditions();
 		const TArray<UQuestCondition*>& NextConditions =  ActionIndex < Actions.Num() - 1 ? Actions[ActionIndex+1]->GetPreConditions() : Quest->GetProviderData()->DesiredConditions.Array();
-		AverageConditionMatchup += FMath::Sign(UAesirProceduralQuestBPLibrary::GetActionListSimilarity(PreviousConditions, NextConditions));
+		const float Similarity = UAesirProceduralQuestBPLibrary::GetActionListSimilarity(PreviousConditions, NextConditions);
+		AverageConditionMatchup += FMath::IsNearlyZero(Similarity) ? 0.0f : 1.0f;
 	}
 	
 	return AverageConditionMatchup / Actions.Num();

@@ -20,9 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsResolved(const UObject* WorldContextObject) const override;
 
-    virtual void AddQuestAction(const UQuestAction* NewAction);
+    virtual void AddQuestAction(UQuestAction* NewAction);
 
-	const TArray<const UQuestAction*>& GetActions() const;
+	const TArray<UQuestAction*>& GetActions() const;
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 
@@ -40,9 +40,11 @@ public:
 
 	float DebugFitness = 0;
 
+	virtual void BeginDestroy() override;
+
 protected:
 	UPROPERTY(Transient)
-	TArray<const UQuestAction*> Actions;
+	TArray<UQuestAction*> Actions;
 
 	UPROPERTY(Transient)
 	UQuestProviderPreferences* ProviderData;

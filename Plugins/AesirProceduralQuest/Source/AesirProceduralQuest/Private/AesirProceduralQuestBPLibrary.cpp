@@ -119,7 +119,7 @@ FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 	OutString += ":";
 	OutString += LINE_TERMINATOR;
 
-	const TArray<const UQuestAction*>& Actions = Quest->GetActions();
+	const TArray<UQuestAction*>& Actions = Quest->GetActions();
 	
 	for (int I = 0; I < Actions.Num(); I++)
 	{

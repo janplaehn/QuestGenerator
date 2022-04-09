@@ -25,12 +25,12 @@ bool UQuest::IsResolved(const UObject* WorldContextObject) const
 	return true;
 }
 
-void UQuest::AddQuestAction(const UQuestAction* NewAction)
+void UQuest::AddQuestAction(UQuestAction* NewAction)
 {
 	Actions.Add(NewAction);
 }
 
-const TArray<const UQuestAction*>& UQuest::GetActions() const
+const TArray<UQuestAction*>& UQuest::GetActions() const
 {
 	return Actions;
 }
@@ -80,4 +80,14 @@ void UQuest::SetProviderData(UQuestProviderPreferences* Data)
 UQuestProviderPreferences* UQuest::GetProviderData() const
 {
 	return ProviderData;
+}
+
+void UQuest::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	for (UQuestAction* Action : Actions)
+	{
+		Action->ConditionalBeginDestroy();
+	}
 }
