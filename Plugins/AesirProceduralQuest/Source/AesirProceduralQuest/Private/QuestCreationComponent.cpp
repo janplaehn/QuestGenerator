@@ -31,6 +31,7 @@ void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* Ques
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("FINAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, QuestProviderComponent->GetQuest(),  QuestProviderComponent->GetPreferences()), IterationsSinceLastGlobalImprovement);
 	IterationsSinceLastGlobalImprovement = 0;
 	QuestRequesters.Remove(QuestProviderComponent);
+	OnQuestCompleted.Broadcast(QuestProviderComponent->GetQuest());
 }
 
 void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -45,17 +46,19 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			IterationsSinceLastGlobalImprovement++;
 			IterationsSinceLastLocalImprovement++;
 			UQuest* GlobalMaximumQuest = Provider->GetQuest();
+			const int32 QuestActionCount = IsValid(GlobalMaximumQuest) ? GlobalMaximumQuest->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 			UQuest* NewQuest;
 			if (IterationsSinceLastLocalImprovement >= IterationsToAbandonLocalMaximum)
 			{
 				LocalMaximumQuest = nullptr;
 				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
-				NewQuest = CreateRandomQuest();
+
+				NewQuest = CreateRandomQuest(QuestActionCount);
 				IterationsSinceLastLocalImprovement = 0;
 			}
 			else
 			{
-				NewQuest = MutateQuest(LocalMaximumQuest.Get());
+				NewQuest = MutateQuest(LocalMaximumQuest.Get(), QuestActionCount);
 			}
 			if (!IsValid(NewQuest))
 			{
@@ -83,6 +86,8 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			if (NewQuest == NewGlobalMaximum)
 			{
 				UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, NewGlobalMaximum, Provider->GetPreferences()), IterationsSinceLastGlobalImprovement);
+				OnQuestUpdated.Broadcast(NewGlobalMaximum);
+
 				IterationsSinceLastGlobalImprovement = 0;
 				if (IsValid(GlobalMaximumQuest))
 				{
@@ -101,20 +106,21 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 				UE_LOG(LogProceduralQuests, Verbose, TEXT("SOMETHING IS WRONG!"));			
 			}
 
+			if (NewGlobalMaximum)
+
 			Provider->SetQuest(NewGlobalMaximum);		
 		}
 	}	
 }
 
-UQuest* UQuestCreationComponent::CreateRandomQuest()
+UQuest* UQuestCreationComponent::CreateRandomQuest(const uint32 QuestActionCount)
 {	
 	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
 		return nullptr;
 
 	TMap<uint32, uint32> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
-	const int32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
-	for (int32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
+	for (uint32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
 		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
 		{
@@ -126,24 +132,24 @@ UQuest* UQuestCreationComponent::CreateRandomQuest()
 	return RandomQuest;
 }
 
-UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest)
+UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount)
 {
 	const int MutationIndex = FMath::RandRange(0,4);
 	if (MutationIndex == 0)
 	{
-		return MutateQuestByScramblingActions(BaseQuest);
+		return MutateQuestByScramblingActions(BaseQuest, QuestActionCount);
 	}
 	else
 	{
-		return MutateQuestByReplaceAction(BaseQuest);
+		return MutateQuestByReplaceAction(BaseQuest,QuestActionCount);
 	}
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
+UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount)
 {
 	if (!IsValid(BaseQuest))
 	{
-		return CreateRandomQuest();
+		return CreateRandomQuest(QuestActionCount);
 	}
 	UQuest* NewQuest = NewObject<UQuest>(this);
 	
@@ -192,11 +198,11 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest)
 	return NewQuest;
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQuest)
+UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount)
 {
 	if (!IsValid(BaseQuest))
     {
-    	return CreateRandomQuest();
+		return CreateRandomQuest(QuestActionCount);
     }
     UQuest* NewQuest = NewObject<UQuest>(this);
     

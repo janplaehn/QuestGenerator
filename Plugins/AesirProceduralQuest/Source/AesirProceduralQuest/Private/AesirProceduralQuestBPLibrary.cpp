@@ -130,12 +130,14 @@ FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 	return OutString;
 }
 
-void UAesirProceduralQuestBPLibrary::LogOpenAiResponses(const TArray<FCompletion> Completions)
+FString UAesirProceduralQuestBPLibrary::ParseOpenAiResponse(const TArray<FCompletion> Completions)
 {
+	FString Output;
 	for (const FCompletion& Completion: Completions)
 	{
-		FString Output = Completion.text.Replace(TEXT("\r"),TEXT("")).Replace(TEXT("\n"),TEXT(""));	
-		UE_LOG(LogProceduralQuests, Verbose, TEXT("OpenAI completion received: '%s'"), *Completion.text);
+		const FString& Response = Completion.text.Replace(TEXT("\r"),TEXT("")).Replace(TEXT("\n"),TEXT(""));
+		Output += Completion.text;	
 	}
+	return Output;
 }
 

@@ -52,7 +52,7 @@ class AESIRPROCEDURALQUEST_API UQuestProviderPreferences : public UDataAsset
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName ProviderName = "GenericQuestProvider";
 
 	UPROPERTY(EditAnywhere)

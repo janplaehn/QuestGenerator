@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class AESIRPROCEDURALQUEST_API UQuest : public UQuestAction
 {
 	GENERATED_BODY()
@@ -22,6 +22,7 @@ public:
 
     virtual void AddQuestAction(UQuestAction* NewAction);
 
+	UFUNCTION(BlueprintPure)
 	const TArray<UQuestAction*>& GetActions() const;
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
@@ -34,6 +35,7 @@ public:
 
 	void SetProviderData(UQuestProviderPreferences* Data);
 
+	UFUNCTION(BlueprintPure)
 	UQuestProviderPreferences* GetProviderData() const;
 
 	float GetFitnessByDuplicates();

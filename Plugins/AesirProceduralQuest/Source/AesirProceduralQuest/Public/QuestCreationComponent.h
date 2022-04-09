@@ -11,7 +11,9 @@
 
 class UQuest;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestUpdated, UQuest*, Quest);
+
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType)
 class AESIRPROCEDURALQUEST_API UQuestCreationComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -26,6 +28,12 @@ public:
 	
 	void PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
 
+	UPROPERTY(BlueprintAssignable)
+	FOnQuestUpdated OnQuestUpdated;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnQuestUpdated OnQuestCompleted;
+
 protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
@@ -35,15 +43,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
-	UQuest* CreateRandomQuest();
+	UQuest* CreateRandomQuest(const uint32 QuestActionCount);
 
-	UQuest* MutateQuest(UQuest* BaseQuest);
+	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount);
 
-	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest);
+	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount);
 
-	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest);
-
-	UQuest* MutateQuestByChangingSize(UQuest* BaseQuest);
+	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount);
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);

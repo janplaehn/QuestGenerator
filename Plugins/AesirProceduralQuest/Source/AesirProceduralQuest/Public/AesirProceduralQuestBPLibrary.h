@@ -36,8 +36,8 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
 	static FString CreateOpenAiPrompt(const UQuest* Quest);
 
-	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
-	static void LogOpenAiResponses(const TArray<FCompletion> Completions);
+	UFUNCTION(BlueprintPure, Category = "Procedural Quest Library")
+	static FString ParseOpenAiResponse(const TArray<FCompletion> Completions);
 	
 	template <class T>
 	static float GetListSimilarity(const TArray<T> SetA, const TArray<T> SetB)

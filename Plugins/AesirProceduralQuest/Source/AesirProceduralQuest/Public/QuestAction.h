@@ -13,7 +13,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, BlueprintType)
 class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 {
 	GENERATED_BODY()
@@ -39,6 +39,7 @@ public:
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const;
 
+	UFUNCTION(BlueprintPure)
 	FText GetDescription() const;
 
 	UPROPERTY(EditAnywhere)
