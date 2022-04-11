@@ -44,3 +44,12 @@ void UCharacterHasItemCondition::InjectParameters(const TArray<UQuestParameter*>
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
 	Super::InjectParameters(Parameters);
 }
+
+TSet<FName> UCharacterHasItemCondition::GetParameters() const
+{
+	return TSet<FName>
+	{
+		CharacterName,
+		ItemName
+	};
+}

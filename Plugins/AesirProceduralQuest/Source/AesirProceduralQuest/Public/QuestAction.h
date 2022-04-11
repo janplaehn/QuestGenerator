@@ -10,6 +10,7 @@
 
 #include "QuestAction.generated.h"
 
+class UQuest;
 /**
  * 
  */
@@ -41,6 +42,8 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FText GetDescription() const;
+	
+	UQuest* GetOwningQuest() const;
 
 	UPROPERTY(EditAnywhere)
 	FCharacterAffinity CharacterImpact;

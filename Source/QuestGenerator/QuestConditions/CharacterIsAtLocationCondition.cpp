@@ -50,3 +50,12 @@ void UCharacterIsAtLocationCondition::InjectParameters(const TArray<UQuestParame
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
 	Super::InjectParameters(Parameters);
 }
+
+TSet<FName> UCharacterIsAtLocationCondition::GetParameters() const
+{
+	return TSet<FName>
+	{
+		CharacterName,
+		LocationName
+	};
+}

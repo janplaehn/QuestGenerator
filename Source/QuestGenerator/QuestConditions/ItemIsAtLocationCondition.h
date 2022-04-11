@@ -26,6 +26,8 @@ public:
 
 	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters) override;
 	
+	virtual TSet<FName> GetParameters() const override;
+	
 protected:
 	UPROPERTY(EditAnywhere)
 	FName ItemName;

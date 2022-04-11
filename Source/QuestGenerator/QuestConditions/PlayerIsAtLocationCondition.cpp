@@ -36,3 +36,11 @@ void UPlayerIsAtLocationCondition::InjectParameters(const TArray<UQuestParameter
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(LocationName, Parameters);
 	Super::InjectParameters(Parameters);
 }
+
+TSet<FName> UPlayerIsAtLocationCondition::GetParameters() const
+{
+	return TSet<FName>
+	{
+		LocationName
+	};
+}

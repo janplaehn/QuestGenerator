@@ -29,3 +29,11 @@ void UHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Paramet
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
 	Super::InjectParameters(Parameters);
 }
+
+TSet<FName> UHasItemCondition::GetParameters() const
+{
+	return TSet<FName>
+	{
+		ItemName
+	};
+}

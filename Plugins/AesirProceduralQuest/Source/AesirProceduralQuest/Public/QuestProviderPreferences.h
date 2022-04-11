@@ -6,6 +6,7 @@
 #include "QuestCondition.h"
 #include "QuestLabel.h"
 #include "Engine/DataAsset.h"
+#include "Kismet/KismetArrayLibrary.h"
 #include "QuestProviderPreferences.generated.h"
 
 class UQuestAction;
@@ -66,4 +67,35 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FCharacterAffinity> CharacterAffinities;
+
+	FName GetRandomParameterFromPreferences(UDataTable* Table)
+	{
+		TArray<FName> RowNames =Table->GetRowNames();
+		
+		//Shuffle
+		for (int32 i = 0; i <= RowNames.Num()-1; ++i)
+		{
+			const int32 Index = FMath::RandRange(i, RowNames.Num()-1);
+			if (i != Index)
+			{
+				RowNames.Swap(i, Index);
+			}
+		}
+
+		for (const FName& RowName : RowNames)
+		{
+			for (const UQuestCondition* Condition : DesiredConditions)
+			{
+				for (const FName& Parameter : Condition->GetParameters())
+				{
+					if (Parameter == RowName)
+					{
+						return Parameter;
+					}
+				}
+			}
+		}
+			
+		return RowNames[0];
+	}
 };
