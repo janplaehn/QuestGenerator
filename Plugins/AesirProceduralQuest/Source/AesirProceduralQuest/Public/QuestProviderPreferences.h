@@ -70,7 +70,7 @@ public:
 
 	FName GetRandomParameterFromPreferences(UDataTable* Table)
 	{
-		TArray<FName> RowNames =Table->GetRowNames();
+		TArray<FName> RowNames = Table->GetRowNames();
 		
 		//Shuffle
 		for (int32 i = 0; i <= RowNames.Num()-1; ++i)

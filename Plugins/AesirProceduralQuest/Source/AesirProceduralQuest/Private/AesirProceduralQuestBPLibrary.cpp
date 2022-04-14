@@ -115,9 +115,10 @@ FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 {
 	FString OutString;
 	OutString += "Describe the following game-quest. Do not use bullet points.";
-	OutString += Quest->GetProviderData()->ProviderName.ToString();
-	OutString += ":";
+	//OutString += Quest->GetProviderData()->ProviderName.ToString();
+	//OutString += ":";
 	OutString += LINE_TERMINATOR;
+
 
 	const TArray<UQuestAction*>& Actions = Quest->GetActions();
 	
@@ -127,6 +128,7 @@ FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 		OutString += FString::Printf(TEXT("%d"),I) + ". ";
 		OutString += Actions[I]->GetDescription().ToString();
 	}
+	OutString.Replace(*Quest->GetProviderData()->ProviderName.ToString(), *FString("me"), ESearchCase::IgnoreCase);
 	return OutString;
 }
 

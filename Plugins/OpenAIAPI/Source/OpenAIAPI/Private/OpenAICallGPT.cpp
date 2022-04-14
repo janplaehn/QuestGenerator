@@ -18,12 +18,13 @@ UOpenAICallGPT::~UOpenAICallGPT()
 {
 }
 
-UOpenAICallGPT* UOpenAICallGPT::OpenAICallGPT3(EOAEngineType engineInput, FString promptInput, FGPT3Settings settingsInput)
+UOpenAICallGPT* UOpenAICallGPT::OpenAICallGPT3(EOAEngineType engineInput, FString promptInput, FGPT3Settings settingsInput, FString InCustomEngine)
 {
 	UOpenAICallGPT* BPNode = NewObject<UOpenAICallGPT>();
 	BPNode->engine = engineInput;
 	BPNode->prompt = promptInput;
 	BPNode->settings = settingsInput;
+	BPNode->customEngine = InCustomEngine;
 	return BPNode;
 }
 
@@ -60,26 +61,34 @@ void UOpenAICallGPT::Activate()
 	
 	
 	FString apiMethod;
-	switch (engine)
+
+	if (customEngine.IsEmpty())
 	{
-	case EOAEngineType::DAVINCI:
+		switch (engine)
+		{
+		case EOAEngineType::DAVINCI:
 			apiMethod = "text-davinci-001";
-	break;
-	case EOAEngineType::CURIE:
+			break;
+		case EOAEngineType::CURIE:
 			apiMethod = "curie";
-	break;
-	case EOAEngineType::BABBAGE:
+			break;
+		case EOAEngineType::BABBAGE:
 			apiMethod = "babbage";
-	break;
-	case EOAEngineType::ADA:
+			break;
+		case EOAEngineType::ADA:
 			apiMethod = "ada";
-	break;
-	case EOAEngineType::DAVINCI_INSTRUCT_BETA:
-		apiMethod = "davinci-instruct-beta";
-	break;
-	case EOAEngineType::CURIE_INSTRUCT_BETA:
-		apiMethod = "curie-instruct-beta";
-	break;
+			break;
+		case EOAEngineType::DAVINCI_INSTRUCT_BETA:
+			apiMethod = "davinci-instruct-beta";
+			break;
+		case EOAEngineType::CURIE_INSTRUCT_BETA:
+			apiMethod = "curie-instruct-beta";
+			break;
+		}
+	}
+	else
+	{	
+		apiMethod = customEngine;
 	}
 
 	// converting parameters to strings
@@ -88,14 +97,25 @@ void UOpenAICallGPT::Activate()
 	tempHeader += _apiKey;
 
 	// set headers
-	FString url = FString::Printf(TEXT("https://api.openai.com/v1/engines/%s/completions"), *apiMethod);
-	HttpRequest->SetURL(url);
+	if (customEngine.IsEmpty())
+	{
+		FString url = FString::Printf(TEXT("https://api.openai.com/v1/engines/%s/completions"), *apiMethod);
+		HttpRequest->SetURL(url);
+	}
+	else
+	{
+		HttpRequest->SetURL("https://api.openai.com/v1/completions");
+	}
 	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	HttpRequest->SetHeader(TEXT("Authorization"), tempHeader);
 
 	//build payload
 	TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
 	_payloadObject->SetStringField(TEXT("prompt"), tempPrompt);
+	if (!customEngine.IsEmpty())
+	{
+		_payloadObject->SetStringField(TEXT("model"), apiMethod);
+	}
 	_payloadObject->SetNumberField(TEXT("max_tokens"), settings.maxTokens);
 	_payloadObject->SetNumberField(TEXT("temperature"), FMath::Clamp(settings.temperature, 0.0f, 1.0f));
 	_payloadObject->SetNumberField(TEXT("top_p"), FMath::Clamp(settings.topP, 0.0f, 1.0f));

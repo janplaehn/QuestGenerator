@@ -81,7 +81,6 @@ void UOpenAIUploadFile::Activate()
 	//const FString fileHeader(TEXT("Content-Disposition: form-data; name=\"upload_file_minidump\"; filename=\"UE4Minidump.dmp\"\r\nContent-Type: application/octet-stream\r\n\r\n"));
 
 	const FString Content(PrefixBoundary + FormData /*+ fileContents*/ + SuffixBoundary);
-	
 	// set headers
 	const FString Url = "https://api.openai.com/v1/files";
 	HttpRequest->SetURL(Url);
@@ -96,25 +95,6 @@ void UOpenAIUploadFile::Activate()
 	CombinedContent.Append(FStringToUint8(SuffixBoundary));
 	
 	HttpRequest->SetContent(CombinedContent);
-
-	//build payload
-	//TSharedPtr<FJsonObject> _payloadObject = MakeShareable(new FJsonObject());
-	//_payloadObject->SetStringField(TEXT("purpose"), *PurposeId);
-	//_payloadObject->SetStringField(TEXT("file"), *Path);
-
-	//const FString fileName(FPaths::Combine(path, crashToReport.folderName, TEXT("UE4Minidump.dmp")));
-
-	//ensure(FPaths::FileExists(fileName));
-
-	//const FString fileHeader(TEXT("Content-Disposition: form-data; name=\"upload_file_minidump\"; filename=\"UE4Minidump.dmp\"\r\nContent-Type: application/octet-stream\r\n\r\n"));
-
-	//FString fileContents;
-	//FFileHelper::LoadFileToString(fileContents, *fileName);
-
-	// convert payload to string
-	//FString _payload;
-	//TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&_payload);
-	//FJsonSerializer::Serialize(_payloadObject.ToSharedRef(), Writer);
 
 	// commit request
 	HttpRequest->SetVerb(TEXT("POST"));
