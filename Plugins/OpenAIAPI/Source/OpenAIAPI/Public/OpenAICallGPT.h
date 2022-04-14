@@ -24,6 +24,7 @@ public:
 	~UOpenAICallGPT();
 
 	EOAEngineType engine = EOAEngineType::DAVINCI;
+	FString customEngine = "";
 	FString prompt = "";
 	FGPT3Settings settings;
 
@@ -34,7 +35,7 @@ private:
 	OpenAIValueMapping mapping;
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "OpenAI")
-		static UOpenAICallGPT* OpenAICallGPT3(EOAEngineType engine, FString prompt, FGPT3Settings settings);
+		static UOpenAICallGPT* OpenAICallGPT3(EOAEngineType engine, FString prompt, FGPT3Settings settings, FString InCustomEngine = "");
 
 	virtual void Activate() override;
 	void OnResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool WasSuccessful);

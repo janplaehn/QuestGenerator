@@ -53,12 +53,12 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 				LocalMaximumQuest = nullptr;
 				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
 
-				NewQuest = CreateRandomQuest(QuestActionCount);
+				NewQuest = CreateRandomQuest(QuestActionCount, Provider);
 				IterationsSinceLastLocalImprovement = 0;
 			}
 			else
 			{
-				NewQuest = MutateQuest(LocalMaximumQuest.Get(), QuestActionCount);
+				NewQuest = MutateQuest(LocalMaximumQuest.Get(), QuestActionCount, Provider);
 			}
 			if (!IsValid(NewQuest))
 			{
@@ -113,13 +113,14 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	}	
 }
 
-UQuest* UQuestCreationComponent::CreateRandomQuest(const uint32 QuestActionCount)
+UQuest* UQuestCreationComponent::CreateRandomQuest(const uint32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
 {	
 	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
 		return nullptr;
 
 	TMap<uint32, uint32> SimulatedConditionResolutions;
 	UQuest* RandomQuest = NewObject<UQuest>(this);
+	RandomQuest->SetProviderData(ProviderComponent->GetPreferences());
 	for (uint32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
 	{
 		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
@@ -132,26 +133,27 @@ UQuest* UQuestCreationComponent::CreateRandomQuest(const uint32 QuestActionCount
 	return RandomQuest;
 }
 
-UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount)
+UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
 {
 	const int MutationIndex = FMath::RandRange(0,4);
 	if (MutationIndex == 0)
 	{
-		return MutateQuestByScramblingActions(BaseQuest, QuestActionCount);
+		return MutateQuestByScramblingActions(BaseQuest, QuestActionCount, ProviderComponent);
 	}
 	else
 	{
-		return MutateQuestByReplaceAction(BaseQuest,QuestActionCount);
+		return MutateQuestByReplaceAction(BaseQuest,QuestActionCount, ProviderComponent);
 	}
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount)
+UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
 {
 	if (!IsValid(BaseQuest))
 	{
-		return CreateRandomQuest(QuestActionCount);
+		return CreateRandomQuest(QuestActionCount, ProviderComponent);
 	}
 	UQuest* NewQuest = NewObject<UQuest>(this);
+	NewQuest->SetProviderData(ProviderComponent->GetPreferences());
 	
 	const int MutatedActionIndex = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 
@@ -198,13 +200,14 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, c
 	return NewQuest;
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount)
+UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent)
 {
 	if (!IsValid(BaseQuest))
     {
-		return CreateRandomQuest(QuestActionCount);
+		return CreateRandomQuest(QuestActionCount, ProviderComponent);
     }
     UQuest* NewQuest = NewObject<UQuest>(this);
+	NewQuest->SetProviderData(ProviderComponent->GetPreferences());
     
     const int SwapIndexA = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 	const int SwapIndexB = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);

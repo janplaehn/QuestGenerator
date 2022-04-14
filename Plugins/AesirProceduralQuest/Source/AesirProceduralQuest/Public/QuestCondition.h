@@ -35,6 +35,8 @@ public:
 	
 	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters);
 
+	virtual TSet<FName> GetParameters() const {return TSet<FName>();}
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
 

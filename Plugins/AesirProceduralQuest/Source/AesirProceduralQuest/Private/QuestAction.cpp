@@ -3,6 +3,7 @@
 #include "QuestAction.h"
 
 #include "AesirProceduralQuestBPLibrary.h"
+#include "Quest.h"
 
 UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 {
@@ -21,7 +22,7 @@ void UQuestAction::InitializeAsInstance()
 {	
 	for (UQuestParameter* Parameter : Parameters)
 	{
-		Parameter->Initialize();
+		Parameter->Initialize(this);
 	}
 	InjectParameters();
 }
@@ -119,6 +120,11 @@ TArray<UQuestCondition*> UQuestAction::GetPostConditions() const
 FText UQuestAction::GetDescription() const
 {
 	return ReadableDescription;
+}
+
+UQuest* UQuestAction::GetOwningQuest() const
+{
+	return Cast<UQuest>(GetOuter());
 }
 
 uint32 UQuestAction::GetId() const

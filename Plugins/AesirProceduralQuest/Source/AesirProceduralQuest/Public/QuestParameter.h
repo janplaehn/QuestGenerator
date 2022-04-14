@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "QuestParameter.generated.h"
 
+class UQuestAction;
 /**
 * Table row definition for a quest parameter data table
 */
@@ -27,7 +28,7 @@ class AESIRPROCEDURALQUEST_API UQuestParameter : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual void Initialize() {};
+	virtual void Initialize(const UQuestAction* Context) {};
 
 	virtual FName GetValueAsName() PURE_VIRTUAL(UQuestParameter::GetValueAsName, return FName(););
 

@@ -43,13 +43,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
-	UQuest* CreateRandomQuest(const uint32 QuestActionCount);
+	UQuest* CreateRandomQuest(const uint32 QuestActionCount, const UQuestProviderComponent * ProviderComponent);
 
-	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount);
+	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent);
 
-	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount);
+	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent);
 
-	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount);
+	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent);
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
