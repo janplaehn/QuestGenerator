@@ -65,7 +65,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			UQuest* GlobalMaximumQuest = Provider->GetQuest();
 			const int32 QuestActionCount = IsValid(GlobalMaximumQuest) ? GlobalMaximumQuest->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 			UQuest* NewQuest;
-			if (IterationsSinceLastLocalImprovement >= IterationsToAbandonLocalMaximum)
+			if (IterationsSinceLastLocalImprovement >= TotalIterations / 4)
 			{
 				LocalMaximumQuest = nullptr;
 				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
