@@ -26,9 +26,6 @@ public:
 	UQuestProviderPreferences* GetPreferences() const;
 
 	UFUNCTION(BlueprintCallable)
-	void SetQuest(UQuest* NewQuest);
-
-	UFUNCTION(BlueprintCallable)
 	UQuest* GetQuest() const;
 
 protected:
@@ -46,4 +43,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UQuestProviderPreferences* Preferences;
+
+	FGuid QuestGenerationId;
 };

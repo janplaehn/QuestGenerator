@@ -51,15 +51,6 @@ UQuestProviderPreferences* UQuestProviderComponent::GetPreferences() const
 	return Preferences;
 }
 
-void UQuestProviderComponent::SetQuest(UQuest* NewQuest)
-{
-	if (UQuestFitnessUtils::CalculateWeightedFitness(this, NewQuest, GetPreferences()) < UQuestFitnessUtils::CalculateWeightedFitness(this, Quest.Get(), GetPreferences()))
-	{
-		UE_LOG(LogTemp, Error, TEXT("SOMETHING IS WRONG!"));			
-	}
-	Quest = NewQuest;
-}
-
 UQuest* UQuestProviderComponent::GetQuest() const
 {
 	return Quest.Get();
@@ -88,7 +79,7 @@ bool UQuestProviderComponent::RequestAsyncQuestGeneration() //Todo: Provide func
 	{
 		return false;
 	}	
-	QuestCreator->RequestQuestGeneration(this);	
+	QuestGenerationId = QuestCreator->RequestQuestGeneration(this);	
 	return true;
 }
 
@@ -115,7 +106,7 @@ bool UQuestProviderComponent::PauseAsyncQuestGeneration()
 	{
 		return false;
 	}	
-	QuestCreator->PauseQuestGeneration(this);		
+	Quest = QuestCreator->FinishQuestGeneration(QuestGenerationId);		
 	UAesirProceduralQuestBPLibrary::DebugLogQuest(this, Quest.Get(), Preferences);
 	UOpenAIUtils::setOpenAIApiKey("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");
 	UE_LOG(LogTemp, Verbose, TEXT("Sending OpenAI Prompt %s"), *UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(Quest.Get()));

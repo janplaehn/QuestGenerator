@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "QuestGenerationSnapshot.h"
 #include "QuestProviderComponent.h"
 #include "QuestProviderPreferences.h"
 #include "Components/ActorComponent.h"
@@ -12,8 +13,8 @@
 class UQuest;
 class UQuestCreationComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestUpdated, UQuest*, Quest);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOniterationUpdated,UQuestCreationComponent*, QuestCreator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestUpdated, FQuestGenerationSnapshot, Snapshot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOniterationUpdated, FQuestGenerationSnapshot, Snapshot);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType)
 class AESIRPROCEDURALQUEST_API UQuestCreationComponent : public UActorComponent
@@ -26,18 +27,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
 	
-	void RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
+	FGuid RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
 	
-	void PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
-
-	UFUNCTION(BlueprintPure)
-	int GetTotalIterations() const;
-
-	UFUNCTION(BlueprintPure)
-	int GetLocalIterationIndex() const;
-
-	UFUNCTION(BlueprintPure)
-	int GetNullQuestCount() const;
+	UQuest* FinishQuestGeneration(const FGuid& Id);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestUpdated OnQuestUpdated;
@@ -51,6 +43,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	float MaxTickTime = 0.03f;
+
+	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
@@ -60,22 +54,19 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
-	UQuest* CreateRandomQuest(const uint32 QuestActionCount, const UQuestProviderComponent * ProviderComponent);
+	UQuest* CreateRandomQuest(const uint32 QuestActionCount, UQuestProviderPreferences* Preferences);
 
-	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent);
+	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
 
-	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent);
+	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
 
-	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent);
+	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UPROPERTY(EditAnywhere)
 	int MaxQuestSampleCount = 30;
-
-	UPROPERTY(EditAnywhere)
-	bool bEnableConditionMatching = true;
 
 	UPROPERTY(EditAnywhere)
 	int32 IterationsToAbandonLocalMaximum = 500;
@@ -91,15 +82,5 @@ protected:
 	UPROPERTY(Transient)
 	TArray<UQuestAction*> CachedPossibleQuestActions;
 
-	UPROPERTY(Transient)
-	TSet<UQuestProviderComponent*> QuestRequesters;
-
-private:
-	TWeakObjectPtr<UQuest> LocalMaximumQuest;
-	double StartTimestamp;
-	double LastLogTimestamp;
-	int32 TotalIterations = 0;
-	int32 NullQuestCount = 0;
-	int32 IterationsSinceLastGlobalImprovement = 0;
-	int32 IterationsSinceLastLocalImprovement = 0;
+	TMap<FGuid, FQuestGenerationSnapshot> GenerationSnapshots;
 };
