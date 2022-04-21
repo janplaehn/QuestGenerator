@@ -29,8 +29,9 @@ FGuid UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* Q
 
 UQuest* UQuestCreationComponent::FinishQuestGeneration(const FGuid& Id)
 {
-	FQuestGenerationSnapshot Snapshot = GenerationSnapshots.FindAndRemoveChecked(Id);
+	const FQuestGenerationSnapshot& Snapshot = GenerationSnapshots.FindAndRemoveChecked(Id);
 	OnQuestCompleted.Broadcast(Snapshot);
+	GEngine->ForceGarbageCollection(true);
 	return Snapshot.GlobalMaximum;
 }
 
@@ -253,7 +254,6 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 			return true;
 		}
 
-		ActionCandidate->MarkPendingKill();
 		ActionCandidate->ConditionalBeginDestroy();
 		ActionCandidate = nullptr;
 	}

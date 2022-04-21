@@ -81,13 +81,3 @@ UQuestProviderPreferences* UQuest::GetProviderData() const
 {
 	return ProviderData;
 }
-
-void UQuest::BeginDestroy()
-{
-	Super::BeginDestroy();
-
-	for (UQuestAction* Action : Actions)
-	{
-		Action->ConditionalBeginDestroy();
-	}
-}

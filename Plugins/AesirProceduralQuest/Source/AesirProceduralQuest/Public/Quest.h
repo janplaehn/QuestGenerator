@@ -38,11 +38,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	UQuestProviderPreferences* GetProviderData() const;
 
-	float GetFitnessByDuplicates();
-
 	float DebugFitness = 0;
-
-	virtual void BeginDestroy() override;
 
 protected:
 	UPROPERTY(Transient)
