@@ -34,21 +34,38 @@ void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* Ques
 	OnQuestCompleted.Broadcast(QuestProviderComponent->GetQuest());
 }
 
-void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction)
+int UQuestCreationComponent::GetTotalIterations() const
 {
-	
-	//Todo: Maybe do this with a timer instead (do as many iterations as possible in 1ms or so)
-	for (int GenerationIteration = 0; GenerationIteration < GenerationIterationsPerFrame; GenerationIteration++)
+	return TotalIterations;
+}
+
+int UQuestCreationComponent::GetLocalIterationIndex() const
+{
+	return IterationsSinceLastLocalImprovement;
+}
+
+int UQuestCreationComponent::GetNullQuestCount() const
+{
+	return NullQuestCount;
+}
+
+void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+                                            FActorComponentTickFunction* ThisTickFunction)
+{
+
+	const double StartTickTime = FPlatformTime::Seconds();
+	while (FPlatformTime::Seconds() - StartTickTime < MaxTickTime)
 	{
 		for (UQuestProviderComponent* Provider : QuestRequesters)
 		{
+			TotalIterations++;
 			IterationsSinceLastGlobalImprovement++;
 			IterationsSinceLastLocalImprovement++;
+			OnIterationUpdated.Broadcast(this);
 			UQuest* GlobalMaximumQuest = Provider->GetQuest();
 			const int32 QuestActionCount = IsValid(GlobalMaximumQuest) ? GlobalMaximumQuest->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 			UQuest* NewQuest;
-			if (IterationsSinceLastLocalImprovement >= IterationsToAbandonLocalMaximum)
+			if (IterationsSinceLastLocalImprovement >= TotalIterations / 4)
 			{
 				LocalMaximumQuest = nullptr;
 				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
@@ -62,6 +79,7 @@ void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType
 			}
 			if (!IsValid(NewQuest))
 			{
+				NullQuestCount++;
 				continue;
 			}
 			NewQuest->SetProviderData(Provider->GetPreferences());

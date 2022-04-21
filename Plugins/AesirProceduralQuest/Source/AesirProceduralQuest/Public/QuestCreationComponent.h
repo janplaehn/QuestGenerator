@@ -10,8 +10,10 @@
 #include "QuestCreationComponent.generated.h"
 
 class UQuest;
+class UQuestCreationComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnQuestUpdated, UQuest*, Quest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOniterationUpdated,UQuestCreationComponent*, QuestCreator);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType)
 class AESIRPROCEDURALQUEST_API UQuestCreationComponent : public UActorComponent
@@ -28,13 +30,28 @@ public:
 	
 	void PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
 
+	UFUNCTION(BlueprintPure)
+	int GetTotalIterations() const;
+
+	UFUNCTION(BlueprintPure)
+	int GetLocalIterationIndex() const;
+
+	UFUNCTION(BlueprintPure)
+	int GetNullQuestCount() const;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestUpdated OnQuestUpdated;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnQuestUpdated OnQuestCompleted;
 
+	UPROPERTY(BlueprintAssignable)
+	FOniterationUpdated OnIterationUpdated;
+
 protected:
+	UPROPERTY(EditAnywhere)
+	float MaxTickTime = 0.03f;
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	/**
@@ -53,9 +70,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
-
-	UPROPERTY(EditAnywhere)
-	int GenerationIterationsPerFrame = 5.0f;
 
 	UPROPERTY(EditAnywhere)
 	int MaxQuestSampleCount = 30;
@@ -84,6 +98,8 @@ private:
 	TWeakObjectPtr<UQuest> LocalMaximumQuest;
 	double StartTimestamp;
 	double LastLogTimestamp;
+	int32 TotalIterations = 0;
+	int32 NullQuestCount = 0;
 	int32 IterationsSinceLastGlobalImprovement = 0;
 	int32 IterationsSinceLastLocalImprovement = 0;
 };

@@ -113,6 +113,11 @@ void UAesirProceduralQuestBPLibrary::DebugLogCondition(const FString Prefix, con
 
 FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 {
+	if (!IsValid(Quest))
+	{
+		return "";
+	}
+	
 	FString OutString;
 	OutString += "Describe the following game-quest. Do not use bullet points.";
 	//OutString += Quest->GetProviderData()->ProviderName.ToString();
