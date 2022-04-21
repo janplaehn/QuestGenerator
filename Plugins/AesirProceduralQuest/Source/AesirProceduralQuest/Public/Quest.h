@@ -20,7 +20,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsResolved(const UObject* WorldContextObject) const override;
 
+	virtual bool CopyFrom(const UQuest* OtherQuest);
+
     virtual void AddQuestAction(UQuestAction* NewAction);
+
+	virtual void Clear();
+
+	bool IsEmpty() const;
 
 	UFUNCTION(BlueprintPure)
 	const TArray<UQuestAction*>& GetActions() const;
@@ -38,8 +44,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	UQuestProviderPreferences* GetProviderData() const;
 
-	float DebugFitness = 0;
-
 protected:
 	UPROPERTY(Transient)
 	TArray<UQuestAction*> Actions;
@@ -48,6 +52,7 @@ protected:
 	UQuestProviderPreferences* ProviderData;
 
 private:
+	//Todo: Don't store this in the quest but move it to the generation-snapshot
 	float CachedFitnessByConditions = -1;
 	float CachedFitnessByIntentionality = -1;
 	float CachedFitnessByAffinity = -1;

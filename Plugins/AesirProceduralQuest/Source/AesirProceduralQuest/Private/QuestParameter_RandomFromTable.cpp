@@ -25,3 +25,8 @@ FName UQuestParameter_RandomFromTable::GetValueAsName()
 	ensure(!TableRowName.IsNone());
 	return TableRowName;
 }
+
+void UQuestParameter_RandomFromTable::SetValueDirectly(const FName Value)
+{
+	TableRowName = Value;
+}

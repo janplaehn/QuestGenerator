@@ -22,8 +22,6 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 public:
 	UQuestAction* MakeRandomInstance(UObject* Outer) const;
 
-	UQuestAction* DuplicateInstance(UObject* Outer) const;
-
 	virtual void InitializeAsInstance();
 
 	virtual void InjectParameters();
@@ -65,6 +63,8 @@ private:
 	
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<UQuestParameter*> Parameters;
+
+	TArray<FName> ParameterValues;
 
 	void GenerateId();
 

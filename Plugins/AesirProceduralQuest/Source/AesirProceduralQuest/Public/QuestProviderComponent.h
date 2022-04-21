@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestData.h"
 #include "Quest.h"
 #include "Components/ActorComponent.h"
 #include "QuestProviderComponent.generated.h"
@@ -18,9 +17,6 @@ class AESIRPROCEDURALQUEST_API UQuestProviderComponent : public UActorComponent
 
 public:
 	UQuestProviderComponent();
-
-	UFUNCTION(BlueprintCallable)
-	bool TryGetQuestData(FQuestData& OutQuestData) const;
 
 	UFUNCTION(BlueprintCallable)
 	UQuestProviderPreferences* GetPreferences() const;

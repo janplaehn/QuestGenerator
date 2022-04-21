@@ -44,6 +44,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MaxTickTime = 0.03f;
 
+	UPROPERTY(EditAnywhere)
+	float MinLocalIterations = 100;
+
 	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -54,22 +57,24 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
 	UDataTable* QuestActionDataTable;
 
-	UQuest* CreateRandomQuest(const uint32 QuestActionCount, UQuestProviderPreferences* Preferences);
+	void AssignRandomActions(UQuest* InOutQuest, const uint32 Count) const;
 
-	UQuest* MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
+	void MutateQuest(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
 
-	UQuest* MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
+	void MutateQuestByReplaceAction(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount,
+	                                UQuestProviderPreferences* GenerationData);
 
-	UQuest* MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
+	void MutateQuestByScramblingActions(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount,
+	                                    UQuestProviderPreferences* GenerationData);
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
 
 	UPROPERTY(EditAnywhere)
-	int MaxQuestSampleCount = 30;
+	int MaxQuestSampleCount = 100;
 
 	UPROPERTY(EditAnywhere)
-	int32 IterationsToAbandonLocalMaximum = 500;
+	float AbandonBias = 0.1f; //This could be renamed? (It is very confusing)
 
 	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 

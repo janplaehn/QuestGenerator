@@ -34,22 +34,14 @@ UQuest* UQuestFitnessUtils::SelectFittest(const UObject* WorldContextObject, UQu
 
 float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
 {
-	if (!IsValid(Quest))
+	if (!IsValid(Quest) || !Quest->GetActions().Num())
 	{
 		return 0.0f;
 	}
-	if (Quest->GetActions().Num() == 0)
-	{
-		return 0.0f;
-	}
+
 	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
 	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
 	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
-	Quest->DebugFitness = FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
-	if (!ensure(!FMath::IsNaN(Quest->DebugFitness)))
-	{
-		return 0.0f;
-	}
 	return FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 }
 
