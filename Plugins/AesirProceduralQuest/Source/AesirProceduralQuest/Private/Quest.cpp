@@ -80,7 +80,7 @@ TArray<UQuestCondition*> UQuest::GetPostConditions() const
 
 float UQuest::GetFitnessByConditions(const UObject* Context)
 {
-	if (CachedFitnessByConditions == -1)
+	if (CachedFitnessByConditions < 0)
 	{
 		CachedFitnessByConditions = UQuestFitnessUtils::CalculateFitnessByDesiredConditions(Context, this, ProviderData);
 	}
@@ -89,16 +89,17 @@ float UQuest::GetFitnessByConditions(const UObject* Context)
 
 float UQuest::GetFitnessByIntentionality()
 {
-	if (CachedFitnessByIntentionality == -1)
+	if (CachedFitnessByIntentionality < 0)
 	{
 		CachedFitnessByIntentionality = UQuestFitnessUtils::CalculateFitnessByIntentionality(this);
 	}
+	//Todo: Cache fitness in snapshots instead!
 	return CachedFitnessByIntentionality;
 }
 
 float UQuest::GetFitnessByAffinity()
 {
-	if (CachedFitnessByAffinity == -1)
+	if (CachedFitnessByAffinity < 0)
 	{
 		CachedFitnessByAffinity = UQuestFitnessUtils::CalculateFitnessByAffinity(this, ProviderData);
 	}

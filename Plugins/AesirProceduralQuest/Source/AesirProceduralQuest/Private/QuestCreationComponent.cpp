@@ -96,7 +96,7 @@ void UQuestCreationComponent::AssignRandomActions(UQuest* InOutQuest, const uint
 	TMap<uint32, uint32> SimulatedResolutions;
 	for (uint32 QuestIndex = 0; QuestIndex < Count; QuestIndex++)
 	{
-		if (!ensure(TryApplyRandomNextQuestAction(InOutQuest, SimulatedResolutions)))
+		if (!TryApplyRandomNextQuestAction(InOutQuest, SimulatedResolutions))
 		{
 			InOutQuest->Clear();
 			return;
