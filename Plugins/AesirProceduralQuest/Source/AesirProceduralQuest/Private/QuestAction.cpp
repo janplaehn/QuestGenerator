@@ -12,18 +12,20 @@ UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
 	return RandomInstance;
 }
 
-UQuestAction* UQuestAction::DuplicateInstance(UObject* Outer) const
-{
-	UQuestAction* DuplicateAction = DuplicateObject(this, Outer);
-	return DuplicateAction;
-}
-
 void UQuestAction::InitializeAsInstance()
-{	
-	for (UQuestParameter* Parameter : Parameters)
+{
+	for (int ParameterIndex = 0; ParameterIndex < Parameters.Num(); ParameterIndex++)
 	{
-		Parameter->Initialize(this);
+		if (!ParameterValues.IsValidIndex(ParameterIndex))
+		{
+			Parameters[ParameterIndex]->Initialize(this);
+		}
+		else
+		{
+			Parameters[ParameterIndex]->SetValueDirectly(ParameterValues[ParameterIndex]);
+		}
 	}
+
 	InjectParameters();
 }
 

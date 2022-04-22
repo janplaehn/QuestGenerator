@@ -32,6 +32,8 @@ public:
 
 	virtual FName GetValueAsName() PURE_VIRTUAL(UQuestParameter::GetValueAsName, return FName(););
 
+	virtual void SetValueDirectly(const FName Value) PURE_VIRTUAL(UQuestParameter::SetDirectly,);
+
 	FName GetParameterName() const { return Name; };
 
 	virtual uint32 GetInstanceCount() const PURE_VIRTUAL(UQuestParameter::GetInstanceCount, return 0;);

@@ -17,6 +17,8 @@ public:
 	virtual void Initialize(const UQuestAction* Context) override;
 
 	virtual FName GetValueAsName() override;
+
+	virtual void SetValueDirectly(const FName Value) override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

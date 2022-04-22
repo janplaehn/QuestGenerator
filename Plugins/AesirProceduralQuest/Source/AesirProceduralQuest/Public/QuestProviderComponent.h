@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestData.h"
 #include "Quest.h"
 #include "Components/ActorComponent.h"
 #include "QuestProviderComponent.generated.h"
@@ -20,13 +19,7 @@ public:
 	UQuestProviderComponent();
 
 	UFUNCTION(BlueprintCallable)
-	bool TryGetQuestData(FQuestData& OutQuestData) const;
-
-	UFUNCTION(BlueprintCallable)
 	UQuestProviderPreferences* GetPreferences() const;
-
-	UFUNCTION(BlueprintCallable)
-	void SetQuest(UQuest* NewQuest);
 
 	UFUNCTION(BlueprintCallable)
 	UQuest* GetQuest() const;
@@ -46,4 +39,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UQuestProviderPreferences* Preferences;
+
+	FGuid QuestGenerationId;
 };

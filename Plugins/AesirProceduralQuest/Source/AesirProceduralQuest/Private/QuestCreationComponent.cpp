@@ -19,159 +19,116 @@ void UQuestCreationComponent::Initialize()
 	InitPossibleQuestActions();
 }
 
-void UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
+//Todo: Only pass in UObject-Context and Preferences
+FGuid UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
 {
-	QuestRequesters.Add(QuestProviderComponent);
-	StartTimestamp = LastLogTimestamp = FPlatformTime::Seconds();
-	IterationsSinceLastGlobalImprovement = 0;
+	const FGuid& NewGuid = FGuid::NewGuid();
+	GenerationSnapshots.Add(NewGuid, FQuestGenerationSnapshot(QuestProviderComponent, QuestProviderComponent->GetPreferences()));
+	return NewGuid;
 }
 
-void UQuestCreationComponent::PauseQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
+UQuest* UQuestCreationComponent::FinishQuestGeneration(const FGuid& Id)
 {
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("FINAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, QuestProviderComponent->GetQuest(),  QuestProviderComponent->GetPreferences()), IterationsSinceLastGlobalImprovement);
-	IterationsSinceLastGlobalImprovement = 0;
-	QuestRequesters.Remove(QuestProviderComponent);
-	OnQuestCompleted.Broadcast(QuestProviderComponent->GetQuest());
+	const FQuestGenerationSnapshot& Snapshot = GenerationSnapshots.FindAndRemoveChecked(Id);
+	OnQuestCompleted.Broadcast(Snapshot);
+	GEngine->ForceGarbageCollection(true);
+	return Snapshot.GlobalMaximum;
 }
 
-int UQuestCreationComponent::GetTotalIterations() const
+void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapshot)
 {
-	return TotalIterations;
+	Snapshot.TotalIterations++;
+	Snapshot.IterationsSinceLastGlobalImprovement++;
+	Snapshot.IterationsSinceLastLocalImprovement++;
+	
+	OnIterationUpdated.Broadcast(Snapshot);
+
+	//Todo: Save the action count in the snapshot
+	const int32 QuestActionCount = !Snapshot.GlobalMaximum->IsEmpty() ? Snapshot.GlobalMaximum->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
+	if (Snapshot.IterationsSinceLastLocalImprovement >= FMath::Max(MinLocalIterations, Snapshot.TotalIterations * AbandonBias))
+	{
+		Snapshot.LocalMaximum->Clear();
+		AssignRandomActions(Snapshot.Candidate, QuestActionCount);
+		Snapshot.IterationsSinceLastLocalImprovement = 0;
+	}
+	else
+	{
+		MutateQuest(Snapshot.Candidate, Snapshot.LocalMaximum, QuestActionCount, Snapshot.GenerationData.Get());
+	}
+	if (Snapshot.Candidate->IsEmpty())
+	{
+		Snapshot.NullQuestCount++;
+		return;
+	}
+	UQuest* NewLocalMaximum = UQuestFitnessUtils::SelectFittest(this, Snapshot.LocalMaximum, Snapshot.Candidate, Snapshot.GenerationData.Get());
+
+	if (Snapshot.LocalMaximum->CopyFrom(NewLocalMaximum))
+	{
+		Snapshot.IterationsSinceLastLocalImprovement = 0;
+	}
+	
+	UQuest* NewGlobalMaximum = UQuestFitnessUtils::SelectFittest(this, Snapshot.GlobalMaximum, NewLocalMaximum, Snapshot.GenerationData.Get());
+	
+	if (Snapshot.GlobalMaximum->CopyFrom(NewGlobalMaximum))
+	{
+		UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Current Fitness: [%f]."), UQuestFitnessUtils::CalculateWeightedFitness(this, NewGlobalMaximum, Snapshot.GenerationData.Get()));
+		OnQuestUpdated.Broadcast(Snapshot);
+		Snapshot.IterationsSinceLastGlobalImprovement = 0;
+	}
 }
 
-int UQuestCreationComponent::GetLocalIterationIndex() const
+void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	return IterationsSinceLastLocalImprovement;
-}
-
-int UQuestCreationComponent::GetNullQuestCount() const
-{
-	return NullQuestCount;
-}
-
-void UQuestCreationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                            FActorComponentTickFunction* ThisTickFunction)
-{
-
 	const double StartTickTime = FPlatformTime::Seconds();
 	while (FPlatformTime::Seconds() - StartTickTime < MaxTickTime)
 	{
-		for (UQuestProviderComponent* Provider : QuestRequesters)
+		for (auto& Kvp : GenerationSnapshots)
 		{
-			TotalIterations++;
-			IterationsSinceLastGlobalImprovement++;
-			IterationsSinceLastLocalImprovement++;
-			OnIterationUpdated.Broadcast(this);
-			UQuest* GlobalMaximumQuest = Provider->GetQuest();
-			const int32 QuestActionCount = IsValid(GlobalMaximumQuest) ? GlobalMaximumQuest->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
-			UQuest* NewQuest;
-			if (IterationsSinceLastLocalImprovement >= TotalIterations / 4)
-			{
-				LocalMaximumQuest = nullptr;
-				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM REACHED after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), IterationsSinceLastLocalImprovementImprovement);
-
-				NewQuest = CreateRandomQuest(QuestActionCount, Provider);
-				IterationsSinceLastLocalImprovement = 0;
-			}
-			else
-			{
-				NewQuest = MutateQuest(LocalMaximumQuest.Get(), QuestActionCount, Provider);
-			}
-			if (!IsValid(NewQuest))
-			{
-				NullQuestCount++;
-				continue;
-			}
-			NewQuest->SetProviderData(Provider->GetPreferences());
-			UQuest* NewLocalMaximum = UQuestFitnessUtils::SelectFittest(this, LocalMaximumQuest.Get(), NewQuest, Provider->GetPreferences());
-
-			if (NewQuest != NewLocalMaximum)
-			{
-				NewQuest->ConditionalBeginDestroy();
-				NewQuest = nullptr;
-			}
-			else
-			{
-				if (LocalMaximumQuest.IsValid())
-				{
-					LocalMaximumQuest->ConditionalBeginDestroy();
-					LocalMaximumQuest.Reset();
-				}
-			}
-			LocalMaximumQuest = NewLocalMaximum;
-
-			UQuest* NewGlobalMaximum = UQuestFitnessUtils::SelectFittest(this, GlobalMaximumQuest, NewLocalMaximum, Provider->GetPreferences());
-			if (NewQuest == NewGlobalMaximum)
-			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d global iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateWeightedFitness(this, NewGlobalMaximum, Provider->GetPreferences()), IterationsSinceLastGlobalImprovement);
-				OnQuestUpdated.Broadcast(NewGlobalMaximum);
-
-				IterationsSinceLastGlobalImprovement = 0;
-				if (IsValid(GlobalMaximumQuest))
-				{
-					GlobalMaximumQuest->ConditionalBeginDestroy();
-					GlobalMaximumQuest = nullptr;
-				}
-			}
-			else if (NewQuest == NewLocalMaximum)
-			{
-				//UE_LOG(LogProceduralQuests, Verbose, TEXT("LOCAL MAXIMUM | Timestamp: %f | Current Fitness: [%f] after %d local iterations."), static_cast<float>(FPlatformTime::Seconds() - StartTimestamp), UQuestFitnessUtils::CalculateFitnessByDesiredConditions(this, NewLocalMaximum, Provider->GetPreferences()),  UQuestFitnessUtils::CalculateWeightedFitness(this, NewLocalMaximum, Provider->GetPreferences()), IterationsSinceLastLocalImprovement);
-				IterationsSinceLastLocalImprovement = 0;
-			}
-
-			if (UQuestFitnessUtils::CalculateWeightedFitness(this, NewGlobalMaximum, Provider->GetPreferences()) < UQuestFitnessUtils::CalculateWeightedFitness(this, GlobalMaximumQuest, Provider->GetPreferences()))
-			{
-				UE_LOG(LogProceduralQuests, Verbose, TEXT("SOMETHING IS WRONG!"));			
-			}
-
-			if (NewGlobalMaximum)
-
-			Provider->SetQuest(NewGlobalMaximum);		
+			ProceedGeneration(Kvp.Value);
 		}
 	}	
 }
 
-UQuest* UQuestCreationComponent::CreateRandomQuest(const uint32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
-{	
-	if (!ensureMsgf(CachedPossibleQuestActions.Num() != 0, TEXT("Quest actions have not been initialized")))
-		return nullptr;
+void UQuestCreationComponent::AssignRandomActions(UQuest* InOutQuest, const uint32 Count) const
+{
+	InOutQuest->Clear();
 
-	TMap<uint32, uint32> SimulatedConditionResolutions;
-	UQuest* RandomQuest = NewObject<UQuest>(this);
-	RandomQuest->SetProviderData(ProviderComponent->GetPreferences());
-	for (uint32 QuestIndex = 0; QuestIndex < QuestActionCount; QuestIndex++)
+	TMap<uint32, uint32> SimulatedResolutions;
+	for (uint32 QuestIndex = 0; QuestIndex < Count; QuestIndex++)
 	{
-		if (!TryApplyRandomNextQuestAction(RandomQuest, SimulatedConditionResolutions))
+		if (!TryApplyRandomNextQuestAction(InOutQuest, SimulatedResolutions))
 		{
-			RandomQuest->ConditionalBeginDestroy();
-			return nullptr;
+			InOutQuest->Clear();
+			return;
 		}
 	}
-	
-	return RandomQuest;
+
+	ensure(InOutQuest->GetActions().Num() != 1);
 }
 
-UQuest* UQuestCreationComponent::MutateQuest(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
+void UQuestCreationComponent::MutateQuest(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData)
 {
 	const int MutationIndex = FMath::RandRange(0,4);
 	if (MutationIndex == 0)
 	{
-		return MutateQuestByScramblingActions(BaseQuest, QuestActionCount, ProviderComponent);
+		MutateQuestByScramblingActions(InOutQuest, BaseQuest, QuestActionCount, GenerationData);
 	}
 	else
 	{
-		return MutateQuestByReplaceAction(BaseQuest,QuestActionCount, ProviderComponent);
+		MutateQuestByReplaceAction(InOutQuest, BaseQuest,QuestActionCount, GenerationData);
 	}
+	ensure(InOutQuest->GetActions().Num() != 1);
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent * ProviderComponent)
+void UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData)
 {
-	if (!IsValid(BaseQuest))
+	if (BaseQuest->IsEmpty())
 	{
-		return CreateRandomQuest(QuestActionCount, ProviderComponent);
+		AssignRandomActions(InOutQuest, QuestActionCount);
+		return;
 	}
-	UQuest* NewQuest = NewObject<UQuest>(this);
-	NewQuest->SetProviderData(ProviderComponent->GetPreferences());
+
+	InOutQuest->Clear();
 	
 	const int MutatedActionIndex = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 
@@ -181,51 +138,56 @@ UQuest* UQuestCreationComponent::MutateQuestByReplaceAction(UQuest* BaseQuest, c
 	for (int ActionIndex = 0; ActionIndex < MutatedActionIndex; ActionIndex++)
 	{
 		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
-		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, InOutQuest);
 		DuplicateAction->InitializeAsInstance();
-		TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions);
+		ensure(TryApplyNextQuestAction(InOutQuest, DuplicateAction, SimulatedConditionResolutions));
 	}
 
 	//Apply random next action as mutation
-	if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
+	if (!TryApplyRandomNextQuestAction(InOutQuest, SimulatedConditionResolutions))
 	{
-		return nullptr;
+		AssignRandomActions(InOutQuest, QuestActionCount);
+		return;
 	}
 
 	if (MutatedActionIndex == BaseQuest->GetActions().Num()-1)
 	{
-		return NewQuest;
+		AssignRandomActions(InOutQuest, QuestActionCount);
+		return;
 	}
 
 	//Initialize last few actions: Try to keep them the same, otherwise change them
 	for (int ActionIndex = MutatedActionIndex+1; ActionIndex < BaseQuest->GetActions().Num(); ActionIndex++)
 	{
 		const UQuestAction* BaseAction = BaseQuest->GetActions()[ActionIndex];
-		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+
+		//Todo: Don't duplicate but store this in some database!
+		UQuestAction* DuplicateAction = DuplicateObject(BaseAction, InOutQuest);
 		DuplicateAction->InitializeAsInstance();
-		if (TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions))
+		if (TryApplyNextQuestAction(InOutQuest, DuplicateAction, SimulatedConditionResolutions))
 		{
 			continue;
 		}
-		if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
+
+		DuplicateAction->ConditionalBeginDestroy();
+		DuplicateAction = nullptr;
+		
+		if (!TryApplyRandomNextQuestAction(InOutQuest, SimulatedConditionResolutions))
 		{
-			DuplicateAction->ConditionalBeginDestroy();
-			DuplicateAction = nullptr;
-			return nullptr;
+			AssignRandomActions(InOutQuest, QuestActionCount);
+			return;
 		}
 	}
-
-	return NewQuest;
 }
 
-UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQuest, const int32 QuestActionCount, const UQuestProviderComponent* ProviderComponent)
+void UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData)
 {
-	if (!IsValid(BaseQuest))
+	InOutQuest->Clear();
+	if (BaseQuest->IsEmpty())
     {
-		return CreateRandomQuest(QuestActionCount, ProviderComponent);
+		AssignRandomActions(InOutQuest, QuestActionCount);
+		return;
     }
-    UQuest* NewQuest = NewObject<UQuest>(this);
-	NewQuest->SetProviderData(ProviderComponent->GetPreferences());
     
     const int SwapIndexA = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
 	const int SwapIndexB = FMath::RandRange(0, BaseQuest->GetActions().Num()-1);
@@ -239,19 +201,23 @@ UQuest* UQuestCreationComponent::MutateQuestByScramblingActions(UQuest* BaseQues
     		ActionIndex == SwapIndexA ? BaseQuest->GetActions()[SwapIndexB] :
     		ActionIndex == SwapIndexB ? BaseQuest->GetActions()[SwapIndexA] :   	
     		BaseQuest->GetActions()[ActionIndex];
-    	UQuestAction* DuplicateAction = DuplicateObject(BaseAction, NewQuest);
+
+    	//Todo: Save these actions somewhere else (e.g. database!)
+    	UQuestAction* DuplicateAction = DuplicateObject(BaseAction, InOutQuest);
     	DuplicateAction->InitializeAsInstance();
-    	if (TryApplyNextQuestAction(NewQuest, DuplicateAction, SimulatedConditionResolutions))
+    	if (TryApplyNextQuestAction(InOutQuest, DuplicateAction, SimulatedConditionResolutions))
     	{
     		continue;
     	}
-    	if (!TryApplyRandomNextQuestAction(NewQuest, SimulatedConditionResolutions))
+		DuplicateAction->ConditionalBeginDestroy();
+    	DuplicateAction = nullptr;
+    	
+    	if (!TryApplyRandomNextQuestAction(InOutQuest, SimulatedConditionResolutions))
     	{
-    		return nullptr;
+    		AssignRandomActions(InOutQuest, QuestActionCount);
+    		return;
     	}
     }
-   
-    return NewQuest;
 }
 
 bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const
@@ -265,7 +231,6 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 			return true;
 		}
 
-		ActionCandidate->MarkPendingKill();
 		ActionCandidate->ConditionalBeginDestroy();
 		ActionCandidate = nullptr;
 	}

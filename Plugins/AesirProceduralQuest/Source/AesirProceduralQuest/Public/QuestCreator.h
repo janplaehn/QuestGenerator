@@ -24,8 +24,5 @@ class AESIRPROCEDURALQUEST_API IQuestCreator
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	UQuestDataCreationComponent* GetQuestDataCreationComponent() const;
-
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	UQuestCreationComponent* GetQuestCreationComponent() const;
 };
