@@ -31,10 +31,10 @@ EConditionType UPlayerIsAtLocationCondition::GetConditionType_Implementation() c
 	return EConditionType::State;
 }
 
-void UPlayerIsAtLocationCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UPlayerIsAtLocationCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(LocationName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(LocationName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UPlayerIsAtLocationCondition::GetParameters() const

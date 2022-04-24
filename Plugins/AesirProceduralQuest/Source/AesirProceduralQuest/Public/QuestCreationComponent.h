@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "QuestGenerationSnapshot.h"
 #include "QuestProviderComponent.h"
-#include "QuestProviderPreferences.h"
 #include "Components/ActorComponent.h"
 #include "QuestCreationComponent.generated.h"
 
+class UQuestActionDatabaseComponent;
 class UQuest;
 class UQuestCreationComponent;
 
@@ -25,7 +24,7 @@ public:
 	UQuestCreationComponent();
 
 	UFUNCTION(BlueprintCallable)
-	void Initialize();
+	void InjectDependencies(UQuestActionDatabaseComponent* InActionDatabase);
 	
 	FGuid RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
 	
@@ -50,22 +49,14 @@ protected:
 	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot);
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	/**
-	* DataTable that holds all possible quest actions
-	* */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = ( RowType="QuestActionRow" ))
-	UDataTable* QuestActionDataTable;
 
 	void AssignRandomActions(UQuest* InOutQuest, const uint32 Count) const;
 
-	void MutateQuest(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount, UQuestProviderPreferences* GenerationData);
+	void MutateQuest(UQuest* Mutation, UQuest* BaseQuest) const;
 
-	void MutateQuestByReplaceAction(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount,
-	                                UQuestProviderPreferences* GenerationData);
+	void MutateQuestByReplaceAction(UQuest* Mutation, UQuest* BaseQuest) const;
 
-	void MutateQuestByScramblingActions(UQuest* InOutQuest, UQuest* BaseQuest, const int32 QuestActionCount,
-	                                    UQuestProviderPreferences* GenerationData);
+	void MutateQuestByScramblingActions(UQuest* Mutation, UQuest* BaseQuest) const;
 
 	UPROPERTY(EditAnywhere)
 	FInt32Range QuestActionCountRange = FInt32Range(5,10);
@@ -78,14 +69,10 @@ protected:
 
 	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
-	bool TryApplyNextQuestAction(UQuest* Quest, UQuestAction* ActionCandidate, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
-
-	UQuestAction* GetRandomQuestAction(UObject* Outer = nullptr) const;
-
-	void InitPossibleQuestActions();
+	bool TryApplyNextQuestAction(UQuest* Quest, TWeakObjectPtr<UQuestAction> ActionCandidate, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
 	UPROPERTY(Transient)
-	TArray<UQuestAction*> CachedPossibleQuestActions;
-
 	TMap<FGuid, FQuestGenerationSnapshot> GenerationSnapshots;
+
+	TWeakObjectPtr<UQuestActionDatabaseComponent> ActionDatabase;
 };

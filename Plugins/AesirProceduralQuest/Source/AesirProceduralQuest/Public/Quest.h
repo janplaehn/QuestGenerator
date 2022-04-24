@@ -20,16 +20,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsResolved(const UObject* WorldContextObject) const override;
 
+	virtual void ClearQuest();
+
 	virtual bool CopyFrom(const UQuest* OtherQuest);
 
-    virtual void AddQuestAction(UQuestAction* NewAction);
-
-	virtual void Clear();
+    virtual void AddQuestAction(TWeakObjectPtr<UQuestAction> NewAction);
 
 	bool IsEmpty() const;
 
 	UFUNCTION(BlueprintPure)
-	const TArray<UQuestAction*>& GetActions() const;
+	TArray<UQuestAction*> BlueprintGetActions() const;
+
+	TArray<TWeakObjectPtr<UQuestAction>> GetActions() const;
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 
@@ -45,8 +47,7 @@ public:
 	UQuestProviderPreferences* GetProviderData() const;
 
 protected:
-	UPROPERTY(Transient)
-	TArray<UQuestAction*> Actions;
+	TArray<TWeakObjectPtr<UQuestAction>> Actions;
 
 	UPROPERTY(Transient)
 	UQuestProviderPreferences* ProviderData;

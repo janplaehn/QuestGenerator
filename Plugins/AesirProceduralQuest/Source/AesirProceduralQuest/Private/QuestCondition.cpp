@@ -2,29 +2,10 @@
 
 #include "QuestCondition.h"
 
-void UQuestCondition::PostInitProperties()
+void UQuestCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	Super::PostInitProperties();
-	ConditionId = GenerateId();
-	StateId = GenerateStateId();
-}
 
-void UQuestCondition::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-	ConditionId = GenerateId();
-	StateId = GenerateStateId();
-}
-
-void UQuestCondition::PostLoad()
-{
-	Super::PostLoad();
-	ConditionId = GenerateId();
-	StateId = GenerateStateId();
-}
-
-void UQuestCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
-{
+	//Todo: Move this o InitializeFuncion and call InjectParameters separately. Ids shouldnt be generated in this function
 	ConditionId = GenerateId();
 	StateId = GenerateStateId();
 }

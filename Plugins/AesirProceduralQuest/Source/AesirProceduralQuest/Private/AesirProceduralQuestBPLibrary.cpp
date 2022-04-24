@@ -38,19 +38,12 @@ TArray<UObject*> UAesirProceduralQuestBPLibrary::LoadObjectLibrary(TSubclassOf<U
 	return Assets;
 }
 
-void UAesirProceduralQuestBPLibrary::InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters)
+void UAesirProceduralQuestBPLibrary::InjectNameParameter(FName& InOutName, const TMap<FName, FName>& ParameterValues)
 {
-	const auto FoundParameter = Parameters.FindByPredicate([InOutName](UQuestParameter* Parameter)
+	if (const auto FoundValue = ParameterValues.Find(InOutName))
 	{
-		return InOutName == Parameter->GetParameterName();
-	});
-
-	if (FoundParameter == nullptr)
-	{
-		return;
+		InOutName = *FoundValue;
 	}
-
-	InOutName = (*FoundParameter)->GetValueAsName();
 }
 
 void UAesirProceduralQuestBPLibrary::DebugLogQuest(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences)
@@ -93,9 +86,9 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 	const UQuest* Quest = Cast<UQuest>(Action);
 	if (IsValid(Quest))
 	{
-		for (const UQuestAction* QuestAction : Quest->GetActions())
+		for (const TWeakObjectPtr<UQuestAction>& QuestAction : Quest->GetActions())
 		{
-			DebugLogAction(QuestAction, Indentation + 1);
+			DebugLogAction(QuestAction.Get(), Indentation + 1);
 		}
 	}
 }
@@ -125,7 +118,7 @@ FString UAesirProceduralQuestBPLibrary::CreateOpenAiPrompt(const UQuest* Quest)
 	OutString += LINE_TERMINATOR;
 
 
-	const TArray<UQuestAction*>& Actions = Quest->GetActions();
+	const TArray<TWeakObjectPtr<UQuestAction>>& Actions = Quest->GetActions();
 	
 	for (int I = 0; I < Actions.Num(); I++)
 	{

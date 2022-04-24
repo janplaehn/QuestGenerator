@@ -44,11 +44,11 @@ EConditionType UItemIsAtLocationCondition::GetConditionType_Implementation() con
 	return EConditionType::State;
 }
 
-void UItemIsAtLocationCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UItemIsAtLocationCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(LocationName, Parameters);
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(LocationName, ParameterValues);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UItemIsAtLocationCondition::GetParameters() const

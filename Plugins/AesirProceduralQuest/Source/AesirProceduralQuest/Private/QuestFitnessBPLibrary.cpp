@@ -93,8 +93,8 @@ float UQuestFitnessUtils::CalculateFitnessByAffinity(UQuest* Quest, const UQuest
 		return 0.0f;
 	}
 	float AverageAffinityMatch = 0;
-	const TArray<UQuestAction*>& Actions = Quest->GetActions();
-	for (const UQuestAction* Action : Actions)
+	const TArray<TWeakObjectPtr<UQuestAction>>& Actions = Quest->GetActions();
+	for (const TWeakObjectPtr<UQuestAction> Action : Actions)
 	{
 		float NewAffinityMatch;
 		if (Action->CharacterImpact.Character.IsNone())
@@ -131,7 +131,7 @@ float UQuestFitnessUtils::CalculateFitnessByIntentionality(const UQuest* Quest)
 	{
 		return 0.0f;
 	}
-	const TArray<UQuestAction*>& Actions = Quest->GetActions();
+	const TArray<TWeakObjectPtr<UQuestAction>>& Actions = Quest->GetActions();
 	if (!Actions.Num())
 	{
 		return 0.0f;

@@ -23,10 +23,10 @@ uint32 UIsAliveCondition::GenerateId() const
 	return CombinedHash;
 }
 
-void UIsAliveCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UIsAliveCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UIsAliveCondition::GetParameters() const
