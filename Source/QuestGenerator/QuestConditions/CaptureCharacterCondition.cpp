@@ -20,10 +20,10 @@ uint32 UCaptureCharacterCondition::GenerateId() const
 	return HashCombine(GetTypeHash(GetClass()), TextKeyUtil::HashString(CharacterName.ToString()));
 }
 
-void UCaptureCharacterCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UCaptureCharacterCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {	
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UCaptureCharacterCondition::GetParameters() const

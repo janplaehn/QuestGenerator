@@ -20,13 +20,11 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UQuestAction* MakeRandomInstance(UObject* Outer) const;
+	void MakeRandomParameters(uint32& OutId, TMap<FName, FName>& OutParameterValues) const;
 
-	virtual void InitializeAsInstance();
+	virtual void InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues);
 
-	virtual void InjectParameters();
-
-	uint32 GetPossibleInstanceCount() const;
+	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 	
 	virtual bool IsAvailable(const UObject* WorldContextObject) const;
 
@@ -47,9 +45,11 @@ public:
 	FCharacterAffinity CharacterImpact;
 
 	uint32 GetId() const;
+
+	uint32 OwnerCount = 0;
 	
 protected:
-	FText MakeFormattedHumanReadableName() const;
+	FText MakeFormattedHumanReadableName(const TMap<FName, FName>& ParameterValues) const;
 	
 	UPROPERTY(EditDefaultsOnly, Instanced)
 	TArray<UQuestCondition*> PreConditions;
@@ -63,10 +63,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, Instanced)
 	TArray<UQuestParameter*> Parameters;
-
-	TArray<FName> ParameterValues;
-
-	void GenerateId();
 
 	uint32 Id = 0;
 };

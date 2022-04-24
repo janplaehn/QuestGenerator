@@ -1,57 +1,40 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "QuestAction.h"
-
 #include "AesirProceduralQuestBPLibrary.h"
 #include "Quest.h"
 
-UQuestAction* UQuestAction::MakeRandomInstance(UObject* Outer) const
-{
-	UQuestAction* RandomInstance = DuplicateObject(this, Outer);
-	RandomInstance->InitializeAsInstance();
-	return RandomInstance;
-}
 
-void UQuestAction::InitializeAsInstance()
+void UQuestAction::MakeRandomParameters(uint32& OutId, TMap<FName, FName>& OutParameterValues) const
 {
-	for (int ParameterIndex = 0; ParameterIndex < Parameters.Num(); ParameterIndex++)
+	OutId = GetTypeHash(GetClass());
+	
+	for (UQuestParameter* Param : Parameters)
 	{
-		if (!ParameterValues.IsValidIndex(ParameterIndex))
-		{
-			Parameters[ParameterIndex]->Initialize(this);
-		}
-		else
-		{
-			Parameters[ParameterIndex]->SetValueDirectly(ParameterValues[ParameterIndex]);
-		}
+		const FName& Value = Param->GenerateValue();
+		OutParameterValues.Add(Param->Name, Value);
+		OutId = HashCombine(OutId, GetTypeHash(Value));
 	}
-
-	InjectParameters();
 }
 
-void UQuestAction::InjectParameters()
+void UQuestAction::InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterImpact.Character, Parameters);
+	Id = InId;
+	InjectParameters(ParameterValues);
+}
+
+void UQuestAction::InjectParameters(const TMap<FName, FName>& ParameterValues)
+{
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterImpact.Character, ParameterValues);
 	for (UQuestCondition* Condition : PreConditions)
 	{
-		Condition->InjectParameters(Parameters);
+		Condition->InjectParameters(ParameterValues);
 	}
 	for (UQuestCondition* Condition : PostConditions)
 	{
-		Condition->InjectParameters(Parameters);
+		Condition->InjectParameters(ParameterValues);
 	}
-	ReadableDescription = MakeFormattedHumanReadableName();
-	GenerateId();
-}
-
-uint32 UQuestAction::GetPossibleInstanceCount() const
-{
-	uint32 OutInstanceCount = 1;
-	for (UQuestParameter* Parameter : Parameters)
-	{
-		OutInstanceCount *= Parameter->GetInstanceCount();
-	}
-	return OutInstanceCount;
+	ReadableDescription = MakeFormattedHumanReadableName(ParameterValues);
 }
 
 bool UQuestAction::IsAvailable(const UObject* WorldContextObject) const
@@ -131,25 +114,15 @@ UQuest* UQuestAction::GetOwningQuest() const
 
 uint32 UQuestAction::GetId() const
 {
-	const FString DescriptionString = MakeFormattedHumanReadableName().ToString();
-	return TextKeyUtil::HashString(DescriptionString);
+	return Id;
 }
 
-FText UQuestAction::MakeFormattedHumanReadableName() const
+FText UQuestAction::MakeFormattedHumanReadableName(const TMap<FName, FName>& ParameterValues) const
 {
 	FText OutText = ReadableDescription;
-	for (UQuestParameter* Parameter : Parameters)
+	for (const auto Kvp : ParameterValues)
 	{
-		FString ParameterName = Parameter->GetParameterName().ToString();
-		FText ValueAsName = FText::FromName(Parameter->GetValueAsName());
-		OutText = FText::FormatNamed(OutText, *ParameterName, ValueAsName);
+		OutText = FText::FormatNamed(OutText, *Kvp.Key.ToString(), FText::FromName(Kvp.Value));
 	}
 	return OutText;	
-}
-
-void UQuestAction::GenerateId()
-{
-	Id = GetTypeHash(GetClass());
-	const FString DescriptionString = MakeFormattedHumanReadableName().ToString();
-	HashCombine(Id, TextKeyUtil::HashString(DescriptionString));
 }

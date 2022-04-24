@@ -14,7 +14,7 @@ bool UQuest::IsAvailable(const UObject* WorldContextObject) const
 
 bool UQuest::IsResolved(const UObject* WorldContextObject) const
 {
-	for (const TSoftObjectPtr<UQuestAction> Action : Actions)
+	for (const TWeakObjectPtr<UQuestAction>& Action : Actions)
 	{
 		if (!Action->IsResolved(WorldContextObject))
 		{
@@ -24,33 +24,13 @@ bool UQuest::IsResolved(const UObject* WorldContextObject) const
 	return true;
 }
 
-bool UQuest::CopyFrom(const UQuest* OtherQuest)
+void UQuest::ClearQuest()
 {
-	if (OtherQuest == this)
+	Actions.RemoveAll([](TWeakObjectPtr<UQuestAction>& Action)
 	{
-		return false;
-	}
-	Clear();
-	for (auto Action : OtherQuest->Actions)
-	{
-		//Todo: Don't duplicate these objects. Store them in a database instead and unload them if no longer needed!
-		Actions.Add(DuplicateObject(Action, this));
-	}
-	return true;
-}
-
-void UQuest::AddQuestAction(UQuestAction* NewAction)
-{
-	Actions.Add(NewAction);
-}
-
-void UQuest::Clear()
-{
-	for (auto Action : Actions)
-	{
-		Action->ConditionalBeginDestroy();
-	}
-	Actions.Empty();
+		Action->OwnerCount--;
+		return true;
+	});
 	
 	//Todo: Copy Fitness from other quest? (Better: have this stored in the Snapshot anyways)
 	CachedFitnessByAffinity = -1;
@@ -58,12 +38,44 @@ void UQuest::Clear()
 	CachedFitnessByIntentionality = -1;
 }
 
+bool UQuest::CopyFrom(const UQuest* OtherQuest)
+{
+	if (OtherQuest == this)
+	{
+		return false;
+	}
+	ClearQuest();
+	Actions.Reserve(OtherQuest->Actions.Num());
+	for (TWeakObjectPtr<UQuestAction> Action : OtherQuest->GetActions())
+	{
+		AddQuestAction(Action);
+	}
+	return true;
+}
+
+void UQuest::AddQuestAction(TWeakObjectPtr<UQuestAction> NewAction)
+{
+	NewAction->OwnerCount++;
+	Actions.Add(NewAction);
+}
+
 bool UQuest::IsEmpty() const
 {
 	return !Actions.Num();
 }
 
-const TArray<UQuestAction*>& UQuest::GetActions() const
+TArray<UQuestAction*> UQuest::BlueprintGetActions() const
+{
+	TArray<UQuestAction*> OutActions;
+	OutActions.Reserve(Actions.Num());
+	for (auto Action : Actions)
+	{
+		OutActions.Add(Action.Get());
+	}
+	return OutActions;
+}
+
+TArray<TWeakObjectPtr<UQuestAction>> UQuest::GetActions() const
 {
 	return Actions;
 }
@@ -71,7 +83,7 @@ const TArray<UQuestAction*>& UQuest::GetActions() const
 TArray<UQuestCondition*> UQuest::GetPostConditions() const
 {
 	TArray<UQuestCondition*> OutPostConditions;
-	for (const UQuestAction* Action : Actions)
+	for (const TWeakObjectPtr<UQuestAction> Action : Actions)
 	{
 		OutPostConditions.Append(Action->GetPostConditions());
 	}
