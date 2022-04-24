@@ -67,31 +67,11 @@ UQuestAction* UQuestActionDatabaseComponent::GetRandomAction()
 		return *ExistingAction;
 	}
 
+	//Todo: Call this from somewhere else!
 	//Clean up if we have too many instances
 	// if (ActionInstances.Num() > MaxNumInstancesToHold)
 	// {
-	// 	uint32 RemovedInstances = 0;
-	// 	for (auto It = ActionInstances.CreateConstIterator(); It; ++It)
-	// 	{
-	// 		if (!IsValid(It.Value()))
-	// 		{
-	// 			ActionInstances.Remove(It.Key());
-	// 			RemovedInstances++;
-	// 		}
-	// 		else if (!It.Value()->OwnerCount)
-	// 		{
-	// 			It.Value()->RemoveFromRoot();
-	// 			It.Value()->ConditionalBeginDestroy();
-	// 			ActionInstances.Remove(It.Key());
-	// 			RemovedInstances++;
-	// 		}
-	//
-	// 		if (RemovedInstances > 10)
-	// 		{
-	// 			break;
-	// 		}
-	// 	}
-	// 	GEditor->ForceGarbageCollection(true);
+	//		CleanActionInstances();
 	// }
 
 	UQuestAction* NewAction = DuplicateObject(Archetypes[RandomIndex], this);
@@ -100,5 +80,23 @@ UQuestAction* UQuestActionDatabaseComponent::GetRandomAction()
 	
 	ActionInstances.Add(NewId, NewAction);
 	return NewAction;
+}
+
+void UQuestActionDatabaseComponent::CleanActionInstances()
+{
+		for (auto It = ActionInstances.CreateConstIterator(); It; ++It)
+		{
+			if (!IsValid(It.Value()))
+			{
+				ActionInstances.Remove(It.Key());
+			}
+			else if (!It.Value()->OwnerCount)
+			{
+				It.Value()->RemoveFromRoot();
+				It.Value()->ConditionalBeginDestroy();
+				ActionInstances.Remove(It.Key());
+			}
+		}
+		GEditor->ForceGarbageCollection();
 }
 

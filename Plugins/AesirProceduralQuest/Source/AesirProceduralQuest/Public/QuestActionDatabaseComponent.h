@@ -28,6 +28,9 @@ public:
 		
 	UQuestAction* GetRandomAction();
 
+	//Todo: Call this when applicable!
+	void CleanActionInstances();
+
 protected:
 	UPROPERTY(EditAnywhere)
 	int32 MaxNumInstancesToHold = 400;
