@@ -31,7 +31,7 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 
 	static void DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation = 0);
 	
-	static void InjectNameParameter(FName& InOutName, const TArray<UQuestParameter*>& Parameters);
+	static void InjectNameParameter(FName& InOutName, const TMap<FName, FName>& ParameterValues);
 
 	UFUNCTION(BlueprintCallable, Category = "Procedural Quest Library")
 	static FString CreateOpenAiPrompt(const UQuest* Quest);

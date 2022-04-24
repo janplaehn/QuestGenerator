@@ -24,10 +24,10 @@ uint32 UHasItemCondition::GenerateId() const
 	return CombinedHash;
 }
 
-void UHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UHasItemCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UHasItemCondition::GetParameters() const

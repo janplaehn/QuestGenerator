@@ -23,17 +23,11 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 	GENERATED_BODY()
 
 public:
-	virtual void PostInitProperties() override;
-
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
-	virtual void PostLoad() override;
-	
 	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
 	
-	virtual void InjectParameters(const TArray<UQuestParameter*>& Parameters);
+	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 
 	virtual TSet<FName> GetParameters() const {return TSet<FName>();}
 
@@ -42,6 +36,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool bMatchWithConditionHistory = true;
+
+	virtual uint32 GenerateId() const;
+	virtual uint32 GenerateStateId() const;
 
 	uint32 GetId() const;
 	uint32 GetStateId() const;
@@ -53,10 +50,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	EConditionType GetConditionType() const;
-
-protected:
-	virtual uint32 GenerateId() const;
-	virtual uint32 GenerateStateId() const;
 
 private:
 	UPROPERTY(VisibleAnywhere)

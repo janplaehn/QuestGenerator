@@ -38,11 +38,11 @@ uint32 UCharacterHasItemCondition::GenerateId() const
 	return CombinedHash;
 }
 
-void UCharacterHasItemCondition::InjectParameters(const TArray<UQuestParameter*>& Parameters)
+void UCharacterHasItemCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, Parameters);
-	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, Parameters);
-	Super::InjectParameters(Parameters);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, ParameterValues);
+	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
+	Super::InjectParameters(ParameterValues);
 }
 
 TSet<FName> UCharacterHasItemCondition::GetParameters() const

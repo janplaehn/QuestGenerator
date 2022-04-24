@@ -14,15 +14,9 @@ class AESIRPROCEDURALQUEST_API UQuestParameter_RandomFromTable : public UQuestPa
 {
 	GENERATED_BODY()
 public:
-	virtual void Initialize(const UQuestAction* Context) override;
-
-	virtual FName GetValueAsName() override;
-
-	virtual void SetValueDirectly(const FName Value) override;
+	virtual FName GenerateValue() override;
 	
 protected:
 	UPROPERTY(EditAnywhere)
 	UDataTable* DataTable;
-
-	FName TableRowName = FName();
 };
