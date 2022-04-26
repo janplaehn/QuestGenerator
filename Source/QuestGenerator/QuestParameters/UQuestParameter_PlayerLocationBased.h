@@ -13,4 +13,6 @@ class QUESTGENERATOR_API UQuestParameter_PlayerLocationBased : public UQuestPara
 	
 protected:
 	bool FindPlayerLocation(const UQuest* Quest, FName& OutLocationName) const;
+
+	TArray<FName> FindReceivedItems(const UQuest* Quest) const;
 };

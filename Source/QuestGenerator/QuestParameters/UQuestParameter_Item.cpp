@@ -30,6 +30,8 @@ bool UQuestParameter_Item::GenerateValueFromWorldState(const UQuest* Quest, FNam
 		for (const auto& Kvp : WorldStateComponent->CharacterHasItemMap)
 			if (CharactersAtLocation.Contains(Kvp.Key))
 				PossibleItems.Append(Kvp.Value.Items);
+
+		PossibleItems.Append(FindReceivedItems(Quest));
 	}
 
 	if (!PossibleItems.Num())

@@ -11,6 +11,6 @@ class QUESTGENERATOR_API UQuestParameter_Item : public UQuestParameter_PlayerLoc
 {
 	GENERATED_BODY()
 	
-protected:
+protected:	
 	virtual bool GenerateValueFromWorldState(const UQuest* Quest, FName& OutValue) const override;
 };

@@ -35,6 +35,7 @@ UQuest* UQuestCreationComponent::FinishQuestGeneration(const FGuid& Id)
 	return Snapshot.GlobalMaximum;
 }
 
+//Todo: Move this function to the snapshot and generate utility functions for Mutation and Creation
 void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapshot)
 {
 	Snapshot.TotalIterations++;
@@ -48,7 +49,6 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 	if (Snapshot.IterationsSinceLastLocalImprovement >= FMath::Max(MinLocalIterations, Snapshot.TotalIterations * AbandonBias))
 	{
 		Snapshot.LocalMaximum->ClearQuest();
-		AssignRandomActions(Snapshot.Candidate, QuestActionCount);
 		Snapshot.IterationsSinceLastLocalImprovement = 0;
 	}
 
