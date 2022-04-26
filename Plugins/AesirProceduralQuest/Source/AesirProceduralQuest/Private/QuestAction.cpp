@@ -13,7 +13,6 @@ void UQuestAction::MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, 
 	for (const auto& Kvp : ParameterMap)
 	{
 		const UQuestParameter* ParameterCDO = Kvp.Value.GetDefaultObject();
-		//Todo: If the condition is negated, we actually might want a completely random value
 		
 		const FName& GeneratedValue = ParameterCDO->GenerateValue(InQuest);
 

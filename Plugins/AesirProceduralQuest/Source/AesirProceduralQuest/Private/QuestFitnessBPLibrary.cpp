@@ -39,9 +39,9 @@ float UQuestFitnessUtils::CalculateWeightedFitness(const UObject* WorldContextOb
 		return 0.0f;
 	}
 
-	const float FitnessByConditions = Quest->GetFitnessByConditions(WorldContextObject) * Preferences->FitnessWeights.ConditionWeight;
-	const float FitnessByIntentionality = Quest->GetFitnessByIntentionality() * Preferences->FitnessWeights.IntentionalityWeight;
-	const float FitnessByAffinity = Quest->GetFitnessByAffinity() * Preferences->FitnessWeights.AffinityWeight;
+	const float FitnessByConditions = CalculateFitnessByDesiredConditions(WorldContextObject, Quest, Preferences) * Preferences->FitnessWeights.ConditionWeight;
+	const float FitnessByIntentionality = CalculateFitnessByIntentionality(Quest) * Preferences->FitnessWeights.IntentionalityWeight;
+	const float FitnessByAffinity = CalculateFitnessByAffinity(Quest, Preferences) * Preferences->FitnessWeights.AffinityWeight;
 	return FitnessByConditions + FitnessByIntentionality + FitnessByAffinity;
 }
 

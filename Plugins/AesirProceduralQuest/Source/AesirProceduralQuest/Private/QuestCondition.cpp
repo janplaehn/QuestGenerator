@@ -5,7 +5,7 @@
 void UQuestCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
 {
 
-	//Todo: Move this o InitializeFuncion and call InjectParameters separately. Ids shouldnt be generated in this function
+	//Todo: Move this to InitializeFunction and call InjectParameters separately. Ids shouldnt be generated in this function
 	ConditionId = GenerateId();
 	StateId = GenerateStateId();
 }

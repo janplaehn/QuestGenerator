@@ -35,12 +35,6 @@ public:
 
 	virtual TArray<UQuestCondition*> GetPostConditions() const override;
 
-	float GetFitnessByConditions(const UObject* Context);
-
-	float GetFitnessByIntentionality();
-
-	float GetFitnessByAffinity();
-
 	void SetProviderData(UQuestProviderPreferences* Data);
 
 	UFUNCTION(BlueprintPure)
@@ -51,10 +45,4 @@ protected:
 
 	UPROPERTY(Transient)
 	UQuestProviderPreferences* ProviderData;
-
-private:
-	//Todo: Don't store this in the quest but move it to the generation-snapshot
-	float CachedFitnessByConditions = -1;
-	float CachedFitnessByIntentionality = -1;
-	float CachedFitnessByAffinity = -1;
 };

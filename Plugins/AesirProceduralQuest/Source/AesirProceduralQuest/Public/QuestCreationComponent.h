@@ -46,7 +46,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MinLocalIterations = 100;
 
-	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot);
+	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot) const;
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

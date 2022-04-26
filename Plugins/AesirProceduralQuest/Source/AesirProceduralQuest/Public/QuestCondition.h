@@ -23,7 +23,6 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 	GENERATED_BODY()
 
 public:
-	//Todo: Instead of the WorldContextObject, provide the QuestController and the QuestProvider!
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
 	

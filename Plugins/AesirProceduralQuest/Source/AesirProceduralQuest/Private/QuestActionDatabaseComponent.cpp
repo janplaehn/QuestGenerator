@@ -56,7 +56,6 @@ UQuestAction* UQuestActionDatabaseComponent::GetSuitableAction(const UQuest* InQ
 {	
 	const int RandomIndex = FMath::RandRange(0, Archetypes.Num() - 1);
 
-	//Todo: don't create an object, calculate an id first (how in the world??)
 	uint32 NewId;
 	TMap<FName, FName> NewParameterValues;
 	TMap<TSubclassOf<UQuestParameter>, TSet<FName>> ParametersByClass;
@@ -67,13 +66,6 @@ UQuestAction* UQuestActionDatabaseComponent::GetSuitableAction(const UQuest* InQ
 	{
 		return *ExistingAction;
 	}
-
-	//Todo: Call this from somewhere else!
-	//Clean up if we have too many instances
-	// if (ActionInstances.Num() > MaxNumInstancesToHold)
-	// {
-	//		CleanActionInstances();
-	// }
 
 	UQuestAction* NewAction = DuplicateObject(Archetypes[RandomIndex], this);
 	NewAction->InitializeAsInstance(NewId, NewParameterValues, ParametersByClass);

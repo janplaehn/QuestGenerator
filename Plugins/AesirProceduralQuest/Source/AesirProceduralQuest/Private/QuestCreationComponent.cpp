@@ -31,12 +31,12 @@ UQuest* UQuestCreationComponent::FinishQuestGeneration(const FGuid& Id)
 {
 	const FQuestGenerationSnapshot& Snapshot = GenerationSnapshots.FindAndRemoveChecked(Id);
 	OnQuestCompleted.Broadcast(Snapshot);
-	GEngine->ForceGarbageCollection(true);
+	ActionDatabase->CleanActionInstances();
 	return Snapshot.GlobalMaximum;
 }
 
 //Todo: Move this function to the snapshot and generate utility functions for Mutation and Creation
-void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapshot)
+void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapshot) const
 {
 	Snapshot.TotalIterations++;
 	Snapshot.IterationsSinceLastGlobalImprovement++;
@@ -49,6 +49,7 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 	if (Snapshot.IterationsSinceLastLocalImprovement >= FMath::Max(MinLocalIterations, Snapshot.TotalIterations * AbandonBias))
 	{
 		Snapshot.LocalMaximum->ClearQuest();
+		Snapshot.LocalMaximumFitness = -1;
 		Snapshot.IterationsSinceLastLocalImprovement = 0;
 	}
 
@@ -61,28 +62,28 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 		MutateQuest(Snapshot.Candidate, Snapshot.LocalMaximum);
 	}
 
-	//For debugging purposes
+	//For debugging purposes only
 	if (Snapshot.Candidate->IsEmpty())
 	{
 		Snapshot.NullQuestCount++;
 		return;
 	}
 	//~For debugging purposes
-	
-	UQuest* NewLocalMaximum = UQuestFitnessUtils::SelectFittest(this, Snapshot.LocalMaximum, Snapshot.Candidate, Snapshot.GenerationData.Get());
 
-	if (Snapshot.LocalMaximum->CopyFrom(NewLocalMaximum))
+	const float CandidateFitness = UQuestFitnessUtils::CalculateWeightedFitness(this, Snapshot.Candidate, Snapshot.GenerationData.Get());
+	if (CandidateFitness > Snapshot.LocalMaximumFitness)
 	{
+		Snapshot.LocalMaximum->CopyFrom(Snapshot.Candidate);
+		Snapshot.LocalMaximumFitness = CandidateFitness;
 		Snapshot.IterationsSinceLastLocalImprovement = 0;
 	}
-	
-	UQuest* NewGlobalMaximum = UQuestFitnessUtils::SelectFittest(this, Snapshot.GlobalMaximum, NewLocalMaximum, Snapshot.GenerationData.Get());
-	
-	if (Snapshot.GlobalMaximum->CopyFrom(NewGlobalMaximum))
+
+	if (CandidateFitness > Snapshot.GlobalMaximumFitness)
 	{
-		UE_LOG(LogProceduralQuests, Verbose, TEXT("GLOBAL MAXIMUM | Current Fitness: [%f]."), UQuestFitnessUtils::CalculateWeightedFitness(this, NewGlobalMaximum, Snapshot.GenerationData.Get()));
-		OnQuestUpdated.Broadcast(Snapshot);
+		Snapshot.GlobalMaximum->CopyFrom(Snapshot.Candidate);
+		Snapshot.GlobalMaximumFitness = CandidateFitness;
 		Snapshot.IterationsSinceLastGlobalImprovement = 0;
+		OnQuestUpdated.Broadcast(Snapshot);
 	}
 }
 

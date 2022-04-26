@@ -23,6 +23,7 @@ public:
 	UPROPERTY(Transient, BlueprintReadOnly)
 	UQuest* LocalMaximum;
 
+	//Todo: Actually just store this candidate in the QuestCreationComponent. We don't need this in the snapshot (or do we?)
 	UPROPERTY(Transient, BlueprintReadOnly)
 	UQuest* Candidate;
 	
@@ -42,4 +43,10 @@ public:
 
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 IterationsSinceLastLocalImprovement = 0;
+
+	UPROPERTY(Transient, BlueprintReadOnly)
+	float GlobalMaximumFitness = -1;
+
+	UPROPERTY(Transient, BlueprintReadOnly)
+	float LocalMaximumFitness = -1;
 };

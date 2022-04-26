@@ -1,7 +1,6 @@
 ﻿// Copyright 2022 Jan Plähn. All Rights Reserved.
 
 #include "Quest.h"
-#include "QuestFitnessBPLibrary.h"
 
 bool UQuest::IsAvailable(const UObject* WorldContextObject) const
 {
@@ -31,11 +30,6 @@ void UQuest::ClearQuest()
 		Action->OwnerCount--;
 		return true;
 	});
-	
-	//Todo: Copy Fitness from other quest? (Better: have this stored in the Snapshot anyways)
-	CachedFitnessByAffinity = -1;
-	CachedFitnessByConditions = -1;
-	CachedFitnessByIntentionality = -1;
 }
 
 bool UQuest::CopyFrom(const UQuest* OtherQuest)
@@ -88,34 +82,6 @@ TArray<UQuestCondition*> UQuest::GetPostConditions() const
 		OutPostConditions.Append(Action->GetPostConditions());
 	}
 	return OutPostConditions;
-}
-
-float UQuest::GetFitnessByConditions(const UObject* Context)
-{
-	if (CachedFitnessByConditions < 0)
-	{
-		CachedFitnessByConditions = UQuestFitnessUtils::CalculateFitnessByDesiredConditions(Context, this, ProviderData);
-	}
-	return CachedFitnessByConditions;
-}
-
-float UQuest::GetFitnessByIntentionality()
-{
-	if (CachedFitnessByIntentionality < 0)
-	{
-		CachedFitnessByIntentionality = UQuestFitnessUtils::CalculateFitnessByIntentionality(this);
-	}
-	//Todo: Cache fitness in snapshots instead!
-	return CachedFitnessByIntentionality;
-}
-
-float UQuest::GetFitnessByAffinity()
-{
-	if (CachedFitnessByAffinity < 0)
-	{
-		CachedFitnessByAffinity = UQuestFitnessUtils::CalculateFitnessByAffinity(this, ProviderData);
-	}
-	return CachedFitnessByAffinity;	
 }
 
 void UQuest::SetProviderData(UQuestProviderPreferences* Data)
