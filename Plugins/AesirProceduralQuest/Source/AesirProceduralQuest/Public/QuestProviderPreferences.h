@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestCondition.h"
-#include "QuestLabel.h"
 #include "Engine/DataAsset.h"
-#include "Kismet/KismetArrayLibrary.h"
 #include "QuestProviderPreferences.generated.h"
 
+class UQuestCondition;
 class UQuestAction;
 
 /**

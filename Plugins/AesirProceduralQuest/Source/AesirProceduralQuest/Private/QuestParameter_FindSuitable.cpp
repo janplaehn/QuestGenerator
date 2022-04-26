@@ -9,10 +9,10 @@ FName UQuestParameter_FindSuitable::GenerateValue(const UQuest* Quest) const
 	if (Actions.Num() && FMath::RandBool())
 	{
 		const TWeakObjectPtr<UQuestAction>& PreviousAction = Actions.Last();
-		if (const TSet<FName>* NameSet = PreviousAction->ParametersByClass.Find(StaticClass()))
+		if (const TArray<FName>* NameSet = PreviousAction->ParametersByClass.Find(StaticClass()))
 		{
 			const int RandomIndex = FMath::RandRange(0, NameSet->Num()-1);
-			return NameSet->Array()[RandomIndex]; //Todo: Find a faster way to get a random element, this loops through the whole set!!
+			return (*NameSet)[RandomIndex];
 		}
 	}
 

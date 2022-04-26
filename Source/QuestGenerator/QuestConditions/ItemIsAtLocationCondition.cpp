@@ -50,12 +50,3 @@ void UItemIsAtLocationCondition::InjectParameters(const TMap<FName, FName>& Para
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(ItemName, ParameterValues);
 	Super::InjectParameters(ParameterValues);
 }
-
-TSet<FName> UItemIsAtLocationCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		ItemName,
-		LocationName
-	};
-}

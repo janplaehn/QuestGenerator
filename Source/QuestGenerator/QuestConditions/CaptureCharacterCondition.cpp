@@ -25,11 +25,3 @@ void UCaptureCharacterCondition::InjectParameters(const TMap<FName, FName>& Para
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
 	Super::InjectParameters(ParameterValues);
 }
-
-TSet<FName> UCaptureCharacterCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		CharacterName
-	};
-}

@@ -25,8 +25,6 @@ public:
 	virtual EConditionType GetConditionType_Implementation() const override;
 
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues) override;
-
-	virtual TSet<FName> GetParameters() const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

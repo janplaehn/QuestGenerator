@@ -21,8 +21,6 @@ public:
 	virtual uint32 GenerateId() const override;
 
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues) override;
-
-	virtual TSet<FName> GetParameters() const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

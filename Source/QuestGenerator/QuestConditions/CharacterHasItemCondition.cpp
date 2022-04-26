@@ -44,12 +44,3 @@ void UCharacterHasItemCondition::InjectParameters(const TMap<FName, FName>& Para
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
 	Super::InjectParameters(ParameterValues);
 }
-
-TSet<FName> UCharacterHasItemCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		CharacterName,
-		ItemName
-	};
-}

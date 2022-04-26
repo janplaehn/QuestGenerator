@@ -1,21 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AesirProceduralQuestEditor.h"
-
-#include "AesirProceduralQuestBPLibrary.h"
 #include "AesirProceduralQuestEditorStyle.h"
 #include "AesirProceduralQuestEditorCommands.h"
 #include "EditorUtilityWidget.h"
 #include "EditorUtilitySubsystem.h"
-#include "EditorUtilityWidgetBlueprint.h"
 #include "LevelEditor.h"
-#include "QuestLabel.h"
-#include "QuestLabelCollectionDetails.h"
-#include "QuestProviderComponent.h"
-#include "QuestProviderPreferences.h"
 #include "Widgets/Docking/SDockTab.h"
-#include "Widgets/Layout/SBox.h"
-#include "Widgets/Text/STextBlock.h"
 #include "ToolMenus.h"
 #include "WidgetBlueprint.h"
 
@@ -44,9 +35,6 @@ void FAesirProceduralQuestEditorModule::StartupModule()
 	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(AesirProceduralQuestEditorTabName, FOnSpawnTab::CreateRaw(this, &FAesirProceduralQuestEditorModule::OnSpawnPluginTab))
 		.SetDisplayName(LOCTEXT("FAesirProceduralQuestEditorTabTitle", "Quest Editor"))
 		.SetMenuType(ETabSpawnerMenuType::Hidden);
-
-	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyModule.RegisterCustomPropertyTypeLayout(FName(FQuestLabelCollection::StaticStruct()->GetName()), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FQuestLabelCollectionDetails::MakeInstance));
 }
 
 void FAesirProceduralQuestEditorModule::ShutdownModule()

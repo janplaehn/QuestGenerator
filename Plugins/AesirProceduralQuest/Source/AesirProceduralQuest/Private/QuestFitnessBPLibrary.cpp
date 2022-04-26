@@ -60,7 +60,7 @@ float UQuestFitnessUtils::CalculateFitnessByDesiredConditions(const UObject* Wor
 
 	float Fitness = 1.0f;
 	const TArray<UQuestCondition*>& QuestPostConditions = Quest->GetPostConditions();
-	for (const UQuestCondition* DesiredCondition : Preferences->DesiredConditions) //Todo: Use FindByPredicate instead?
+	for (const UQuestCondition* DesiredCondition : Preferences->DesiredConditions)
 	{
 		bool bFoundMatchingCondition = false;
 		for (const UQuestCondition* QuestPostCondition : QuestPostConditions)

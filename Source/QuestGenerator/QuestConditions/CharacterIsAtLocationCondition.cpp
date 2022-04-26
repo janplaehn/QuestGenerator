@@ -50,12 +50,3 @@ void UCharacterIsAtLocationCondition::InjectParameters(const TMap<FName, FName>&
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
 	Super::InjectParameters(ParameterValues);
 }
-
-TSet<FName> UCharacterIsAtLocationCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		CharacterName,
-		LocationName
-	};
-}

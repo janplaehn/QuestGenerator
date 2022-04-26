@@ -26,8 +26,6 @@ public:
 
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues) override;
 	
-	virtual TSet<FName> GetParameters() const override;
-	
 protected:
 	UPROPERTY(EditAnywhere)
 	FName ItemName;

@@ -28,11 +28,3 @@ void UIsAliveCondition::InjectParameters(const TMap<FName, FName>& ParameterValu
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterName, ParameterValues);
 	Super::InjectParameters(ParameterValues);
 }
-
-TSet<FName> UIsAliveCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		CharacterName
-	};
-}

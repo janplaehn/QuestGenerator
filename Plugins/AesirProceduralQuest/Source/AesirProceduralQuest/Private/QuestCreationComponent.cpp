@@ -44,7 +44,6 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 	
 	OnIterationUpdated.Broadcast(Snapshot);
 
-	//Todo: Save the action count in the snapshot
 	if (Snapshot.IterationsSinceLastLocalImprovement >= FMath::Max(MinLocalIterations, Snapshot.TotalIterations * AbandonBias))
 	{
 		Snapshot.LocalMaximum->ClearQuest();

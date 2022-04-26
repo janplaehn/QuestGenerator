@@ -73,15 +73,6 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 	UE_LOG(LogProceduralQuests, Verbose, TEXT("%sObjective '%s'"), *IndentationString, *Action->GetDescription().ToString());
 
 	IndentationString.Append("    ");
-
-	// for (const UQuestCondition* QuestCondition : Action->GetPreConditions())
-	// {
-	// 	DebugLogCondition("Pre", QuestCondition, Indentation + 1);
-	// }
-	// for (const UQuestCondition* QuestCondition : Action->GetPostConditions())
-	// {
-	// 	DebugLogCondition("Post", QuestCondition, Indentation + 1);
-	// }
 	
 	const UQuest* Quest = Cast<UQuest>(Action);
 	if (IsValid(Quest))
@@ -91,16 +82,6 @@ void UAesirProceduralQuestBPLibrary::DebugLogAction(const UQuestAction* Action, 
 			DebugLogAction(QuestAction.Get(), Indentation + 1);
 		}
 	}
-}
-
-void UAesirProceduralQuestBPLibrary::DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation)
-{
-	FString IndentationString;
-	for (int Index = 0; Index < Indentation; Index++)
-	{
-		IndentationString.Append("    ");	
-	}
-	UE_LOG(LogProceduralQuests, Verbose, TEXT("%s%sCondition '%s' (%s)"), *IndentationString, *Prefix, *Condition->GetName(), *Condition->GetPropertyInfo());
 }
 
 

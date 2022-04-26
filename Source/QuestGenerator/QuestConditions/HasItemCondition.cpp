@@ -30,14 +30,6 @@ void UHasItemCondition::InjectParameters(const TMap<FName, FName>& ParameterValu
 	Super::InjectParameters(ParameterValues);
 }
 
-TSet<FName> UHasItemCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		ItemName
-	};
-}
-
 FName UHasItemCondition::GetItemName() const
 {
 	return ItemName;

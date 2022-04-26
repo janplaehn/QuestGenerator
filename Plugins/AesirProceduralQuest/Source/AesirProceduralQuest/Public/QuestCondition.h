@@ -25,12 +25,8 @@ class AESIRPROCEDURALQUEST_API UQuestCondition : public UObject
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	bool IsResolved(const UObject* WorldContextObject) const;
-	
-	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 
-
-	//Todo: Remove
-	virtual TSet<FName> GetParameters() const {return TSet<FName>();}
+	void Initialize(const TMap<FName, FName>& ParameterValues);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	bool bInvertCondition = false;
@@ -51,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, BlueprintNativeEvent)
 	EConditionType GetConditionType() const;
+
+protected:
+	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues) {};
 
 private:
 	UPROPERTY(VisibleAnywhere)

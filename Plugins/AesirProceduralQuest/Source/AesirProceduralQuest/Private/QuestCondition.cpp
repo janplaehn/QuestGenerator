@@ -2,14 +2,6 @@
 
 #include "QuestCondition.h"
 
-void UQuestCondition::InjectParameters(const TMap<FName, FName>& ParameterValues)
-{
-
-	//Todo: Move this to InitializeFunction and call InjectParameters separately. Ids shouldnt be generated in this function
-	ConditionId = GenerateId();
-	StateId = GenerateStateId();
-}
-
 bool UQuestCondition::IsResolved_Implementation(const UObject* WorldContextObject) const
 {
 	return false;
@@ -54,6 +46,13 @@ uint32 UQuestCondition::GetStateId() const
 EConditionType UQuestCondition::GetConditionType_Implementation() const
 {
 	return EConditionType::Boolean;
+}
+
+void UQuestCondition::Initialize(const TMap<FName, FName>& ParameterValues)
+{
+	InjectParameters(ParameterValues);
+	ConditionId = GenerateId();
+	StateId = GenerateStateId();
 }
 
 uint32 UQuestCondition::GenerateId() const

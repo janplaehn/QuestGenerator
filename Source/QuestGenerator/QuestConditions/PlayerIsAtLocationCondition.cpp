@@ -37,14 +37,6 @@ void UPlayerIsAtLocationCondition::InjectParameters(const TMap<FName, FName>& Pa
 	Super::InjectParameters(ParameterValues);
 }
 
-TSet<FName> UPlayerIsAtLocationCondition::GetParameters() const
-{
-	return TSet<FName>
-	{
-		LocationName
-	};
-}
-
 FName UPlayerIsAtLocationCondition::GetLocationName() const
 {
 	return LocationName;

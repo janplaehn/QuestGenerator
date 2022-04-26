@@ -42,11 +42,11 @@ void UQuestAction::InjectParameters(const TMap<FName, FName>& ParameterValues)
 	UAesirProceduralQuestBPLibrary::InjectNameParameter(CharacterImpact.Character, ParameterValues);
 	for (UQuestCondition* Condition : PreConditions)
 	{
-		Condition->InjectParameters(ParameterValues);
+		Condition->Initialize(ParameterValues);
 	}
 	for (UQuestCondition* Condition : PostConditions)
 	{
-		Condition->InjectParameters(ParameterValues);
+		Condition->Initialize(ParameterValues);
 	}
 	ReadableDescription = MakeFormattedHumanReadableName(ParameterValues);
 }

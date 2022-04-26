@@ -28,8 +28,6 @@ class AESIRPROCEDURALQUEST_API UAesirProceduralQuestBPLibrary : public UBlueprin
 	static void DebugLogQuest(const UObject* WorldContextObject, UQuest* Quest, const UQuestProviderPreferences* Preferences);
 
 	static void DebugLogAction(const UQuestAction* Action, const int Indentation = 0);
-
-	static void DebugLogCondition(const FString Prefix, const UQuestCondition* Condition, const int Indentation = 0);
 	
 	static void InjectNameParameter(FName& InOutName, const TMap<FName, FName>& ParameterValues);
 

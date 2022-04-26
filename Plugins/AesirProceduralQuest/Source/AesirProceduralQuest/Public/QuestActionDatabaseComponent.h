@@ -28,7 +28,6 @@ public:
 		
 	UQuestAction* GetSuitableAction(const UQuest* InQuest);
 
-	//Todo: Call this when applicable!
 	void CleanActionInstances();
 
 protected:

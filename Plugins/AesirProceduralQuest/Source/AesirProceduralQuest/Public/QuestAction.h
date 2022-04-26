@@ -43,7 +43,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FCharacterAffinity CharacterImpact;
 
-	TMap<TSubclassOf<UQuestParameter>, TSet<FName>> ParametersByClass;
+	TMap<TSubclassOf<UQuestParameter>, TArray<FName>> ParametersByClass;
 
 	uint32 GetId() const;
 
