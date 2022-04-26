@@ -52,15 +52,16 @@ void UQuestActionDatabaseComponent::InitPossibleQuestActions()
 	);
 }
 
-UQuestAction* UQuestActionDatabaseComponent::GetRandomAction()
+UQuestAction* UQuestActionDatabaseComponent::GetSuitableAction(const UQuest* InQuest)
 {	
 	const int RandomIndex = FMath::RandRange(0, Archetypes.Num() - 1);
 
 	//Todo: don't create an object, calculate an id first (how in the world??)
 	uint32 NewId;
 	TMap<FName, FName> NewParameterValues;
+	TMap<TSubclassOf<UQuestParameter>, TSet<FName>> ParametersByClass;
 	
-	Archetypes[RandomIndex]->MakeRandomParameters(NewId, NewParameterValues);
+	Archetypes[RandomIndex]->MakeSuitableParameters(InQuest, NewId, NewParameterValues, ParametersByClass);
 	
 	if (UQuestAction** ExistingAction = ActionInstances.Find(NewId))
 	{
@@ -75,7 +76,7 @@ UQuestAction* UQuestActionDatabaseComponent::GetRandomAction()
 	// }
 
 	UQuestAction* NewAction = DuplicateObject(Archetypes[RandomIndex], this);
-	NewAction->InitializeAsInstance(NewId, NewParameterValues);
+	NewAction->InitializeAsInstance(NewId, NewParameterValues, ParametersByClass);
 	NewAction->AddToRoot();
 	
 	ActionInstances.Add(NewId, NewAction);

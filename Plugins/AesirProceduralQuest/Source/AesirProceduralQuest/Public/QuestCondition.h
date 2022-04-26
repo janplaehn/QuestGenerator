@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestParameter.h"
-#include "UObject/Object.h"
 #include "QuestCondition.generated.h"
+
+class UQuestParameter;
 
 UENUM()
 enum EConditionType
@@ -29,6 +29,8 @@ public:
 	
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 
+
+	//Todo: Remove
 	virtual TSet<FName> GetParameters() const {return TSet<FName>();}
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)

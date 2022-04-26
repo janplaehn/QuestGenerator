@@ -26,7 +26,7 @@ public:
 	virtual EDataValidationResult IsDataValid(TArray<FText>& ValidationErrors) override;
 #endif
 		
-	UQuestAction* GetRandomAction();
+	UQuestAction* GetSuitableAction(const UQuest* InQuest);
 
 	//Todo: Call this when applicable!
 	void CleanActionInstances();

@@ -37,3 +37,8 @@ TSet<FName> UHasItemCondition::GetParameters() const
 		ItemName
 	};
 }
+
+FName UHasItemCondition::GetItemName() const
+{
+	return ItemName;
+}

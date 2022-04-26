@@ -3,14 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestCondition.h"
-#include "QuestLabel.h"
-#include "QuestParameter.h"
 #include "QuestProviderPreferences.h"
-
 #include "QuestAction.generated.h"
 
 class UQuest;
+class UQuestParameter;
+class UQuestCondition;
+
 /**
  * 
  */
@@ -18,11 +17,11 @@ UCLASS(Blueprintable, BlueprintType)
 class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 {
 	GENERATED_BODY()
-
+	
 public:
-	void MakeRandomParameters(uint32& OutId, TMap<FName, FName>& OutParameterValues) const;
+	void MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& OutParametersByClassMap) const;
 
-	virtual void InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues);
+	virtual void InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& InParametersByClassMap);
 
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 	
@@ -44,6 +43,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	FCharacterAffinity CharacterImpact;
 
+	TMap<TSubclassOf<UQuestParameter>, TSet<FName>> ParametersByClass;
+
 	uint32 GetId() const;
 
 	uint32 OwnerCount = 0;
@@ -61,8 +62,8 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	FText ReadableDescription;
 	
-	UPROPERTY(EditAnywhere, Instanced)
-	TArray<UQuestParameter*> Parameters;
+	UPROPERTY(EditAnywhere)
+	TMap<FName, TSubclassOf<UQuestParameter>> ParameterMap;
 
 	uint32 Id = 0;
 };

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Quest.h"
 #include "UObject/Object.h"
 #include "Engine/DataTable.h"
 #include "QuestParameter.generated.h"
@@ -28,8 +30,5 @@ class AESIRPROCEDURALQUEST_API UQuestParameter : public UObject
 {
 	GENERATED_BODY()
 public:
-	virtual FName GenerateValue() PURE_VIRTUAL(UQuestParameter::GetValueAsName, return FName(););
-	
-	UPROPERTY(EditAnywhere)
-	FName Name;
+	virtual FName GenerateValue(const UQuest* Quest) const PURE_VIRTUAL(UQuestParameter::GetValueAsName, return FName(););
 };
