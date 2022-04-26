@@ -19,12 +19,11 @@ void UQuestCreationComponent::InjectDependencies(UQuestActionDatabaseComponent* 
 	ActionDatabase = InActionDatabase;
 }
 
-//Todo: Only pass in UObject-Context and Preferences
-FGuid UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
+FGuid UQuestCreationComponent::RequestQuestGeneration(UObject* Owner, UQuestProviderPreferences* Preferences)
 {
 	const FGuid& NewGuid = FGuid::NewGuid();
 	const uint32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
-	GenerationSnapshots.Add(NewGuid, FQuestGenerationSnapshot(QuestProviderComponent, QuestProviderComponent->GetPreferences(), QuestActionCount));
+	GenerationSnapshots.Add(NewGuid, FQuestGenerationSnapshot(Owner, Preferences, QuestActionCount));
 	return NewGuid;
 }
 

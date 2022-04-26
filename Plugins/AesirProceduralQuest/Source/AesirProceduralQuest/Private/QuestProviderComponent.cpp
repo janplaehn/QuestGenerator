@@ -15,11 +15,6 @@ UQuestProviderComponent::UQuestProviderComponent()
 
 UQuestProviderPreferences* UQuestProviderComponent::GetPreferences() const
 {
-	const float FitnessWeightSum = Preferences->FitnessWeights.AffinityWeight + Preferences->FitnessWeights.ConditionWeight + Preferences->FitnessWeights.IntentionalityWeight;
-	Preferences->FitnessWeights.AffinityWeight /= FitnessWeightSum;
-	Preferences->FitnessWeights.ConditionWeight /= FitnessWeightSum;
-	Preferences->FitnessWeights.IntentionalityWeight /= FitnessWeightSum;
-
 	return Preferences;
 }
 
@@ -51,7 +46,7 @@ bool UQuestProviderComponent::RequestAsyncQuestGeneration() //Todo: Provide func
 	{
 		return false;
 	}	
-	QuestGenerationId = QuestCreator->RequestQuestGeneration(this);	
+	QuestGenerationId = QuestCreator->RequestQuestGeneration(this, GetPreferences());	
 	return true;
 }
 

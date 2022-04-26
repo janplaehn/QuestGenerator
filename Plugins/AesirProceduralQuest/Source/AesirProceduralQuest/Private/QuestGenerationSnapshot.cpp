@@ -6,6 +6,7 @@
 FQuestGenerationSnapshot::FQuestGenerationSnapshot(UObject* InContext, UQuestProviderPreferences* InGenerationData, const uint32 InActionCount)
 {
 	GenerationData = InGenerationData;
+	GenerationData->FitnessWeights.Normalize();
 	Context = InContext;
 	ActionCount = InActionCount;
 	GlobalMaximum = NewObject<UQuest>(InContext);

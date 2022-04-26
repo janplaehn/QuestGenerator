@@ -26,7 +26,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InjectDependencies(UQuestActionDatabaseComponent* InActionDatabase);
 	
-	FGuid RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent);
+	FGuid RequestQuestGeneration(UObject* Owner, UQuestProviderPreferences* Preferences);
 	
 	UQuest* FinishQuestGeneration(const FGuid& Id);
 
