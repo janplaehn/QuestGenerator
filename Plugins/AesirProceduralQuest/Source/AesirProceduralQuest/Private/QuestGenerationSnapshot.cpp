@@ -3,10 +3,11 @@
 #include "QuestGenerationSnapshot.h"
 #include "Quest.h"
 
-FQuestGenerationSnapshot::FQuestGenerationSnapshot(UObject* InContext, UQuestProviderPreferences* InGenerationData)
+FQuestGenerationSnapshot::FQuestGenerationSnapshot(UObject* InContext, UQuestProviderPreferences* InGenerationData, const uint32 InActionCount)
 {
 	GenerationData = InGenerationData;
 	Context = InContext;
+	ActionCount = InActionCount;
 	GlobalMaximum = NewObject<UQuest>(InContext);
 	LocalMaximum = NewObject<UQuest>(InContext);
 	Candidate = NewObject<UQuest>(InContext);

@@ -15,7 +15,7 @@ struct AESIRPROCEDURALQUEST_API FQuestGenerationSnapshot
 public:
 	FQuestGenerationSnapshot() = default;
 	
-	explicit FQuestGenerationSnapshot(UObject* InContext, UQuestProviderPreferences* InGenerationData);
+	explicit FQuestGenerationSnapshot(UObject* InContext, UQuestProviderPreferences* InGenerationData, const uint32 InActionCount);
 	
 	UPROPERTY(Transient, BlueprintReadOnly)
 	UQuest* GlobalMaximum;
@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 NullQuestCount = 0;
+
+	UPROPERTY(Transient, BlueprintReadOnly)
+	int32 ActionCount = 0;
 
 	UPROPERTY(Transient, BlueprintReadOnly)
 	int32 IterationsSinceLastGlobalImprovement = 0;

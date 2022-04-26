@@ -23,7 +23,8 @@ void UQuestCreationComponent::InjectDependencies(UQuestActionDatabaseComponent* 
 FGuid UQuestCreationComponent::RequestQuestGeneration(UQuestProviderComponent* QuestProviderComponent)
 {
 	const FGuid& NewGuid = FGuid::NewGuid();
-	GenerationSnapshots.Add(NewGuid, FQuestGenerationSnapshot(QuestProviderComponent, QuestProviderComponent->GetPreferences()));
+	const uint32 QuestActionCount = FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
+	GenerationSnapshots.Add(NewGuid, FQuestGenerationSnapshot(QuestProviderComponent, QuestProviderComponent->GetPreferences(), QuestActionCount));
 	return NewGuid;
 }
 
@@ -45,7 +46,6 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 	OnIterationUpdated.Broadcast(Snapshot);
 
 	//Todo: Save the action count in the snapshot
-	const int32 QuestActionCount = !Snapshot.GlobalMaximum->IsEmpty() ? Snapshot.GlobalMaximum->GetActions().Num() : FMath::RandRange(QuestActionCountRange.GetLowerBound().GetValue(), QuestActionCountRange.GetUpperBound().GetValue());
 	if (Snapshot.IterationsSinceLastLocalImprovement >= FMath::Max(MinLocalIterations, Snapshot.TotalIterations * AbandonBias))
 	{
 		Snapshot.LocalMaximum->ClearQuest();
@@ -55,7 +55,7 @@ void UQuestCreationComponent::ProceedGeneration(FQuestGenerationSnapshot& Snapsh
 
 	if (Snapshot.LocalMaximum->IsEmpty())
 	{
-		AssignRandomActions(Snapshot.Candidate, QuestActionCount);
+		AssignRandomActions(Snapshot.Candidate, Snapshot.ActionCount);
 	}
 	else
 	{

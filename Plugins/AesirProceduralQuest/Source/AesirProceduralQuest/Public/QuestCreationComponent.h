@@ -50,12 +50,16 @@ protected:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	//Todo: Move this to a quest creation library
 	void AssignRandomActions(UQuest* InOutQuest, const uint32 Count) const;
 
+	//Todo: Move this to a quest creation library
 	void MutateQuest(UQuest* Mutation, UQuest* BaseQuest) const;
 
+	//Todo: Move this to a quest creation library
 	void MutateQuestByReplaceAction(UQuest* Mutation, UQuest* BaseQuest) const;
 
+	//Todo: Move this to a quest creation library
 	void MutateQuestByScramblingActions(UQuest* Mutation, UQuest* BaseQuest) const;
 
 	UPROPERTY(EditAnywhere)
@@ -67,8 +71,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float AbandonBias = 0.1f; //This could be renamed? (It is very confusing)
 
+	//Todo: Move this to a quest creation library
 	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
+	//Todo: Move this to a quest creation library
 	bool TryApplyNextQuestAction(UQuest* Quest, TWeakObjectPtr<UQuestAction> ActionCandidate, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
 
 	UPROPERTY(Transient)
