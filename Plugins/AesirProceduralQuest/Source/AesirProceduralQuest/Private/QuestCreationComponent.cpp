@@ -209,7 +209,7 @@ bool UQuestCreationComponent::TryApplyRandomNextQuestAction(UQuest* Quest, TMap<
 {
 	for(int AttemptIndex = 0; AttemptIndex < MaxQuestSampleCount; AttemptIndex++)
 	{
-		UQuestAction* ActionCandidate = ActionDatabase->GetRandomAction();
+		UQuestAction* ActionCandidate = ActionDatabase->GetSuitableAction(Quest);
 
 		if (TryApplyNextQuestAction(Quest, ActionCandidate, SimulatedConditionResolutions))
 		{

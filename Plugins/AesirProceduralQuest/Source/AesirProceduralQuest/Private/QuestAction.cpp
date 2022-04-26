@@ -3,23 +3,38 @@
 #include "QuestAction.h"
 #include "AesirProceduralQuestBPLibrary.h"
 #include "Quest.h"
+#include "QuestParameter.h"
 
-
-void UQuestAction::MakeRandomParameters(uint32& OutId, TMap<FName, FName>& OutParameterValues) const
+void UQuestAction::MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& OutParametersByClassMap) const
 {
 	OutId = GetTypeHash(GetClass());
+	OutParameterValues.Reserve(ParameterMap.Num());
 	
-	for (UQuestParameter* Param : Parameters)
+	for (const auto& Kvp : ParameterMap)
 	{
-		const FName& Value = Param->GenerateValue();
-		OutParameterValues.Add(Param->Name, Value);
-		OutId = HashCombine(OutId, GetTypeHash(Value));
+		const UQuestParameter* ParameterCDO = Kvp.Value.GetDefaultObject();
+		//Todo: If the condition is negated, we actually might want a completely random value
+		
+		const FName& GeneratedValue = ParameterCDO->GenerateValue(InQuest);
+
+		if (auto ParameterSet = OutParametersByClassMap.Find(Kvp.Value))
+		{
+			ParameterSet->Add(GeneratedValue);
+		}
+		else
+		{
+			OutParametersByClassMap.Add(Kvp.Value, {GeneratedValue});
+		}
+		
+		OutParameterValues.Add(Kvp.Key, GeneratedValue);
+		OutId = HashCombine(OutId, GetTypeHash(GeneratedValue));
 	}
 }
 
-void UQuestAction::InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues)
+void UQuestAction::InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& InParametersByClassMap)
 {
 	Id = InId;
+	ParametersByClass = InParametersByClassMap;
 	InjectParameters(ParameterValues);
 }
 

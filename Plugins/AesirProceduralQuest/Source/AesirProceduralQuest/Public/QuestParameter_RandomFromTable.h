@@ -9,12 +9,12 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Abstract)
 class AESIRPROCEDURALQUEST_API UQuestParameter_RandomFromTable : public UQuestParameter
 {
 	GENERATED_BODY()
 public:
-	virtual FName GenerateValue() override;
+	virtual FName GenerateValue(const UQuest* Quest) const override;
 	
 protected:
 	UPROPERTY(EditAnywhere)

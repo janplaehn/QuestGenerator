@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "QuestParameter.h"
-#include "UObject/Object.h"
 #include "QuestCondition.generated.h"
+
+class UQuestParameter;
 
 UENUM()
 enum EConditionType

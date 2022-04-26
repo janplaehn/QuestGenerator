@@ -44,3 +44,8 @@ TSet<FName> UPlayerIsAtLocationCondition::GetParameters() const
 		LocationName
 	};
 }
+
+FName UPlayerIsAtLocationCondition::GetLocationName() const
+{
+	return LocationName;
+}
