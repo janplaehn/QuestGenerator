@@ -5,7 +5,7 @@
 #include "Quest.h"
 #include "QuestParameter.h"
 
-void UQuestAction::MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& OutParametersByClassMap) const
+void UQuestAction::MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TArray<FName>>& OutParametersByClassMap) const
 {
 	OutId = GetTypeHash(GetClass());
 	OutParameterValues.Reserve(ParameterMap.Num());
@@ -30,7 +30,7 @@ void UQuestAction::MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, 
 	}
 }
 
-void UQuestAction::InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& InParametersByClassMap)
+void UQuestAction::InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TArray<FName>>& InParametersByClassMap)
 {
 	Id = InId;
 	ParametersByClass = InParametersByClassMap;

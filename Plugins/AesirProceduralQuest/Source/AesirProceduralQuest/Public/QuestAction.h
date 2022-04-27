@@ -19,9 +19,9 @@ class AESIRPROCEDURALQUEST_API UQuestAction : public UDataAsset
 	GENERATED_BODY()
 	
 public:
-	void MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& OutParametersByClassMap) const;
+	void MakeSuitableParameters(const UQuest* InQuest, uint32& OutId, TMap<FName, FName>& OutParameterValues, TMap<TSubclassOf<UQuestParameter>, TArray<FName>>& OutParametersByClassMap) const;
 
-	virtual void InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TSet<FName>>& InParametersByClassMap);
+	virtual void InitializeAsInstance(const uint32 InId, const TMap<FName, FName>& ParameterValues, TMap<TSubclassOf<UQuestParameter>, TArray<FName>>& InParametersByClassMap);
 
 	virtual void InjectParameters(const TMap<FName, FName>& ParameterValues);
 	

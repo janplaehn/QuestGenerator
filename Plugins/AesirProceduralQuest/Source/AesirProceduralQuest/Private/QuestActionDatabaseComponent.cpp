@@ -58,7 +58,7 @@ UQuestAction* UQuestActionDatabaseComponent::GetSuitableAction(const UQuest* InQ
 
 	uint32 NewId;
 	TMap<FName, FName> NewParameterValues;
-	TMap<TSubclassOf<UQuestParameter>, TSet<FName>> ParametersByClass;
+	TMap<TSubclassOf<UQuestParameter>, TArray<FName>> ParametersByClass;
 	
 	Archetypes[RandomIndex]->MakeSuitableParameters(InQuest, NewId, NewParameterValues, ParametersByClass);
 	
