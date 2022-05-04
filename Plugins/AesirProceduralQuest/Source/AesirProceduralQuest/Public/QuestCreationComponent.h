@@ -34,17 +34,30 @@ public:
 	FOnQuestUpdated OnQuestUpdated;
 
 	UPROPERTY(BlueprintAssignable)
+	FOnQuestUpdated OnQuestStarted;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnQuestUpdated OnQuestCompleted;
 
 	UPROPERTY(BlueprintAssignable)
 	FOniterationUpdated OnIterationUpdated;
 
+	
+	UPROPERTY(EditAnywhere)
+	float MinLocalIterations = 100;
+	
+	UPROPERTY(EditAnywhere)
+	FInt32Range QuestActionCountRange = FInt32Range(5,10);
+
+	UPROPERTY(EditAnywhere)
+	int MaxQuestSampleCount = 100;
+
+	UPROPERTY(EditAnywhere)
+	float AbandonBias = 0.1f; //This could be renamed? (It is very confusing)
+
 protected:
 	UPROPERTY(EditAnywhere)
 	float MaxTickTime = 0.03f;
-
-	UPROPERTY(EditAnywhere)
-	float MinLocalIterations = 100;
 
 	void ProceedGeneration(FQuestGenerationSnapshot& Snapshot) const;
 	
@@ -61,15 +74,6 @@ protected:
 
 	//Todo: Move this to a quest creation library
 	void MutateQuestByScramblingActions(UQuest* Mutation, UQuest* BaseQuest) const;
-
-	UPROPERTY(EditAnywhere)
-	FInt32Range QuestActionCountRange = FInt32Range(5,10);
-
-	UPROPERTY(EditAnywhere)
-	int MaxQuestSampleCount = 100;
-
-	UPROPERTY(EditAnywhere)
-	float AbandonBias = 0.1f; //This could be renamed? (It is very confusing)
 
 	//Todo: Move this to a quest creation library
 	bool TryApplyRandomNextQuestAction(UQuest* Quest, TMap<uint32, uint32>& SimulatedConditionResolutions) const;
